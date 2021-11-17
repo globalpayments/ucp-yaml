@@ -1,0 +1,642 @@
+openapi: 3.0.3
+info:
+  title: Access Token
+  description: 'Access Tokens are required to execute all API actions, you can use this resource to obtain one. The authority of the bearer token; the actions it can execute, is determined by the associated Merchant ID, Accounts and Permissions of the app used to create it.'
+  contact:
+    name: API Integrations
+    url: 'https://developer.globalpay.com/?gp-api=true'
+    email: api.integrations@globalpay.com
+  version: 2021 03 22
+servers:
+  - url: 'https://apis.sandbox.globalpay.com/ucp'
+    description: Sandbox Environment
+  - url: 'https://apis.globalpay.com/ucp'
+    description: Production Environment
+tags:
+  - name: Create Access Token
+    description: Authenticate using app credentials to use GP API.
+    externalDocs:
+      url: 'https://developer.globalpay.com/authentication'
+paths:
+  /accesstoken:
+    post:
+      operationId: getAccessToken
+      tags:
+        - Create Access Token
+      summary: Create a bearer access token.
+      description: 'Using your app credentials, send a request to create a bearer access token that can be used to execute subsequent API actions. The actions  that the token can execute are determined by the permissions the app has.'
+      parameters:
+        - in: header
+          name: Content-type
+          description: Format of the message.
+          required: true
+          schema:
+            description: Indicates the format of the message.
+            type: string
+            default: application/json
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - app_id
+                - grant_type
+                - nonce
+                - secret
+              type: object
+              properties:
+                app_id:
+                  type: string
+                  description: The id of the app that was used to create the token.
+                  example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                  minLength: 1
+                  maxLength: 50
+                nonce:
+                  type: string
+                  description: A unique random value included while creating the secret.
+                  example: random_string
+                  minLength: 1
+                  maxLength: 50
+                secret:
+                  type: string
+                  description: A unique string created using the nonce and app-key. This value is used to further authenticate the request. Created as follows - SHA512(NONCE.APP-KEY).
+                  example: e776ce1d9e94d5072ee132258e446cd92668d7c28b2e475a345319b475ba601956c16e3983926ce279db6301d78b7f47cfb729e41b4169814e373f0a0bf38716
+                  minLength: 1
+                  maxLength: 128
+                grant_type:
+                  type: string
+                  description: Indicates the type of access being requested.
+                  enum:
+                    - client_credentials
+                  example: client_credentials
+                seconds_to_expire:
+                  type: integer
+                  description: |
+                    The time left in seconds before the token expires.
+                  maximum: 604799
+                  example: 604799
+                interval_to_expire:
+                  type: string
+                  description: |
+                    The time interval set for when the token will expire.
+                  enum:
+                    - WEEK
+                    - DAY
+                    - 12_HOURS
+                    - 6_HOURS
+                    - 3_HOURS
+                    - 1_HOUR
+                    - 30_MINUTES
+                    - 10_MINUTES
+                    - 5_MINUTES
+                permissions:
+                  type: array
+                  items:
+                    type: string
+                    description: The list of the permissions the access token has or will have once created. This indicates the scope of authority a specific access token has.
+                    example: TRN_POST_Authorize
+            examples:
+              Get Access Token:
+                value:
+                  app_id: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
+                  nonce: random_string
+                  secret: e776ce1d9e94d5072ee132258e446cd92668d7c28b2e475a345319b475ba601956c16e3983926ce279db6301d78b7f47cfb729e41b4169814e373f0a0bf38716
+                  grant_type: client_credentials
+              Get Access Token - Set Permissions:
+                value:
+                  app_id: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
+                  nonce: random_string
+                  secret: e776ce1d9e94d5072ee132258e446cd92668d7c28b2e475a345319b475ba601956c16e3983926ce279db6301d78b7f47cfb729e41b4169814e373f0a0bf38716
+                  grant_type: client_credentials
+                  seconds_to_expire: 6400
+                  permissions:
+                    - TRN_POST_Authorize
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: The access token that can be used to executed API actions. A unique identifier generated by Global Payments to identify the merchant.
+                    example: cIcm3WEKGrqGPHSedArOx4WZznP5
+                    minLength: 1
+                    maxLength: 50
+                  type:
+                    type: string
+                    description: The type of token created.
+                    example: Bearer
+                    minLength: 1
+                    maxLength: 50
+                  scope:
+                    type: object
+                    properties:
+                      merchant_id:
+                        type: string
+                        description: A unique identifier for the merchant set by Global Payments.
+                        example: MER_c4c0df11039c48a9b63701adeaa296c3
+                        minLength: 1
+                        maxLength: 50
+                      merchant_name:
+                        type: string
+                        description: A meaningful label for the merchant set by Global Payments.
+                        example: Sandbox_merchant_2
+                        minLength: 1
+                        maxLength: 50
+                      accounts:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              description: A unique identifier for the merchant account set by Global Payments.
+                              example: TRA_6716058969854a48b33347043ff8225f
+                              minLength: 1
+                              maxLength: 50
+                            name:
+                              type: string
+                              description: A meaningful label for the merchant account set by Global Payments.
+                              example: Transaction_Processing
+                              minLength: 1
+                              maxLength: 50
+                            permissions:
+                              type: array
+                              items:
+                                type: array
+                                items:
+                                  type: string
+                                  description: The list of the permissions the access token has or will have once created. This indicates the scope of authority a specific access token has.
+                                  example: TRN_POST_Authorize
+                  app_id:
+                    type: string
+                    description: The id of the app that was used to create the token.
+                    example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                    minLength: 1
+                    maxLength: 50
+                  app_name:
+                    type: string
+                    description: The name of the app the user gave to the application.
+                    example: demo_app
+                    minLength: 1
+                    maxLength: 50
+                  time_created:
+                    type: string
+                    format: date-time
+                    description: Global Payments time indicating when the object was created in ISO-8601 format.
+                    example: '2021-05-03T21:23:39.718Z'
+                  seconds_to_expire:
+                    type: integer
+                    description: |
+                      The time left in seconds before the token expires.
+                    maximum: 604799
+                    example: 604799
+                  interval_to_expire:
+                    type: string
+                    description: |
+                      The time interval set for when the token will expire.
+                    enum:
+                      - WEEK
+                      - DAY
+                      - 12_HOURS
+                      - 6_HOURS
+                      - 3_HOURS
+                      - 1_HOUR
+                      - 30_MINUTES
+                      - 10_MINUTES
+                      - 5_MINUTES
+                  email:
+                    type: string
+                    description: 'Email registered with the application that was used to access this token. '
+                    example: james.mason@example.com
+                    minLength: 1
+                    maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+components:
+  schemas:
+    request:
+      required:
+        - app_id
+        - grant_type
+        - nonce
+        - secret
+      type: object
+      properties:
+        app_id:
+          type: string
+          description: The id of the app that was used to create the token.
+          example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+          minLength: 1
+          maxLength: 50
+        nonce:
+          type: string
+          description: A unique random value included while creating the secret.
+          example: random_string
+          minLength: 1
+          maxLength: 50
+        secret:
+          type: string
+          description: A unique string created using the nonce and app-key. This value is used to further authenticate the request. Created as follows - SHA512(NONCE.APP-KEY).
+          example: e776ce1d9e94d5072ee132258e446cd92668d7c28b2e475a345319b475ba601956c16e3983926ce279db6301d78b7f47cfb729e41b4169814e373f0a0bf38716
+          minLength: 1
+          maxLength: 128
+        grant_type:
+          type: string
+          description: Indicates the type of access being requested.
+          enum:
+            - client_credentials
+          example: client_credentials
+        seconds_to_expire:
+          type: integer
+          description: |
+            The time left in seconds before the token expires.
+          maximum: 604799
+          example: 604799
+        interval_to_expire:
+          type: string
+          description: |
+            The time interval set for when the token will expire.
+          enum:
+            - WEEK
+            - DAY
+            - 12_HOURS
+            - 6_HOURS
+            - 3_HOURS
+            - 1_HOUR
+            - 30_MINUTES
+            - 10_MINUTES
+            - 5_MINUTES
+        permissions:
+          type: array
+          items:
+            type: string
+            description: The list of the permissions the access token has or will have once created. This indicates the scope of authority a specific access token has.
+            example: TRN_POST_Authorize
+    response:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The access token that can be used to executed API actions. A unique identifier generated by Global Payments to identify the merchant.
+          example: cIcm3WEKGrqGPHSedArOx4WZznP5
+          minLength: 1
+          maxLength: 50
+        type:
+          type: string
+          description: The type of token created.
+          example: Bearer
+          minLength: 1
+          maxLength: 50
+        scope:
+          type: object
+          properties:
+            merchant_id:
+              type: string
+              description: A unique identifier for the merchant set by Global Payments.
+              example: MER_c4c0df11039c48a9b63701adeaa296c3
+              minLength: 1
+              maxLength: 50
+            merchant_name:
+              type: string
+              description: A meaningful label for the merchant set by Global Payments.
+              example: Sandbox_merchant_2
+              minLength: 1
+              maxLength: 50
+            accounts:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: A unique identifier for the merchant account set by Global Payments.
+                    example: TRA_6716058969854a48b33347043ff8225f
+                    minLength: 1
+                    maxLength: 50
+                  name:
+                    type: string
+                    description: A meaningful label for the merchant account set by Global Payments.
+                    example: Transaction_Processing
+                    minLength: 1
+                    maxLength: 50
+                  permissions:
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: string
+                        description: The list of the permissions the access token has or will have once created. This indicates the scope of authority a specific access token has.
+                        example: TRN_POST_Authorize
+        app_id:
+          type: string
+          description: The id of the app that was used to create the token.
+          example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+          minLength: 1
+          maxLength: 50
+        app_name:
+          type: string
+          description: The name of the app the user gave to the application.
+          example: demo_app
+          minLength: 1
+          maxLength: 50
+        time_created:
+          type: string
+          format: date-time
+          description: Global Payments time indicating when the object was created in ISO-8601 format.
+          example: '2021-05-03T21:23:39.718Z'
+        seconds_to_expire:
+          type: integer
+          description: |
+            The time left in seconds before the token expires.
+          maximum: 604799
+          example: 604799
+        interval_to_expire:
+          type: string
+          description: |
+            The time interval set for when the token will expire.
+          enum:
+            - WEEK
+            - DAY
+            - 12_HOURS
+            - 6_HOURS
+            - 3_HOURS
+            - 1_HOUR
+            - 30_MINUTES
+            - 10_MINUTES
+            - 5_MINUTES
+        email:
+          type: string
+          description: 'Email registered with the application that was used to access this token. '
+          example: james.mason@example.com
+          minLength: 1
+          maxLength: 50
+    scope:
+      type: object
+      properties:
+        merchant_id:
+          type: string
+          description: A unique identifier for the merchant set by Global Payments.
+          example: MER_c4c0df11039c48a9b63701adeaa296c3
+          minLength: 1
+          maxLength: 50
+        merchant_name:
+          type: string
+          description: A meaningful label for the merchant set by Global Payments.
+          example: Sandbox_merchant_2
+          minLength: 1
+          maxLength: 50
+        accounts:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: A unique identifier for the merchant account set by Global Payments.
+                example: TRA_6716058969854a48b33347043ff8225f
+                minLength: 1
+                maxLength: 50
+              name:
+                type: string
+                description: A meaningful label for the merchant account set by Global Payments.
+                example: Transaction_Processing
+                minLength: 1
+                maxLength: 50
+              permissions:
+                type: array
+                items:
+                  type: array
+                  items:
+                    type: string
+                    description: The list of the permissions the access token has or will have once created. This indicates the scope of authority a specific access token has.
+                    example: TRN_POST_Authorize
+    accounts:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: A unique identifier for the merchant account set by Global Payments.
+            example: TRA_6716058969854a48b33347043ff8225f
+            minLength: 1
+            maxLength: 50
+          name:
+            type: string
+            description: A meaningful label for the merchant account set by Global Payments.
+            example: Transaction_Processing
+            minLength: 1
+            maxLength: 50
+          permissions:
+            type: array
+            items:
+              type: array
+              items:
+                type: string
+                description: The list of the permissions the access token has or will have once created. This indicates the scope of authority a specific access token has.
+                example: TRN_POST_Authorize

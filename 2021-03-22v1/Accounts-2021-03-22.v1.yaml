@@ -1,0 +1,3296 @@
+openapi: 3.0.3
+info:
+  title: Accounts
+  description: Accounts represent the payment processing capability a merchant is set up for on the Global Payments API.
+  contact:
+    name: API Integrations
+    url: 'https://developer.globalpay.com/?gp-api=true'
+    email: api.integrations@globalpay.com
+  version: 2021 03 22
+servers:
+  - url: 'https://apis.sandbox.globalpay.com/ucp'
+    description: Sandbox Environment
+  - url: 'https://apis.globalpay.com/ucp'
+    description: Production Environment
+tags:
+  - name: Get Merchant info
+    description: Get information about the merchant executing the action.
+  - name: Get Merchant's Account info
+    description: Get information about the merchant's account configurations.
+  - name: Get info about a Single Account
+    description: Get information about a merchant's single account configuration.
+  - name: Edit a Merchant's Account info
+    description: Edit merchant's account configuration.
+paths:
+  /:
+    get:
+      operationId: getMerchantSingle
+      tags:
+        - Get Merchant info
+      summary: Get information about the merchant executing the action.
+      description: Get information about the merchant executing the action.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer access token value used to access the API.
+          schema:
+            description: Bearer access token value used to access the API.
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: A unique identifier for the merchant set by Global Payments.
+                    example: MER_c4c0df11039c48a9b63701adeaa296c3
+                    minLength: 1
+                    maxLength: 50
+                  merchant_name:
+                    type: string
+                    description: A meaningful label for the merchant set by Global Payments.
+                    example: Sandbox_merchant_2
+                    minLength: 1
+                    maxLength: 50
+                  time_created:
+                    type: string
+                    format: date-time
+                    description: Global Payments time indicating when the object was created in ISO-8601 format.
+                    example: '2021-05-03T21:23:39.718Z'
+                  status:
+                    type: string
+                    minLength: 1
+                    description: Indicates whether the merchant is in its lifecycle. * `ACTIVE` - The entity is active on the Global Payments platform and can use the capabilities that are configured and active to payment process. * `INACTIVE` - The entity is disabled on the Global Payments platform and cannot use any payment processing capabilities. * `UNDER_REVIEW` - The entity is under review and can cannot used any of the payment processing capabilities until the review is complete and the merchant is switched to active. * `DECLINED` - The entity did not complete the risk review process and cannot use any payment processing capabilities.
+                    enum:
+                      - ACTIVE
+                      - INACTIVE
+                      - UNDER_REVIEW
+                      - DECLINED
+                  email:
+                    type: string
+                    description: Primary email configured with the merchant.
+                    example: merchant@example.com
+                    minLength: 1
+                    maxLength: 50
+                  address_1:
+                    type: string
+                    description: First line of the address.
+                    minLength: 0
+                    maxLength: 50
+                  address_2:
+                    type: string
+                    description: Second line of the address.
+                    minLength: 0
+                    maxLength: 50
+                  city:
+                    type: string
+                    description: Merchant defined field common to all transactions that are part of the same order.
+                    example: INV#88547
+                    minLength: 0
+                    maxLength: 50
+                  zip:
+                    type: string
+                    description: The city or town of the address.
+                    minLength: 0
+                    maxLength: 50
+                  state:
+                    type: string
+                    description: 'The state or region of the address. ISO 3166-2 minus the country code itself. For example, US Illinois = IL, or in the case of GB counties Wiltshire = WI or Aberdeenshire = ABD'
+                    minLength: 0
+                    maxLength: 3
+                  country:
+                    type: string
+                    description: The country of the address. Countries are represented by the ISO-3166-1(alpha-2 code).
+                    minLength: 0
+                    maxLength: 2
+                  links:
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          rel:
+                            type: string
+                            description: Describes the relationship the associated link href value has to the current resource. * `SELF` - indicates a link to the current resource. * `ACCOUNTS` - indicates a link to the current resource's list of accounts.
+                            enum:
+                              - SELF
+                              - ACCOUNTS
+                            minLength: 0
+                            maxLength: 50
+                          href:
+                            type: string
+                            description: A href link to the resources or resource actions as indicated in the corresponding rel value.
+                            example: 'https://apis.globalpay.com/ucp/merchants/MER_c4c0df11039c48a9b63701adeaa296c3'
+                            minLength: 0
+                            maxLength: 2048
+                  action:
+                    type: object
+                    description: Information about the Action executed.
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Indicates the action taken.
+                      time_created:
+                        type: string
+                        format: date-time
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        description: The result of the action executed.
+                        enum:
+                          - SUCCESS
+                          - DECLINE
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        description: The id of the app that was used to create the token.
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        description: The name of the app the user gave to the application.
+                        example: demo_app
+                        minLength: 1
+                        maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+  /accounts:
+    get:
+      operationId: getMerchantAccounts
+      tags:
+        - Get Merchant's Account info
+      summary: Get information about the merchant's accounts.
+      description: Get information about the merchant's accounts.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer access token value used to access the API.
+          schema:
+            description: Bearer access token value used to access the API.
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+        - in: query
+          name: page
+          description: Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.
+          schema:
+            description: Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.
+            maximum: 1000
+            minimum: 1
+            type: number
+            default: 1
+        - in: query
+          name: page_size
+          description: The total number of objects to return in a single page for that list.
+          schema:
+            description: The total number of objects to return in a single page for that list.
+            maximum: 1000
+            minimum: 1
+            type: number
+            default: 5
+        - in: query
+          name: order
+          description: 'The direction of the ordering of the entire list, ASC or DESC'
+          schema:
+            description: 'The direction of the ordering of the entire list, ASC or DESC'
+            type: string
+            enum:
+              - ASC
+              - DESC
+        - in: query
+          name: order_by
+          description: 'The value to order the entire list by. '
+          schema:
+            description: 'The value to order the entire list by. '
+            type: string
+            enum:
+              - TIME_CREATED
+        - name: status
+          in: query
+          schema:
+            type: string
+            description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+            enum:
+              - ACTIVE
+              - INACTIVE
+            example: ACTIVE
+            minLength: 0
+            maxLength: 50
+        - name: name
+          in: query
+          schema:
+            type: string
+            description: A meaningful label for the merchant account set by Global Payments.
+            example: Transaction_Processing
+            minLength: 1
+            maxLength: 50
+        - name: id
+          in: query
+          schema:
+            type: string
+            description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+            minLength: 1
+            maxLength: 50
+        - name: from_time_created
+          in: query
+          schema:
+            description: 'The start time to search for in a range, using the resource time_created value.'
+            type: string
+            format: date
+            example: '2021-10-01'
+        - name: to_time_created
+          in: query
+          schema:
+            description: 'The end time to search for in a range, using the resource time_created value.'
+            type: string
+            format: date
+            example: '2021-12-31'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_record_count:
+                    type: number
+                    description: 'The total number of records across all pages for the search filter. When searching for a collection of resoures, this is returned on the first page only and when the date range is a month or less.'
+                    example: 3412
+                  current_page_size:
+                    type: number
+                    description: The total number of records returned on the current page. If current_page_size is less than the page_size using in the querystring then this is the final page for that search.
+                    example: 3412
+                  merchant_id:
+                    type: string
+                    description: A unique identifier for the merchant set by Global Payments.
+                    example: MER_c4c0df11039c48a9b63701adeaa296c3
+                    minLength: 1
+                    maxLength: 50
+                  merchant_name:
+                    type: string
+                    description: A meaningful label for the merchant set by Global Payments.
+                    example: Sandbox_merchant_2
+                    minLength: 1
+                    maxLength: 50
+                  filter:
+                    type: object
+                    description: Indicates what fields and values used to filter the current list of resource objects in the current response.
+                  paging:
+                    type: object
+                    description: The paging values used to generate this response.
+                    properties:
+                      page:
+                        description: Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.
+                        maximum: 1000
+                        minimum: 1
+                        type: number
+                        default: 1
+                      page_size:
+                        description: The total number of objects to return in a single page for that list.
+                        maximum: 1000
+                        minimum: 1
+                        type: number
+                        default: 5
+                      order_by:
+                        description: 'The value to order the entire list by. '
+                        type: string
+                        enum:
+                          - TIME_CREATED
+                      order:
+                        description: 'The direction of the ordering of the entire list, ASC or DESC'
+                        type: string
+                        enum:
+                          - ASC
+                          - DESC
+                  accounts:
+                    type: array
+                    description: A list of Account records.
+                    items:
+                      oneOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                              minLength: 1
+                              maxLength: 50
+                            type:
+                              type: string
+                              description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+                              enum:
+                                - TRANSACTION_PROCESSING
+                                - DATA_SERVICES
+                                - DISPUTE_MANAGEMENT
+                                - MERCHANT_MANAGEMENT
+                                - TOKENIZATION
+                            name:
+                              type: string
+                              description: A meaningful label for the merchant account set by Global Payments.
+                              example: Transaction_Processing
+                              minLength: 1
+                              maxLength: 50
+                            status:
+                              type: string
+                              description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+                              enum:
+                                - ACTIVE
+                                - INACTIVE
+                              example: ACTIVE
+                              minLength: 0
+                              maxLength: 50
+                            permissions:
+                              type: array
+                              items:
+                                type: string
+                                description: The list of the permissions an account is configured for.
+                            countries:
+                              type: array
+                              description: A list of countries in ISO-3166-1(alpha-2 code) format an account is configured for.
+                              items:
+                                type: string
+                                description: The country in ISO-3166-1(alpha-2 code) format.
+                                example: US
+                                enum:
+                                  - ISO-3166-1(alpha-2 code)
+                                  - US
+                            channels:
+                              type: array
+                              description: A list of channels account is configured for.
+                              items:
+                                type: string
+                                description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+                                example: CNP
+                                enum:
+                                  - CP
+                                  - CNP
+                            currencies:
+                              type: array
+                              description: A list of currencies in ISO-4217(alpha-3) format an account is configured for.
+                              items:
+                                type: string
+                                description: The currency of the amount in ISO-4217(alpha-3)
+                                example: USD
+                            payment_methods:
+                              type: array
+                              description: A list of payment methods an account is configured for.
+                              items:
+                                type: string
+                                description: 'The payment methods available to create transactions with. * `CARD` - Debit, credit, charge or prepaid; local or international, consumer or corporate payment method based on a 12 to 16 digital number, expiry date and security code. * `DIGITAL_WALLET` - ApplePay or Pay With Google digital wallet built using scheme tokenization and cards payment method rails. * `BANK_TRANSFER` - Payment method based on the transfer of fund using a routing number, sort code or BIC and the payer''''s bank account number or IBAN. * `APM` - Broad category of alternative and local payment methods usualy specific to a country or region. * `PAYPAL` - Popular wallet used to easily pay with securely stored stored payment methods on the payer''''s Paypal account.'''
+                                enum:
+                                  - CARD
+                                  - DIGITAL_WALLET
+                                  - BANK_TRANSFER
+                                  - APM
+                                  - PAYPAL
+                                minLength: 1
+                                maxLength: 50
+                            action:
+                              type: object
+                              description: Information about the Action executed.
+                              properties:
+                                id:
+                                  type: string
+                                  description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                                  minLength: 1
+                                  maxLength: 50
+                                type:
+                                  type: string
+                                  description: Indicates the action taken.
+                                time_created:
+                                  type: string
+                                  format: date-time
+                                  description: Global Payments time indicating when the object was created in ISO-8601 format.
+                                  example: '2021-05-03T21:23:39.718Z'
+                                result_code:
+                                  type: string
+                                  description: The result of the action executed.
+                                  enum:
+                                    - SUCCESS
+                                    - DECLINE
+                                  minLength: 1
+                                  maxLength: 50
+                                app_id:
+                                  type: string
+                                  description: The id of the app that was used to create the token.
+                                  example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                                  minLength: 1
+                                  maxLength: 50
+                                app_name:
+                                  type: string
+                                  description: The name of the app the user gave to the application.
+                                  example: demo_app
+                                  minLength: 1
+                                  maxLength: 50
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                              minLength: 1
+                              maxLength: 50
+                            type:
+                              type: string
+                              description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+                              enum:
+                                - TRANSACTION_PROCESSING
+                                - DATA_SERVICES
+                                - DISPUTE_MANAGEMENT
+                                - MERCHANT_MANAGEMENT
+                                - TOKENIZATION
+                            name:
+                              type: string
+                              description: A meaningful label for the merchant account set by Global Payments.
+                              example: Transaction_Processing
+                              minLength: 1
+                              maxLength: 50
+                            status:
+                              type: string
+                              description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+                              enum:
+                                - ACTIVE
+                                - INACTIVE
+                              example: ACTIVE
+                              minLength: 0
+                              maxLength: 50
+                            permissions:
+                              type: array
+                              items:
+                                type: string
+                                description: The list of the permissions an account is configured for.
+                            action:
+                              type: object
+                              description: Information about the Action executed.
+                              properties:
+                                id:
+                                  type: string
+                                  description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                                  minLength: 1
+                                  maxLength: 50
+                                type:
+                                  type: string
+                                  description: Indicates the action taken.
+                                time_created:
+                                  type: string
+                                  format: date-time
+                                  description: Global Payments time indicating when the object was created in ISO-8601 format.
+                                  example: '2021-05-03T21:23:39.718Z'
+                                result_code:
+                                  type: string
+                                  description: The result of the action executed.
+                                  enum:
+                                    - SUCCESS
+                                    - DECLINE
+                                  minLength: 1
+                                  maxLength: 50
+                                app_id:
+                                  type: string
+                                  description: The id of the app that was used to create the token.
+                                  example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                                  minLength: 1
+                                  maxLength: 50
+                                app_name:
+                                  type: string
+                                  description: The name of the app the user gave to the application.
+                                  example: demo_app
+                                  minLength: 1
+                                  maxLength: 50
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                              minLength: 1
+                              maxLength: 50
+                            type:
+                              type: string
+                              description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+                              enum:
+                                - TRANSACTION_PROCESSING
+                                - DATA_SERVICES
+                                - DISPUTE_MANAGEMENT
+                                - MERCHANT_MANAGEMENT
+                                - TOKENIZATION
+                            name:
+                              type: string
+                              description: A meaningful label for the merchant account set by Global Payments.
+                              example: Transaction_Processing
+                              minLength: 1
+                              maxLength: 50
+                            status:
+                              type: string
+                              description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+                              enum:
+                                - ACTIVE
+                                - INACTIVE
+                              example: ACTIVE
+                              minLength: 0
+                              maxLength: 50
+                            permissions:
+                              type: array
+                              items:
+                                type: string
+                                description: The list of the permissions an account is configured for.
+                            action:
+                              type: object
+                              description: Information about the Action executed.
+                              properties:
+                                id:
+                                  type: string
+                                  description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                                  minLength: 1
+                                  maxLength: 50
+                                type:
+                                  type: string
+                                  description: Indicates the action taken.
+                                time_created:
+                                  type: string
+                                  format: date-time
+                                  description: Global Payments time indicating when the object was created in ISO-8601 format.
+                                  example: '2021-05-03T21:23:39.718Z'
+                                result_code:
+                                  type: string
+                                  description: The result of the action executed.
+                                  enum:
+                                    - SUCCESS
+                                    - DECLINE
+                                  minLength: 1
+                                  maxLength: 50
+                                app_id:
+                                  type: string
+                                  description: The id of the app that was used to create the token.
+                                  example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                                  minLength: 1
+                                  maxLength: 50
+                                app_name:
+                                  type: string
+                                  description: The name of the app the user gave to the application.
+                                  example: demo_app
+                                  minLength: 1
+                                  maxLength: 50
+                  action:
+                    type: object
+                    description: Information about the Action executed.
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Indicates the action taken.
+                      time_created:
+                        type: string
+                        format: date-time
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        description: The result of the action executed.
+                        enum:
+                          - SUCCESS
+                          - DECLINE
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        description: The id of the app that was used to create the token.
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        description: The name of the app the user gave to the application.
+                        example: demo_app
+                        minLength: 1
+                        maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+  '/accounts/{id}':
+    patch:
+      operationId: editAccountSingle
+      tags:
+        - Edit a Merchant's Account info
+      summary: Edit merchant's account configuration.
+      description: Edit merchant's account configuration.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer access token value used to access the API.
+          schema:
+            description: Bearer access token value used to access the API.
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        - in: header
+          name: Content-type
+          description: Format of the message.
+          required: true
+          schema:
+            description: Indicates the format of the message.
+            type: string
+            default: application/json
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+        - in: header
+          name: X-GP-Idempotency
+          description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+          schema:
+            description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+            type: string
+            minLength: 1
+            maxLength: 50
+        - name: id
+          in: path
+          description: This is the account id created to uniquely identify it in the Global Payments system.
+          required: true
+          schema:
+            type: string
+            description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+            minLength: 1
+            maxLength: 50
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payer:
+                  type: object
+                  properties:
+                    payment_method:
+                      type: object
+                      properties:
+                        card:
+                          type: object
+                          properties:
+                            number:
+                              type: string
+                              description: The the card account number used to authorize the transaction. Also known as PAN.
+                              example: '4263970000005262'
+                              minLength: 1
+                              maxLength: 50
+                            expiry_month:
+                              type: string
+                              description: The 2 digit expiry date month of the card.
+                              example: '05'
+                              minLength: 2
+                              maxLength: 2
+                            expiry_year:
+                              type: string
+                              description: The 2 digit expiry date year of the card.
+                              example: '25'
+                              minLength: 2
+                              maxLength: 2
+                        billing_address:
+                          type: object
+                          properties:
+                            line_1:
+                              type: string
+                              description: First line of the address.
+                              minLength: 0
+                              maxLength: 50
+                            line_2:
+                              type: string
+                              description: Second line of the address.
+                              minLength: 0
+                              maxLength: 50
+                            line_3:
+                              type: string
+                              description: Third  line of the address.
+                              minLength: 0
+                              maxLength: 50
+                            city:
+                              type: string
+                              description: Merchant defined field common to all transactions that are part of the same order.
+                              example: INV#88547
+                              minLength: 0
+                              maxLength: 50
+                            state:
+                              type: string
+                              description: 'The state or region of the address. ISO 3166-2 minus the country code itself. For example, US Illinois = IL, or in the case of GB counties Wiltshire = WI or Aberdeenshire = ABD'
+                              minLength: 0
+                              maxLength: 3
+                            postal_code:
+                              type: string
+                              description: The city or town of the address.
+                              minLength: 0
+                              maxLength: 50
+                            country:
+                              type: string
+                              description: The country of the address. Countries are represented by the ISO-3166-1(alpha-2 code).
+                              minLength: 0
+                              maxLength: 2
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+                        enum:
+                          - TRANSACTION_PROCESSING
+                          - DATA_SERVICES
+                          - DISPUTE_MANAGEMENT
+                          - MERCHANT_MANAGEMENT
+                          - TOKENIZATION
+                      name:
+                        type: string
+                        description: A meaningful label for the merchant account set by Global Payments.
+                        example: Transaction_Processing
+                        minLength: 1
+                        maxLength: 50
+                      status:
+                        type: string
+                        description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+                        enum:
+                          - ACTIVE
+                          - INACTIVE
+                        example: ACTIVE
+                        minLength: 0
+                        maxLength: 50
+                      time_created:
+                        type: string
+                        format: date-time
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      time_last_updated:
+                        description: The date and time the resource object was last changed.
+                        type: string
+                        format: date-time
+                      merchant_id:
+                        type: string
+                        description: A unique identifier for the merchant set by Global Payments.
+                        example: MER_c4c0df11039c48a9b63701adeaa296c3
+                        minLength: 1
+                        maxLength: 50
+                      merchant_name:
+                        type: string
+                        description: A meaningful label for the merchant set by Global Payments.
+                        example: Sandbox_merchant_2
+                        minLength: 1
+                        maxLength: 50
+                      permissions:
+                        type: array
+                        items:
+                          type: string
+                          description: The list of the permissions an account is configured for.
+                      action:
+                        type: object
+                        description: Information about the Action executed.
+                        properties:
+                          id:
+                            type: string
+                            description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                            minLength: 1
+                            maxLength: 50
+                          type:
+                            type: string
+                            description: Indicates the action taken.
+                          time_created:
+                            type: string
+                            format: date-time
+                            description: Global Payments time indicating when the object was created in ISO-8601 format.
+                            example: '2021-05-03T21:23:39.718Z'
+                          result_code:
+                            type: string
+                            description: The result of the action executed.
+                            enum:
+                              - SUCCESS
+                              - DECLINE
+                            minLength: 1
+                            maxLength: 50
+                          app_id:
+                            type: string
+                            description: The id of the app that was used to create the token.
+                            example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                            minLength: 1
+                            maxLength: 50
+                          app_name:
+                            type: string
+                            description: The name of the app the user gave to the application.
+                            example: demo_app
+                            minLength: 1
+                            maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+    get:
+      operationId: getAccountSingle
+      tags:
+        - Get info about a Single Account
+      summary: Get the details of a single Account using its unique id.
+      description: Get the details of a single Account using its unique id.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer access token value used to access the API.
+          schema:
+            description: Bearer access token value used to access the API.
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+        - name: id
+          in: path
+          description: This is the account id created to uniquely identify it in the Global Payments system.
+          required: true
+          schema:
+            type: string
+            description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+            minLength: 1
+            maxLength: 50
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+                        enum:
+                          - TRANSACTION_PROCESSING
+                          - DATA_SERVICES
+                          - DISPUTE_MANAGEMENT
+                          - MERCHANT_MANAGEMENT
+                          - TOKENIZATION
+                      name:
+                        type: string
+                        description: A meaningful label for the merchant account set by Global Payments.
+                        example: Transaction_Processing
+                        minLength: 1
+                        maxLength: 50
+                      status:
+                        type: string
+                        description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+                        enum:
+                          - ACTIVE
+                          - INACTIVE
+                        example: ACTIVE
+                        minLength: 0
+                        maxLength: 50
+                      permissions:
+                        type: array
+                        items:
+                          type: string
+                          description: The list of the permissions an account is configured for.
+                      countries:
+                        type: array
+                        description: A list of countries in ISO-3166-1(alpha-2 code) format an account is configured for.
+                        items:
+                          type: string
+                          description: The country in ISO-3166-1(alpha-2 code) format.
+                          example: US
+                          enum:
+                            - ISO-3166-1(alpha-2 code)
+                            - US
+                      channels:
+                        type: array
+                        description: A list of channels account is configured for.
+                        items:
+                          type: string
+                          description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+                          example: CNP
+                          enum:
+                            - CP
+                            - CNP
+                      currencies:
+                        type: array
+                        description: A list of currencies in ISO-4217(alpha-3) format an account is configured for.
+                        items:
+                          type: string
+                          description: The currency of the amount in ISO-4217(alpha-3)
+                          example: USD
+                      payment_methods:
+                        type: array
+                        description: A list of payment methods an account is configured for.
+                        items:
+                          type: string
+                          description: 'The payment methods available to create transactions with. * `CARD` - Debit, credit, charge or prepaid; local or international, consumer or corporate payment method based on a 12 to 16 digital number, expiry date and security code. * `DIGITAL_WALLET` - ApplePay or Pay With Google digital wallet built using scheme tokenization and cards payment method rails. * `BANK_TRANSFER` - Payment method based on the transfer of fund using a routing number, sort code or BIC and the payer''''s bank account number or IBAN. * `APM` - Broad category of alternative and local payment methods usualy specific to a country or region. * `PAYPAL` - Popular wallet used to easily pay with securely stored stored payment methods on the payer''''s Paypal account.'''
+                          enum:
+                            - CARD
+                            - DIGITAL_WALLET
+                            - BANK_TRANSFER
+                            - APM
+                            - PAYPAL
+                          minLength: 1
+                          maxLength: 50
+                      configurations:
+                        type: array
+                        description: 'A list of configurations for an account. Each configuration''s countries, channels, currencies and payment_methods represents a different transaction processing system route.'
+                        items:
+                          type: object
+                          description: 'A configuration''s countries, channels, currencies and payment_methods, represents a different transaction processing system route.'
+                          properties:
+                            countries:
+                              type: array
+                              description: A list of countries in ISO-3166-1(alpha-2 code) format an account is configured for.
+                              items:
+                                type: string
+                                description: The country in ISO-3166-1(alpha-2 code) format.
+                                example: US
+                                enum:
+                                  - ISO-3166-1(alpha-2 code)
+                                  - US
+                            currencies:
+                              type: array
+                              description: A list of currencies in ISO-4217(alpha-3) format an account is configured for.
+                              items:
+                                type: string
+                                description: The currency of the amount in ISO-4217(alpha-3)
+                                example: USD
+                            channels:
+                              type: array
+                              description: A list of channels account is configured for.
+                              items:
+                                type: string
+                                description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+                                example: CNP
+                                enum:
+                                  - CP
+                                  - CNP
+                            payment_methods:
+                              type: array
+                              description: A list of payment methods an account is configured for.
+                              items:
+                                type: string
+                                description: 'The payment methods available to create transactions with. * `CARD` - Debit, credit, charge or prepaid; local or international, consumer or corporate payment method based on a 12 to 16 digital number, expiry date and security code. * `DIGITAL_WALLET` - ApplePay or Pay With Google digital wallet built using scheme tokenization and cards payment method rails. * `BANK_TRANSFER` - Payment method based on the transfer of fund using a routing number, sort code or BIC and the payer''''s bank account number or IBAN. * `APM` - Broad category of alternative and local payment methods usualy specific to a country or region. * `PAYPAL` - Popular wallet used to easily pay with securely stored stored payment methods on the payer''''s Paypal account.'''
+                                enum:
+                                  - CARD
+                                  - DIGITAL_WALLET
+                                  - BANK_TRANSFER
+                                  - APM
+                                  - PAYPAL
+                                minLength: 1
+                                maxLength: 50
+                      action:
+                        type: object
+                        description: Information about the Action executed.
+                        properties:
+                          id:
+                            type: string
+                            description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                            minLength: 1
+                            maxLength: 50
+                          type:
+                            type: string
+                            description: Indicates the action taken.
+                          time_created:
+                            type: string
+                            format: date-time
+                            description: Global Payments time indicating when the object was created in ISO-8601 format.
+                            example: '2021-05-03T21:23:39.718Z'
+                          result_code:
+                            type: string
+                            description: The result of the action executed.
+                            enum:
+                              - SUCCESS
+                              - DECLINE
+                            minLength: 1
+                            maxLength: 50
+                          app_id:
+                            type: string
+                            description: The id of the app that was used to create the token.
+                            example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                            minLength: 1
+                            maxLength: 50
+                          app_name:
+                            type: string
+                            description: The name of the app the user gave to the application.
+                            example: demo_app
+                            minLength: 1
+                            maxLength: 50
+                  - type: object
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+                        enum:
+                          - TRANSACTION_PROCESSING
+                          - DATA_SERVICES
+                          - DISPUTE_MANAGEMENT
+                          - MERCHANT_MANAGEMENT
+                          - TOKENIZATION
+                      name:
+                        type: string
+                        description: A meaningful label for the merchant account set by Global Payments.
+                        example: Transaction_Processing
+                        minLength: 1
+                        maxLength: 50
+                      status:
+                        type: string
+                        description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+                        enum:
+                          - ACTIVE
+                          - INACTIVE
+                        example: ACTIVE
+                        minLength: 0
+                        maxLength: 50
+                      email_id:
+                        type: string
+                        description: 'Email registered with the application that was used to access this token. '
+                        example: james.mason@example.com
+                        minLength: 1
+                        maxLength: 50
+                      permissions:
+                        type: array
+                        items:
+                          type: string
+                          description: The list of the permissions an account is configured for.
+                      action:
+                        type: object
+                        description: Information about the Action executed.
+                        properties:
+                          id:
+                            type: string
+                            description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                            minLength: 1
+                            maxLength: 50
+                          type:
+                            type: string
+                            description: Indicates the action taken.
+                          time_created:
+                            type: string
+                            format: date-time
+                            description: Global Payments time indicating when the object was created in ISO-8601 format.
+                            example: '2021-05-03T21:23:39.718Z'
+                          result_code:
+                            type: string
+                            description: The result of the action executed.
+                            enum:
+                              - SUCCESS
+                              - DECLINE
+                            minLength: 1
+                            maxLength: 50
+                          app_id:
+                            type: string
+                            description: The id of the app that was used to create the token.
+                            example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                            minLength: 1
+                            maxLength: 50
+                          app_name:
+                            type: string
+                            description: The name of the app the user gave to the application.
+                            example: demo_app
+                            minLength: 1
+                            maxLength: 50
+                  - type: object
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+                        enum:
+                          - TRANSACTION_PROCESSING
+                          - DATA_SERVICES
+                          - DISPUTE_MANAGEMENT
+                          - MERCHANT_MANAGEMENT
+                          - TOKENIZATION
+                      name:
+                        type: string
+                        description: A meaningful label for the merchant account set by Global Payments.
+                        example: Transaction_Processing
+                        minLength: 1
+                        maxLength: 50
+                      status:
+                        type: string
+                        description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+                        enum:
+                          - ACTIVE
+                          - INACTIVE
+                        example: ACTIVE
+                        minLength: 0
+                        maxLength: 50
+                      permissions:
+                        type: array
+                        items:
+                          type: string
+                          description: The list of the permissions an account is configured for.
+                      action:
+                        type: object
+                        description: Information about the Action executed.
+                        properties:
+                          id:
+                            type: string
+                            description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                            minLength: 1
+                            maxLength: 50
+                          type:
+                            type: string
+                            description: Indicates the action taken.
+                          time_created:
+                            type: string
+                            format: date-time
+                            description: Global Payments time indicating when the object was created in ISO-8601 format.
+                            example: '2021-05-03T21:23:39.718Z'
+                          result_code:
+                            type: string
+                            description: The result of the action executed.
+                            enum:
+                              - SUCCESS
+                              - DECLINE
+                            minLength: 1
+                            maxLength: 50
+                          app_id:
+                            type: string
+                            description: The id of the app that was used to create the token.
+                            example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                            minLength: 1
+                            maxLength: 50
+                          app_name:
+                            type: string
+                            description: The name of the app the user gave to the application.
+                            example: demo_app
+                            minLength: 1
+                            maxLength: 50
+                  - type: object
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+                        enum:
+                          - TRANSACTION_PROCESSING
+                          - DATA_SERVICES
+                          - DISPUTE_MANAGEMENT
+                          - MERCHANT_MANAGEMENT
+                          - TOKENIZATION
+                      name:
+                        type: string
+                        description: A meaningful label for the merchant account set by Global Payments.
+                        example: Transaction_Processing
+                        minLength: 1
+                        maxLength: 50
+                      status:
+                        type: string
+                        description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+                        enum:
+                          - ACTIVE
+                          - INACTIVE
+                        example: ACTIVE
+                        minLength: 0
+                        maxLength: 50
+                      permissions:
+                        type: array
+                        items:
+                          type: string
+                          description: The list of the permissions an account is configured for.
+                      action:
+                        type: object
+                        description: Information about the Action executed.
+                        properties:
+                          id:
+                            type: string
+                            description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                            minLength: 1
+                            maxLength: 50
+                          type:
+                            type: string
+                            description: Indicates the action taken.
+                          time_created:
+                            type: string
+                            format: date-time
+                            description: Global Payments time indicating when the object was created in ISO-8601 format.
+                            example: '2021-05-03T21:23:39.718Z'
+                          result_code:
+                            type: string
+                            description: The result of the action executed.
+                            enum:
+                              - SUCCESS
+                              - DECLINE
+                            minLength: 1
+                            maxLength: 50
+                          app_id:
+                            type: string
+                            description: The id of the app that was used to create the token.
+                            example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                            minLength: 1
+                            maxLength: 50
+                          app_name:
+                            type: string
+                            description: The name of the app the user gave to the application.
+                            example: demo_app
+                            minLength: 1
+                            maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+components:
+  schemas:
+    merchants_single:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the merchant set by Global Payments.
+          example: MER_c4c0df11039c48a9b63701adeaa296c3
+          minLength: 1
+          maxLength: 50
+        merchant_name:
+          type: string
+          description: A meaningful label for the merchant set by Global Payments.
+          example: Sandbox_merchant_2
+          minLength: 1
+          maxLength: 50
+        time_created:
+          type: string
+          format: date-time
+          description: Global Payments time indicating when the object was created in ISO-8601 format.
+          example: '2021-05-03T21:23:39.718Z'
+        status:
+          type: string
+          minLength: 1
+          description: Indicates whether the merchant is in its lifecycle. * `ACTIVE` - The entity is active on the Global Payments platform and can use the capabilities that are configured and active to payment process. * `INACTIVE` - The entity is disabled on the Global Payments platform and cannot use any payment processing capabilities. * `UNDER_REVIEW` - The entity is under review and can cannot used any of the payment processing capabilities until the review is complete and the merchant is switched to active. * `DECLINED` - The entity did not complete the risk review process and cannot use any payment processing capabilities.
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - UNDER_REVIEW
+            - DECLINED
+        email:
+          type: string
+          description: Primary email configured with the merchant.
+          example: merchant@example.com
+          minLength: 1
+          maxLength: 50
+        address_1:
+          type: string
+          description: First line of the address.
+          minLength: 0
+          maxLength: 50
+        address_2:
+          type: string
+          description: Second line of the address.
+          minLength: 0
+          maxLength: 50
+        city:
+          type: string
+          description: Merchant defined field common to all transactions that are part of the same order.
+          example: INV#88547
+          minLength: 0
+          maxLength: 50
+        zip:
+          type: string
+          description: The city or town of the address.
+          minLength: 0
+          maxLength: 50
+        state:
+          type: string
+          description: 'The state or region of the address. ISO 3166-2 minus the country code itself. For example, US Illinois = IL, or in the case of GB counties Wiltshire = WI or Aberdeenshire = ABD'
+          minLength: 0
+          maxLength: 3
+        country:
+          type: string
+          description: The country of the address. Countries are represented by the ISO-3166-1(alpha-2 code).
+          minLength: 0
+          maxLength: 2
+        links:
+          type: array
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                rel:
+                  type: string
+                  description: Describes the relationship the associated link href value has to the current resource. * `SELF` - indicates a link to the current resource. * `ACCOUNTS` - indicates a link to the current resource's list of accounts.
+                  enum:
+                    - SELF
+                    - ACCOUNTS
+                  minLength: 0
+                  maxLength: 50
+                href:
+                  type: string
+                  description: A href link to the resources or resource actions as indicated in the corresponding rel value.
+                  example: 'https://apis.globalpay.com/ucp/merchants/MER_c4c0df11039c48a9b63701adeaa296c3'
+                  minLength: 0
+                  maxLength: 2048
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    accounts_list:
+      type: object
+      properties:
+        total_record_count:
+          type: number
+          description: 'The total number of records across all pages for the search filter. When searching for a collection of resoures, this is returned on the first page only and when the date range is a month or less.'
+          example: 3412
+        current_page_size:
+          type: number
+          description: The total number of records returned on the current page. If current_page_size is less than the page_size using in the querystring then this is the final page for that search.
+          example: 3412
+        merchant_id:
+          type: string
+          description: A unique identifier for the merchant set by Global Payments.
+          example: MER_c4c0df11039c48a9b63701adeaa296c3
+          minLength: 1
+          maxLength: 50
+        merchant_name:
+          type: string
+          description: A meaningful label for the merchant set by Global Payments.
+          example: Sandbox_merchant_2
+          minLength: 1
+          maxLength: 50
+        filter:
+          type: object
+          description: Indicates what fields and values used to filter the current list of resource objects in the current response.
+        paging:
+          type: object
+          description: The paging values used to generate this response.
+          properties:
+            page:
+              description: Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.
+              maximum: 1000
+              minimum: 1
+              type: number
+              default: 1
+            page_size:
+              description: The total number of objects to return in a single page for that list.
+              maximum: 1000
+              minimum: 1
+              type: number
+              default: 5
+            order_by:
+              description: 'The value to order the entire list by. '
+              type: string
+              enum:
+                - TIME_CREATED
+            order:
+              description: 'The direction of the ordering of the entire list, ASC or DESC'
+              type: string
+              enum:
+                - ASC
+                - DESC
+        accounts:
+          type: array
+          description: A list of Account records.
+          items:
+            oneOf:
+              - type: object
+                properties:
+                  id:
+                    type: string
+                    description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                    minLength: 1
+                    maxLength: 50
+                  type:
+                    type: string
+                    description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+                    enum:
+                      - TRANSACTION_PROCESSING
+                      - DATA_SERVICES
+                      - DISPUTE_MANAGEMENT
+                      - MERCHANT_MANAGEMENT
+                      - TOKENIZATION
+                  name:
+                    type: string
+                    description: A meaningful label for the merchant account set by Global Payments.
+                    example: Transaction_Processing
+                    minLength: 1
+                    maxLength: 50
+                  status:
+                    type: string
+                    description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+                    enum:
+                      - ACTIVE
+                      - INACTIVE
+                    example: ACTIVE
+                    minLength: 0
+                    maxLength: 50
+                  permissions:
+                    type: array
+                    items:
+                      type: string
+                      description: The list of the permissions an account is configured for.
+                  countries:
+                    type: array
+                    description: A list of countries in ISO-3166-1(alpha-2 code) format an account is configured for.
+                    items:
+                      type: string
+                      description: The country in ISO-3166-1(alpha-2 code) format.
+                      example: US
+                      enum:
+                        - ISO-3166-1(alpha-2 code)
+                        - US
+                  channels:
+                    type: array
+                    description: A list of channels account is configured for.
+                    items:
+                      type: string
+                      description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+                      example: CNP
+                      enum:
+                        - CP
+                        - CNP
+                  currencies:
+                    type: array
+                    description: A list of currencies in ISO-4217(alpha-3) format an account is configured for.
+                    items:
+                      type: string
+                      description: The currency of the amount in ISO-4217(alpha-3)
+                      example: USD
+                  payment_methods:
+                    type: array
+                    description: A list of payment methods an account is configured for.
+                    items:
+                      type: string
+                      description: 'The payment methods available to create transactions with. * `CARD` - Debit, credit, charge or prepaid; local or international, consumer or corporate payment method based on a 12 to 16 digital number, expiry date and security code. * `DIGITAL_WALLET` - ApplePay or Pay With Google digital wallet built using scheme tokenization and cards payment method rails. * `BANK_TRANSFER` - Payment method based on the transfer of fund using a routing number, sort code or BIC and the payer''''s bank account number or IBAN. * `APM` - Broad category of alternative and local payment methods usualy specific to a country or region. * `PAYPAL` - Popular wallet used to easily pay with securely stored stored payment methods on the payer''''s Paypal account.'''
+                      enum:
+                        - CARD
+                        - DIGITAL_WALLET
+                        - BANK_TRANSFER
+                        - APM
+                        - PAYPAL
+                      minLength: 1
+                      maxLength: 50
+                  action:
+                    type: object
+                    description: Information about the Action executed.
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Indicates the action taken.
+                      time_created:
+                        type: string
+                        format: date-time
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        description: The result of the action executed.
+                        enum:
+                          - SUCCESS
+                          - DECLINE
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        description: The id of the app that was used to create the token.
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        description: The name of the app the user gave to the application.
+                        example: demo_app
+                        minLength: 1
+                        maxLength: 50
+              - type: object
+                properties:
+                  id:
+                    type: string
+                    description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                    minLength: 1
+                    maxLength: 50
+                  type:
+                    type: string
+                    description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+                    enum:
+                      - TRANSACTION_PROCESSING
+                      - DATA_SERVICES
+                      - DISPUTE_MANAGEMENT
+                      - MERCHANT_MANAGEMENT
+                      - TOKENIZATION
+                  name:
+                    type: string
+                    description: A meaningful label for the merchant account set by Global Payments.
+                    example: Transaction_Processing
+                    minLength: 1
+                    maxLength: 50
+                  status:
+                    type: string
+                    description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+                    enum:
+                      - ACTIVE
+                      - INACTIVE
+                    example: ACTIVE
+                    minLength: 0
+                    maxLength: 50
+                  permissions:
+                    type: array
+                    items:
+                      type: string
+                      description: The list of the permissions an account is configured for.
+                  action:
+                    type: object
+                    description: Information about the Action executed.
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Indicates the action taken.
+                      time_created:
+                        type: string
+                        format: date-time
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        description: The result of the action executed.
+                        enum:
+                          - SUCCESS
+                          - DECLINE
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        description: The id of the app that was used to create the token.
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        description: The name of the app the user gave to the application.
+                        example: demo_app
+                        minLength: 1
+                        maxLength: 50
+              - type: object
+                properties:
+                  id:
+                    type: string
+                    description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                    minLength: 1
+                    maxLength: 50
+                  type:
+                    type: string
+                    description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+                    enum:
+                      - TRANSACTION_PROCESSING
+                      - DATA_SERVICES
+                      - DISPUTE_MANAGEMENT
+                      - MERCHANT_MANAGEMENT
+                      - TOKENIZATION
+                  name:
+                    type: string
+                    description: A meaningful label for the merchant account set by Global Payments.
+                    example: Transaction_Processing
+                    minLength: 1
+                    maxLength: 50
+                  status:
+                    type: string
+                    description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+                    enum:
+                      - ACTIVE
+                      - INACTIVE
+                    example: ACTIVE
+                    minLength: 0
+                    maxLength: 50
+                  permissions:
+                    type: array
+                    items:
+                      type: string
+                      description: The list of the permissions an account is configured for.
+                  action:
+                    type: object
+                    description: Information about the Action executed.
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Indicates the action taken.
+                      time_created:
+                        type: string
+                        format: date-time
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        description: The result of the action executed.
+                        enum:
+                          - SUCCESS
+                          - DECLINE
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        description: The id of the app that was used to create the token.
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        description: The name of the app the user gave to the application.
+                        example: demo_app
+                        minLength: 1
+                        maxLength: 50
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    accounts_single_transaction_processing:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+          minLength: 1
+          maxLength: 50
+        type:
+          type: string
+          description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+          enum:
+            - TRANSACTION_PROCESSING
+            - DATA_SERVICES
+            - DISPUTE_MANAGEMENT
+            - MERCHANT_MANAGEMENT
+            - TOKENIZATION
+        name:
+          type: string
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Transaction_Processing
+          minLength: 1
+          maxLength: 50
+        status:
+          type: string
+          description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+          enum:
+            - ACTIVE
+            - INACTIVE
+          example: ACTIVE
+          minLength: 0
+          maxLength: 50
+        permissions:
+          type: array
+          items:
+            type: string
+            description: The list of the permissions an account is configured for.
+        countries:
+          type: array
+          description: A list of countries in ISO-3166-1(alpha-2 code) format an account is configured for.
+          items:
+            type: string
+            description: The country in ISO-3166-1(alpha-2 code) format.
+            example: US
+            enum:
+              - ISO-3166-1(alpha-2 code)
+              - US
+        channels:
+          type: array
+          description: A list of channels account is configured for.
+          items:
+            type: string
+            description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+            example: CNP
+            enum:
+              - CP
+              - CNP
+        currencies:
+          type: array
+          description: A list of currencies in ISO-4217(alpha-3) format an account is configured for.
+          items:
+            type: string
+            description: The currency of the amount in ISO-4217(alpha-3)
+            example: USD
+        payment_methods:
+          type: array
+          description: A list of payment methods an account is configured for.
+          items:
+            type: string
+            description: 'The payment methods available to create transactions with. * `CARD` - Debit, credit, charge or prepaid; local or international, consumer or corporate payment method based on a 12 to 16 digital number, expiry date and security code. * `DIGITAL_WALLET` - ApplePay or Pay With Google digital wallet built using scheme tokenization and cards payment method rails. * `BANK_TRANSFER` - Payment method based on the transfer of fund using a routing number, sort code or BIC and the payer''''s bank account number or IBAN. * `APM` - Broad category of alternative and local payment methods usualy specific to a country or region. * `PAYPAL` - Popular wallet used to easily pay with securely stored stored payment methods on the payer''''s Paypal account.'''
+            enum:
+              - CARD
+              - DIGITAL_WALLET
+              - BANK_TRANSFER
+              - APM
+              - PAYPAL
+            minLength: 1
+            maxLength: 50
+        configurations:
+          type: array
+          description: 'A list of configurations for an account. Each configuration''s countries, channels, currencies and payment_methods represents a different transaction processing system route.'
+          items:
+            type: object
+            description: 'A configuration''s countries, channels, currencies and payment_methods, represents a different transaction processing system route.'
+            properties:
+              countries:
+                type: array
+                description: A list of countries in ISO-3166-1(alpha-2 code) format an account is configured for.
+                items:
+                  type: string
+                  description: The country in ISO-3166-1(alpha-2 code) format.
+                  example: US
+                  enum:
+                    - ISO-3166-1(alpha-2 code)
+                    - US
+              currencies:
+                type: array
+                description: A list of currencies in ISO-4217(alpha-3) format an account is configured for.
+                items:
+                  type: string
+                  description: The currency of the amount in ISO-4217(alpha-3)
+                  example: USD
+              channels:
+                type: array
+                description: A list of channels account is configured for.
+                items:
+                  type: string
+                  description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+                  example: CNP
+                  enum:
+                    - CP
+                    - CNP
+              payment_methods:
+                type: array
+                description: A list of payment methods an account is configured for.
+                items:
+                  type: string
+                  description: 'The payment methods available to create transactions with. * `CARD` - Debit, credit, charge or prepaid; local or international, consumer or corporate payment method based on a 12 to 16 digital number, expiry date and security code. * `DIGITAL_WALLET` - ApplePay or Pay With Google digital wallet built using scheme tokenization and cards payment method rails. * `BANK_TRANSFER` - Payment method based on the transfer of fund using a routing number, sort code or BIC and the payer''''s bank account number or IBAN. * `APM` - Broad category of alternative and local payment methods usualy specific to a country or region. * `PAYPAL` - Popular wallet used to easily pay with securely stored stored payment methods on the payer''''s Paypal account.'''
+                  enum:
+                    - CARD
+                    - DIGITAL_WALLET
+                    - BANK_TRANSFER
+                    - APM
+                    - PAYPAL
+                  minLength: 1
+                  maxLength: 50
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    accounts_transaction_processing_list:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+          minLength: 1
+          maxLength: 50
+        type:
+          type: string
+          description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+          enum:
+            - TRANSACTION_PROCESSING
+            - DATA_SERVICES
+            - DISPUTE_MANAGEMENT
+            - MERCHANT_MANAGEMENT
+            - TOKENIZATION
+        name:
+          type: string
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Transaction_Processing
+          minLength: 1
+          maxLength: 50
+        status:
+          type: string
+          description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+          enum:
+            - ACTIVE
+            - INACTIVE
+          example: ACTIVE
+          minLength: 0
+          maxLength: 50
+        permissions:
+          type: array
+          items:
+            type: string
+            description: The list of the permissions an account is configured for.
+        countries:
+          type: array
+          description: A list of countries in ISO-3166-1(alpha-2 code) format an account is configured for.
+          items:
+            type: string
+            description: The country in ISO-3166-1(alpha-2 code) format.
+            example: US
+            enum:
+              - ISO-3166-1(alpha-2 code)
+              - US
+        channels:
+          type: array
+          description: A list of channels account is configured for.
+          items:
+            type: string
+            description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+            example: CNP
+            enum:
+              - CP
+              - CNP
+        currencies:
+          type: array
+          description: A list of currencies in ISO-4217(alpha-3) format an account is configured for.
+          items:
+            type: string
+            description: The currency of the amount in ISO-4217(alpha-3)
+            example: USD
+        payment_methods:
+          type: array
+          description: A list of payment methods an account is configured for.
+          items:
+            type: string
+            description: 'The payment methods available to create transactions with. * `CARD` - Debit, credit, charge or prepaid; local or international, consumer or corporate payment method based on a 12 to 16 digital number, expiry date and security code. * `DIGITAL_WALLET` - ApplePay or Pay With Google digital wallet built using scheme tokenization and cards payment method rails. * `BANK_TRANSFER` - Payment method based on the transfer of fund using a routing number, sort code or BIC and the payer''''s bank account number or IBAN. * `APM` - Broad category of alternative and local payment methods usualy specific to a country or region. * `PAYPAL` - Popular wallet used to easily pay with securely stored stored payment methods on the payer''''s Paypal account.'''
+            enum:
+              - CARD
+              - DIGITAL_WALLET
+              - BANK_TRANSFER
+              - APM
+              - PAYPAL
+            minLength: 1
+            maxLength: 50
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    accounts_single_backoffice:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+          minLength: 1
+          maxLength: 50
+        type:
+          type: string
+          description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+          enum:
+            - TRANSACTION_PROCESSING
+            - DATA_SERVICES
+            - DISPUTE_MANAGEMENT
+            - MERCHANT_MANAGEMENT
+            - TOKENIZATION
+        name:
+          type: string
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Transaction_Processing
+          minLength: 1
+          maxLength: 50
+        status:
+          type: string
+          description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+          enum:
+            - ACTIVE
+            - INACTIVE
+          example: ACTIVE
+          minLength: 0
+          maxLength: 50
+        email_id:
+          type: string
+          description: 'Email registered with the application that was used to access this token. '
+          example: james.mason@example.com
+          minLength: 1
+          maxLength: 50
+        permissions:
+          type: array
+          items:
+            type: string
+            description: The list of the permissions an account is configured for.
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    accounts_single_backoffice_list:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+          minLength: 1
+          maxLength: 50
+        type:
+          type: string
+          description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+          enum:
+            - TRANSACTION_PROCESSING
+            - DATA_SERVICES
+            - DISPUTE_MANAGEMENT
+            - MERCHANT_MANAGEMENT
+            - TOKENIZATION
+        name:
+          type: string
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Transaction_Processing
+          minLength: 1
+          maxLength: 50
+        status:
+          type: string
+          description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+          enum:
+            - ACTIVE
+            - INACTIVE
+          example: ACTIVE
+          minLength: 0
+          maxLength: 50
+        permissions:
+          type: array
+          items:
+            type: string
+            description: The list of the permissions an account is configured for.
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    accounts_single_tokenization:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+          minLength: 1
+          maxLength: 50
+        type:
+          type: string
+          description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+          enum:
+            - TRANSACTION_PROCESSING
+            - DATA_SERVICES
+            - DISPUTE_MANAGEMENT
+            - MERCHANT_MANAGEMENT
+            - TOKENIZATION
+        name:
+          type: string
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Transaction_Processing
+          minLength: 1
+          maxLength: 50
+        status:
+          type: string
+          description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+          enum:
+            - ACTIVE
+            - INACTIVE
+          example: ACTIVE
+          minLength: 0
+          maxLength: 50
+        permissions:
+          type: array
+          items:
+            type: string
+            description: The list of the permissions an account is configured for.
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    accounts_single_fundmanagement_request:
+      type: object
+      properties:
+        payer:
+          type: object
+          properties:
+            payment_method:
+              type: object
+              properties:
+                card:
+                  type: object
+                  properties:
+                    number:
+                      type: string
+                      description: The the card account number used to authorize the transaction. Also known as PAN.
+                      example: '4263970000005262'
+                      minLength: 1
+                      maxLength: 50
+                    expiry_month:
+                      type: string
+                      description: The 2 digit expiry date month of the card.
+                      example: '05'
+                      minLength: 2
+                      maxLength: 2
+                    expiry_year:
+                      type: string
+                      description: The 2 digit expiry date year of the card.
+                      example: '25'
+                      minLength: 2
+                      maxLength: 2
+                billing_address:
+                  type: object
+                  properties:
+                    line_1:
+                      type: string
+                      description: First line of the address.
+                      minLength: 0
+                      maxLength: 50
+                    line_2:
+                      type: string
+                      description: Second line of the address.
+                      minLength: 0
+                      maxLength: 50
+                    line_3:
+                      type: string
+                      description: Third  line of the address.
+                      minLength: 0
+                      maxLength: 50
+                    city:
+                      type: string
+                      description: Merchant defined field common to all transactions that are part of the same order.
+                      example: INV#88547
+                      minLength: 0
+                      maxLength: 50
+                    state:
+                      type: string
+                      description: 'The state or region of the address. ISO 3166-2 minus the country code itself. For example, US Illinois = IL, or in the case of GB counties Wiltshire = WI or Aberdeenshire = ABD'
+                      minLength: 0
+                      maxLength: 3
+                    postal_code:
+                      type: string
+                      description: The city or town of the address.
+                      minLength: 0
+                      maxLength: 50
+                    country:
+                      type: string
+                      description: The country of the address. Countries are represented by the ISO-3166-1(alpha-2 code).
+                      minLength: 0
+                      maxLength: 2
+    accounts_single_fundmanagement_response:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+          minLength: 1
+          maxLength: 50
+        type:
+          type: string
+          description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+          enum:
+            - TRANSACTION_PROCESSING
+            - DATA_SERVICES
+            - DISPUTE_MANAGEMENT
+            - MERCHANT_MANAGEMENT
+            - TOKENIZATION
+        name:
+          type: string
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Transaction_Processing
+          minLength: 1
+          maxLength: 50
+        status:
+          type: string
+          description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+          enum:
+            - ACTIVE
+            - INACTIVE
+          example: ACTIVE
+          minLength: 0
+          maxLength: 50
+        time_created:
+          type: string
+          format: date-time
+          description: Global Payments time indicating when the object was created in ISO-8601 format.
+          example: '2021-05-03T21:23:39.718Z'
+        time_last_updated:
+          description: The date and time the resource object was last changed.
+          type: string
+          format: date-time
+        merchant_id:
+          type: string
+          description: A unique identifier for the merchant set by Global Payments.
+          example: MER_c4c0df11039c48a9b63701adeaa296c3
+          minLength: 1
+          maxLength: 50
+        merchant_name:
+          type: string
+          description: A meaningful label for the merchant set by Global Payments.
+          example: Sandbox_merchant_2
+          minLength: 1
+          maxLength: 50
+        permissions:
+          type: array
+          items:
+            type: string
+            description: The list of the permissions an account is configured for.
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    accounts_single_fundmanagement:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+          minLength: 1
+          maxLength: 50
+        type:
+          type: string
+          description: 'Describes what capablity the account relates to be it transaction processing, data services, dispute management, merchant management,tokenization. * `TRANSACTION_PROCESSING` - indicates an account that can be used to create and manage transactions. * `DATA_SERVICES` - indicates an account that can be used to retrieve data. * `DISPUTE_MANAGEMENT` - indicates an account that can be used to manage transaction disputes. * `TOKENIZATION` - indicates an account that can be used to store and manage payment methods securely. * `MERCHANT_MANAGEMENT` - indicates an account that can be used to store and manage merchants and their accounts.'
+          enum:
+            - TRANSACTION_PROCESSING
+            - DATA_SERVICES
+            - DISPUTE_MANAGEMENT
+            - MERCHANT_MANAGEMENT
+            - TOKENIZATION
+        name:
+          type: string
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Transaction_Processing
+          minLength: 1
+          maxLength: 50
+        status:
+          type: string
+          description: Indicates where a configured entity on the Global Payments system is in it's lifecycle. * `ACTIVE` - The configured entity is able to execute related API actions. * `INACTIVE` - The configured entity is not able to execute related API actions as its status has been set to inactive.
+          enum:
+            - ACTIVE
+            - INACTIVE
+          example: ACTIVE
+          minLength: 0
+          maxLength: 50
+        permissions:
+          type: array
+          items:
+            type: string
+            description: The list of the permissions an account is configured for.
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - bearerAuth: []

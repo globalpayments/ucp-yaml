@@ -1,0 +1,3782 @@
+openapi: 3.0.3
+info:
+  title: Stored Payment Methods
+  description: 'Payment Method storage is the Global Payments service where sensitive information is securely stored in exchange for a Global Payments unique identifier. This identifier, commonly referred to as a token, is then used to create Sale and Refund Transactions.'
+  version: 2021 03 22
+  contact:
+    name: API Integrations
+    url: 'https://developer.globalpay.com/?gp-api=true'
+    email: api.integrations@globalpay.com
+servers:
+  - url: 'https://apis.sandbox.globalpay.com/ucp'
+    description: Sandbox Environment
+  - url: 'https://apis.globalpay.com/ucp'
+    description: Production Environment
+tags:
+  - name: Create
+    description: Create a stored payment method on the Global Payments system and return a unique Global Payments ID  that can be used to create future Sale or Refund Transactions.
+  - name: List Payment Methods
+    description: Return a list of stored payment methods.
+  - name: Get a Payment Method
+    description: Return a single stored payment method.
+  - name: Edit a Payment Method
+    description: Change information about a stored payment method such as update the card expiry date or the funding type of card or the bank identifier of the account number.
+  - name: Detokenize a Payment Method
+    description: Detokenize the stored payment method to get a full payment method information. (Availability in production depends on your live configuration.)
+  - name: Delete a Payment Method
+    description: Delete a stored payment method.
+  - name: Search for a Payment Method
+    description: Return a list of stored payment methods where search criteria is in the message body.
+paths:
+  /payment-methods:
+    get:
+      operationId: getPaymentMethodList
+      tags:
+        - List Payment Methods
+      description: Return a list of stored payment methods.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer access token value used to access the API.
+          schema:
+            description: Bearer access token value used to access the API.
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+        - in: query
+          name: page
+          description: Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.
+          schema:
+            description: Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.
+            maximum: 1000
+            minimum: 1
+            type: number
+            default: 1
+        - in: query
+          name: page_size
+          description: The total number of objects to return in a single page for that list.
+          schema:
+            description: The total number of objects to return in a single page for that list.
+            maximum: 1000
+            minimum: 1
+            type: number
+            default: 5
+        - in: query
+          name: order
+          description: 'The direction of the ordering of the entire list, ASC or DESC'
+          schema:
+            description: 'The direction of the ordering of the entire list, ASC or DESC'
+            type: string
+            enum:
+              - ASC
+              - DESC
+        - in: query
+          name: order_by
+          description: 'The value to order the entire list by. '
+          schema:
+            description: 'The value to order the entire list by. '
+            type: string
+            enum:
+              - TIME_CREATED
+        - name: id
+          in: query
+          schema:
+            type: string
+            description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+            example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+            maxLength: 50
+        - name: number_last4
+          in: query
+          schema:
+            type: string
+            description: Last 4 digits of card number
+            minLength: 4
+            maxLength: 4
+        - name: reference
+          in: query
+          schema:
+            type: string
+            description: Merchant defined field to uniquely reference the stored payment method.
+            example: CustABC_Card_1
+            minLength: 1
+            maxLength: 50
+        - name: status
+          in: query
+          schema:
+            type: string
+            description: Indicates where a resource object is in it's lifecylce.
+            example: ACTIVE
+        - name: from_time_created
+          in: query
+          schema:
+            description: 'The start time to search for in a range, using the resource time_created value.'
+            type: string
+            format: date
+            example: '2021-10-01'
+        - name: to_time_created
+          in: query
+          schema:
+            description: 'The end time to search for in a range, using the resource time_created value.'
+            type: string
+            format: date
+            example: '2021-12-31'
+        - name: from_time_last_updated
+          in: query
+          schema:
+            description: 'The start time to search for in a range, using time_last_updated value.'
+            type: string
+            format: date
+            example: '2021-02-01'
+        - name: to_time_last_updated
+          in: query
+          schema:
+            description: 'The end time to search for in a range, using time_last_updated value.'
+            type: string
+            format: date
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_record_count:
+                    type: number
+                    description: 'The total number of records across all pages for the search filter. When searching for a collection of resoures, this is returned on the first page only and when the date range is a month or less.'
+                    example: 3412
+                  current_page_size:
+                    type: number
+                    description: The total number of records returned on the current page. If current_page_size is less than the page_size using in the querystring then this is the final page for that search.
+                    example: 3412
+                  merchant_id:
+                    type: string
+                    description: A unique identifier for the merchant set by Global Payments.
+                    example: MER_c4c0df11039c48a9b63701adeaa296c3
+                    minLength: 1
+                    maxLength: 50
+                  merchant_name:
+                    type: string
+                    description: A meaningful label for the merchant set by Global Payments.
+                    example: Sandbox_merchant_2
+                    minLength: 1
+                    maxLength: 50
+                  account_id:
+                    type: string
+                    description: A unique identifier for the merchant account set by Global Payments.
+                    example: TRA_6716058969854a48b33347043ff8225f
+                    minLength: 1
+                    maxLength: 50
+                  account_name:
+                    type: string
+                    description: A meaningful label for the merchant account set by Global Payments.
+                    example: Transaction_Processing
+                    minLength: 1
+                    maxLength: 50
+                  filter:
+                    type: object
+                    description: Indicates what fields and values used to filter the current list of resource objects in the current response.
+                  paging:
+                    type: object
+                    description: The paging values used to generate this response.
+                    properties:
+                      page:
+                        description: Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.
+                        maximum: 1000
+                        minimum: 1
+                        type: number
+                        default: 1
+                      page_size:
+                        description: The total number of objects to return in a single page for that list.
+                        maximum: 1000
+                        minimum: 1
+                        type: number
+                        default: 5
+                      order_by:
+                        description: 'The value to order the entire list by. '
+                        type: string
+                        enum:
+                          - TIME_CREATED
+                      order:
+                        description: 'The direction of the ordering of the entire list, ASC or DESC'
+                        type: string
+                        enum:
+                          - ASC
+                          - DESC
+                  payment_methods:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        account_name:
+                          type: string
+                          description: A meaningful label for the merchant account set by Global Payments.
+                          example: Transaction_Processing
+                          minLength: 1
+                          maxLength: 50
+                        time_created:
+                          type: string
+                          format: date-time
+                          description: Global Payments time indicating when the object was created in ISO-8601 format.
+                          example: '2021-05-03T21:23:39.718Z'
+                        status:
+                          type: string
+                          description: Indicates where a resource object is in it's lifecylce.
+                          example: ACTIVE
+                        reference:
+                          type: string
+                          description: Merchant defined field to uniquely reference the stored payment method.
+                          example: CustABC_Card_1
+                          minLength: 1
+                          maxLength: 50
+                        name:
+                          type: string
+                          description: The full name of the owner of the payment method.
+                          example: James Mason
+                          minLength: 0
+                          maxLength: 100
+                        card:
+                          type: object
+                          properties:
+                            number_last4:
+                              type: string
+                              description: Last 4 digits of card number
+                              minLength: 4
+                              maxLength: 4
+                            brand:
+                              type: string
+                              description: Indicates the card brand that issued the card.
+                              enum:
+                                - VISA
+                                - MASTERCARD
+                                - AMEX
+                                - DINERS
+                                - DISCOVER
+                                - JCB
+                                - CUP
+                              minLength: 0
+                              maxLength: 50
+                            expiry_month:
+                              type: string
+                              description: The 2 digit expiry date month of the card.
+                              example: '05'
+                              minLength: 2
+                              maxLength: 2
+                            expiry_year:
+                              type: string
+                              description: The 2 digit expiry date year of the card.
+                              example: '25'
+                              minLength: 2
+                              maxLength: 2
+                          description: Data relating to the card payment method.
+                  action:
+                    type: object
+                    description: Information about the Action executed.
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Indicates the action taken.
+                      time_created:
+                        type: string
+                        format: date-time
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        description: The result of the action executed.
+                        enum:
+                          - SUCCESS
+                          - DECLINE
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        description: The id of the app that was used to create the token.
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        description: The name of the app the user gave to the application.
+                        example: demo_app
+                        minLength: 1
+                        maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+    post:
+      operationId: storePaymentMethod
+      tags:
+        - Create
+      description: Create a stored payment method on the Global Payments system and return a unique Global Payments ID  that can be used to create future Sale or Refund Transactions.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer access token value used to access the API.
+          schema:
+            description: Bearer access token value used to access the API.
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        - in: header
+          name: Content-type
+          description: Format of the message.
+          required: true
+          schema:
+            description: Indicates the format of the message.
+            type: string
+            default: application/json
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+        - in: header
+          name: X-GP-Idempotency
+          description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+          schema:
+            description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+            type: string
+            minLength: 1
+            maxLength: 50
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - card
+                - reference
+              type: object
+              properties:
+                account_name:
+                  type: string
+                  description: A meaningful label for the merchant account set by Global Payments.
+                  example: Transaction_Processing
+                  minLength: 1
+                  maxLength: 50
+                reference:
+                  type: string
+                  description: Merchant defined field to uniquely reference the stored payment method.
+                  example: CustABC_Card_1
+                  minLength: 1
+                  maxLength: 50
+                usage_mode:
+                  type: string
+                  description: 'Indicates whether to store the card for a short or long periond of time. SINGLE indicates store the payment_method details for the duration of the checkout, less than 10 minutes. MULTIPLE (Default) stores the details until the Merchant deletes them. * `SINGLE` - The payment token is temporary and will be removed once a transaction is executed or after a short period of time. * `MULTIPLE` -  The payment token is permanent and can be used to create many transactions.'
+                  enum:
+                    - SINGLE
+                    - MULTIPLE
+                  default: MULTIPLE
+                  minLength: 1
+                  maxLength: 50
+                fingerprint_mode:
+                  type: string
+                  description: Indicates whether to execute the fingerprint signature functionality. * `ALWAYS` - Always check and create the fingerprint value regardless of the result of the card authorization. * `ON_SUCCESS` - Always check and create the fingerprint value when the card authorization is successful.
+                  enum:
+                    - ALWAYS
+                    - ON_SUCCESS
+                  minLength: 1
+                  maxLength: 50
+                name:
+                  type: string
+                  description: The full name of the owner of the payment method.
+                  example: James Mason
+                  minLength: 0
+                  maxLength: 100
+                card:
+                  type: object
+                  properties:
+                    number:
+                      type: string
+                      description: The the card account number used to authorize the transaction. Also known as PAN.
+                      example: '4263970000005262'
+                      minLength: 1
+                      maxLength: 50
+                    expiry_month:
+                      type: string
+                      description: The 2 digit expiry date month of the card.
+                      example: '05'
+                      minLength: 2
+                      maxLength: 2
+                    expiry_year:
+                      type: string
+                      description: The 2 digit expiry date year of the card.
+                      example: '25'
+                      minLength: 2
+                      maxLength: 2
+                  description: Data relating to the card payment method.
+            examples:
+              Store a Card:
+                value:
+                  usage_mode: MULTIPLE
+                  reference: card-11312
+                  card:
+                    number: '4012001037141112'
+                    expiry_month: '12'
+                    expiry_year: '25'
+                    cvv: '456'
+              Create Single Use Token:
+                value:
+                  usage_mode: SINGLE
+                  reference: card-431234
+                  card:
+                    number: '4012001037141112'
+                    expiry_month: '12'
+                    expiry_year: '25'
+                    cvv: '456'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+            X-GP-Idempotency:
+              schema:
+                description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+                type: string
+                minLength: 1
+                maxLength: 50
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+                    example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+                    maxLength: 50
+                  time_created:
+                    type: string
+                    format: date-time
+                    description: Global Payments time indicating when the object was created in ISO-8601 format.
+                    example: '2021-05-03T21:23:39.718Z'
+                  status:
+                    type: string
+                    description: Indicates where a resource object is in it's lifecylce.
+                    example: ACTIVE
+                  reference:
+                    type: string
+                    description: Merchant defined field to uniquely reference the stored payment method.
+                    example: CustABC_Card_1
+                    minLength: 1
+                    maxLength: 50
+                  merchant_id:
+                    type: string
+                    description: A unique identifier for the merchant set by Global Payments.
+                    example: MER_c4c0df11039c48a9b63701adeaa296c3
+                    minLength: 1
+                    maxLength: 50
+                  merchant_name:
+                    type: string
+                    description: A meaningful label for the merchant set by Global Payments.
+                    example: Sandbox_merchant_2
+                    minLength: 1
+                    maxLength: 50
+                  account_id:
+                    type: string
+                    description: A unique identifier for the merchant account set by Global Payments.
+                    example: TRA_6716058969854a48b33347043ff8225f
+                    minLength: 1
+                    maxLength: 50
+                  account_name:
+                    type: string
+                    description: A meaningful label for the merchant account set by Global Payments.
+                    example: Transaction_Processing
+                    minLength: 1
+                    maxLength: 50
+                  fingerprint_presence_indicator:
+                    type: string
+                    description: 'If enabled, this field indicates whether the payment method has been seen before or is new. * `EXISTS` -  Indicates that the payment method was seen on the platform before by this merchant. * `NEW` - Indicates that the payment method was not seen on the platform before by this merchant.'
+                    enum:
+                      - NEW
+                      - EXISTS
+                    minLength: 0
+                    maxLength: 256
+                  fingerprint:
+                    type: string
+                    description: 'If enabled, this field contains the unique fingerprint signature for that payment method for that merchant. If the payment method is seen again this same value is generated. For cards the primary account number is checked only. The expiry date or the CVV is not used for this check.'
+                    minLength: 0
+                    maxLength: 256
+                  card:
+                    type: object
+                    properties:
+                      number_last4:
+                        type: string
+                        description: Last 4 digits of card number
+                        minLength: 4
+                        maxLength: 4
+                      brand:
+                        type: string
+                        description: Indicates the card brand that issued the card.
+                        enum:
+                          - VISA
+                          - MASTERCARD
+                          - AMEX
+                          - DINERS
+                          - DISCOVER
+                          - JCB
+                          - CUP
+                        minLength: 0
+                        maxLength: 50
+                      expiry_month:
+                        type: string
+                        description: The 2 digit expiry date month of the card.
+                        example: '05'
+                        minLength: 2
+                        maxLength: 2
+                      expiry_year:
+                        type: string
+                        description: The 2 digit expiry date year of the card.
+                        example: '25'
+                        minLength: 2
+                        maxLength: 2
+                    description: Data relating to the card payment method.
+                  action:
+                    type: object
+                    description: Information about the Action executed.
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Indicates the action taken.
+                      time_created:
+                        type: string
+                        format: date-time
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        description: The result of the action executed.
+                        enum:
+                          - SUCCESS
+                          - DECLINE
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        description: The id of the app that was used to create the token.
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        description: The name of the app the user gave to the application.
+                        example: demo_app
+                        minLength: 1
+                        maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+  '/payment-methods/{id}':
+    get:
+      operationId: getPaymentMethod
+      tags:
+        - Get a Payment Method
+      summary: Return a single view of a stored payment method.
+      description: Return a single view of a stored payment method.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer access token value used to access the API.
+          schema:
+            description: Bearer access token value used to access the API.
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        - in: header
+          name: Content-type
+          description: Format of the message.
+          required: true
+          schema:
+            description: Indicates the format of the message.
+            type: string
+            default: application/json
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+            example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+            maxLength: 50
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+            X-GP-Idempotency:
+              schema:
+                description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+                type: string
+                minLength: 1
+                maxLength: 50
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account_name:
+                    type: string
+                    description: A meaningful label for the merchant account set by Global Payments.
+                    example: Transaction_Processing
+                    minLength: 1
+                    maxLength: 50
+                  time_created:
+                    type: string
+                    format: date-time
+                    description: Global Payments time indicating when the object was created in ISO-8601 format.
+                    example: '2021-05-03T21:23:39.718Z'
+                  status:
+                    type: string
+                    description: Indicates where a resource object is in it's lifecylce.
+                    example: ACTIVE
+                  reference:
+                    type: string
+                    description: Merchant defined field to uniquely reference the stored payment method.
+                    example: CustABC_Card_1
+                    minLength: 1
+                    maxLength: 50
+                  name:
+                    type: string
+                    description: The full name of the owner of the payment method.
+                    example: James Mason
+                    minLength: 0
+                    maxLength: 100
+                  card:
+                    type: object
+                    properties:
+                      number_last4:
+                        type: string
+                        description: Last 4 digits of card number
+                        minLength: 4
+                        maxLength: 4
+                      brand:
+                        type: string
+                        description: Indicates the card brand that issued the card.
+                        enum:
+                          - VISA
+                          - MASTERCARD
+                          - AMEX
+                          - DINERS
+                          - DISCOVER
+                          - JCB
+                          - CUP
+                        minLength: 0
+                        maxLength: 50
+                      expiry_month:
+                        type: string
+                        description: The 2 digit expiry date month of the card.
+                        example: '05'
+                        minLength: 2
+                        maxLength: 2
+                      expiry_year:
+                        type: string
+                        description: The 2 digit expiry date year of the card.
+                        example: '25'
+                        minLength: 2
+                        maxLength: 2
+                    description: Data relating to the card payment method.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+    patch:
+      operationId: editPaymentMethod
+      tags:
+        - Edit a Payment Method
+      description: Change information about a stored payment method such as update the card expiry date or the funding type of card or the bank identifier of the account number.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer access token value used to access the API.
+          schema:
+            description: Bearer access token value used to access the API.
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        - in: header
+          name: Content-type
+          description: Format of the message.
+          required: true
+          schema:
+            description: Indicates the format of the message.
+            type: string
+            default: application/json
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+        - in: header
+          name: X-GP-Idempotency
+          description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+          schema:
+            description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+            type: string
+            minLength: 1
+            maxLength: 50
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+            example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+            maxLength: 50
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reference:
+                  type: string
+                  description: Merchant defined field to uniquely reference the stored payment method.
+                  example: CustABC_Card_1
+                  minLength: 1
+                  maxLength: 50
+                usage_mode:
+                  type: string
+                  description: 'Indicates whether to store the card for a short or long periond of time. SINGLE indicates store the payment_method details for the duration of the checkout, less than 10 minutes. MULTIPLE (Default) stores the details until the Merchant deletes them. * `SINGLE` - The payment token is temporary and will be removed once a transaction is executed or after a short period of time. * `MULTIPLE` -  The payment token is permanent and can be used to create many transactions.'
+                  enum:
+                    - SINGLE
+                    - MULTIPLE
+                  default: MULTIPLE
+                  minLength: 1
+                  maxLength: 50
+                name:
+                  type: string
+                  description: The full name of the owner of the payment method.
+                  example: James Mason
+                  minLength: 0
+                  maxLength: 100
+                card:
+                  type: object
+                  properties:
+                    number:
+                      type: string
+                      description: The the card account number used to authorize the transaction. Also known as PAN.
+                      example: '4263970000005262'
+                      minLength: 1
+                      maxLength: 50
+                    expiry_month:
+                      type: string
+                      description: The 2 digit expiry date month of the card.
+                      example: '05'
+                      minLength: 2
+                      maxLength: 2
+                    expiry_year:
+                      type: string
+                      description: The 2 digit expiry date year of the card.
+                      example: '25'
+                      minLength: 2
+                      maxLength: 2
+                  description: Data relating to the card payment method.
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+            X-GP-Idempotency:
+              schema:
+                description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+                type: string
+                minLength: 1
+                maxLength: 50
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+                    example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+                    maxLength: 50
+                  time_created:
+                    type: string
+                    format: date-time
+                    description: Global Payments time indicating when the object was created in ISO-8601 format.
+                    example: '2021-05-03T21:23:39.718Z'
+                  status:
+                    type: string
+                    description: Indicates where a resource object is in it's lifecylce.
+                    example: ACTIVE
+                  reference:
+                    type: string
+                    description: Merchant defined field to uniquely reference the stored payment method.
+                    example: CustABC_Card_1
+                    minLength: 1
+                    maxLength: 50
+                  name:
+                    type: string
+                    description: The full name of the owner of the payment method.
+                    example: James Mason
+                    minLength: 0
+                    maxLength: 100
+                  card:
+                    type: object
+                    properties:
+                      number_last4:
+                        type: string
+                        description: Last 4 digits of card number
+                        minLength: 4
+                        maxLength: 4
+                      brand:
+                        type: string
+                        description: Indicates the card brand that issued the card.
+                        enum:
+                          - VISA
+                          - MASTERCARD
+                          - AMEX
+                          - DINERS
+                          - DISCOVER
+                          - JCB
+                          - CUP
+                        minLength: 0
+                        maxLength: 50
+                      expiry_month:
+                        type: string
+                        description: The 2 digit expiry date month of the card.
+                        example: '05'
+                        minLength: 2
+                        maxLength: 2
+                      expiry_year:
+                        type: string
+                        description: The 2 digit expiry date year of the card.
+                        example: '25'
+                        minLength: 2
+                        maxLength: 2
+                    description: Data relating to the card payment method.
+                  action:
+                    type: object
+                    description: Information about the Action executed.
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Indicates the action taken.
+                      time_created:
+                        type: string
+                        format: date-time
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        description: The result of the action executed.
+                        enum:
+                          - SUCCESS
+                          - DECLINE
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        description: The id of the app that was used to create the token.
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        description: The name of the app the user gave to the application.
+                        example: demo_app
+                        minLength: 1
+                        maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+    delete:
+      operationId: deletePaymentMethod
+      tags:
+        - Delete a Payment Method
+      summary: Delete a stored payment method.
+      description: Delete a stored payment method.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer access token value used to access the API.
+          schema:
+            description: Bearer access token value used to access the API.
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        - in: header
+          name: Content-type
+          description: Format of the message.
+          required: true
+          schema:
+            description: Indicates the format of the message.
+            type: string
+            default: application/json
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+        - in: header
+          name: X-GP-Idempotency
+          description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+          schema:
+            description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+            type: string
+            minLength: 1
+            maxLength: 50
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+            example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+            maxLength: 50
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+            X-GP-Idempotency:
+              schema:
+                description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+                type: string
+                minLength: 1
+                maxLength: 50
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+                    example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+                    maxLength: 50
+                  time_created:
+                    type: string
+                    format: date-time
+                    description: Global Payments time indicating when the object was created in ISO-8601 format.
+                    example: '2021-05-03T21:23:39.718Z'
+                  status:
+                    type: string
+                    description: Indicates where a resource object is in it's lifecylce.
+                    example: ACTIVE
+                  reference:
+                    type: string
+                    description: Merchant defined field to uniquely reference the stored payment method.
+                    example: CustABC_Card_1
+                    minLength: 1
+                    maxLength: 50
+                  name:
+                    type: string
+                    description: The full name of the owner of the payment method.
+                    example: James Mason
+                    minLength: 0
+                    maxLength: 100
+                  card:
+                    type: object
+                    properties:
+                      number_last4:
+                        type: string
+                        description: Last 4 digits of card number
+                        minLength: 4
+                        maxLength: 4
+                      brand:
+                        type: string
+                        description: Indicates the card brand that issued the card.
+                        enum:
+                          - VISA
+                          - MASTERCARD
+                          - AMEX
+                          - DINERS
+                          - DISCOVER
+                          - JCB
+                          - CUP
+                        minLength: 0
+                        maxLength: 50
+                      expiry_month:
+                        type: string
+                        description: The 2 digit expiry date month of the card.
+                        example: '05'
+                        minLength: 2
+                        maxLength: 2
+                      expiry_year:
+                        type: string
+                        description: The 2 digit expiry date year of the card.
+                        example: '25'
+                        minLength: 2
+                        maxLength: 2
+                    description: Data relating to the card payment method.
+                  action:
+                    type: object
+                    description: Information about the Action executed.
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Indicates the action taken.
+                      time_created:
+                        type: string
+                        format: date-time
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        description: The result of the action executed.
+                        enum:
+                          - SUCCESS
+                          - DECLINE
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        description: The id of the app that was used to create the token.
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        description: The name of the app the user gave to the application.
+                        example: demo_app
+                        minLength: 1
+                        maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+  '/payment-methods/{id}/detokenize':
+    post:
+      operationId: detokenizePaymentMethod
+      tags:
+        - Detokenize a Payment Method
+      description: Detokenize the stored payment method to get a full payment method information.(Availability in production depends on your live configuration.)
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer access token value used to access the API.
+          schema:
+            description: Bearer access token value used to access the API.
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        - in: header
+          name: Content-type
+          description: Format of the message.
+          required: true
+          schema:
+            description: Indicates the format of the message.
+            type: string
+            default: application/json
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+        - in: header
+          name: X-GP-Idempotency
+          description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+          schema:
+            description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+            type: string
+            minLength: 1
+            maxLength: 50
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+            example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+            maxLength: 50
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+            X-GP-Idempotency:
+              schema:
+                description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+                type: string
+                minLength: 1
+                maxLength: 50
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+                    example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+                    maxLength: 50
+                  time_created:
+                    type: string
+                    format: date-time
+                    description: Global Payments time indicating when the object was created in ISO-8601 format.
+                    example: '2021-05-03T21:23:39.718Z'
+                  status:
+                    type: string
+                    description: Indicates where a resource object is in it's lifecylce.
+                    example: ACTIVE
+                  reference:
+                    type: string
+                    description: Merchant defined field to uniquely reference the stored payment method.
+                    example: CustABC_Card_1
+                    minLength: 1
+                    maxLength: 50
+                  name:
+                    type: string
+                    description: The full name of the owner of the payment method.
+                    example: James Mason
+                    minLength: 0
+                    maxLength: 100
+                  card:
+                    type: object
+                    properties:
+                      number_last4:
+                        type: string
+                        description: Last 4 digits of card number
+                        minLength: 4
+                        maxLength: 4
+                      brand:
+                        type: string
+                        description: Indicates the card brand that issued the card.
+                        enum:
+                          - VISA
+                          - MASTERCARD
+                          - AMEX
+                          - DINERS
+                          - DISCOVER
+                          - JCB
+                          - CUP
+                        minLength: 0
+                        maxLength: 50
+                      number:
+                        type: string
+                        description: The the card account number used to authorize the transaction. Also known as PAN.
+                        example: '4263970000005262'
+                        minLength: 1
+                        maxLength: 50
+                      expiry_month:
+                        type: string
+                        description: The 2 digit expiry date month of the card.
+                        example: '05'
+                        minLength: 2
+                        maxLength: 2
+                      expiry_year:
+                        type: string
+                        description: The 2 digit expiry date year of the card.
+                        example: '25'
+                        minLength: 2
+                        maxLength: 2
+                    description: Data relating to the card payment method.
+                  action:
+                    type: object
+                    description: Information about the Action executed.
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Indicates the action taken.
+                      time_created:
+                        type: string
+                        format: date-time
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        description: The result of the action executed.
+                        enum:
+                          - SUCCESS
+                          - DECLINE
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        description: The id of the app that was used to create the token.
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        description: The name of the app the user gave to the application.
+                        example: demo_app
+                        minLength: 1
+                        maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+  /payment-methods/search:
+    post:
+      operationId: searchPaymentMethod
+      tags:
+        - Search for a Payment Method
+      description: Return a list of stored payment methods where search criteria is in the message body.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer access token value used to access the API.
+          schema:
+            description: Bearer access token value used to access the API.
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        - in: header
+          name: Content-type
+          description: Format of the message.
+          required: true
+          schema:
+            description: Indicates the format of the message.
+            type: string
+            default: application/json
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+        - in: header
+          name: X-GP-Idempotency
+          description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+          schema:
+            description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+            type: string
+            minLength: 1
+            maxLength: 50
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - account_name
+              type: object
+              properties:
+                account_name:
+                  type: string
+                  description: A meaningful label for the merchant account set by Global Payments.
+                  example: Transaction_Processing
+                  minLength: 1
+                  maxLength: 50
+                card:
+                  type: object
+                  properties:
+                    number:
+                      type: string
+                      description: The the card account number used to authorize the transaction. Also known as PAN.
+                      example: '4263970000005262'
+                      minLength: 1
+                      maxLength: 50
+                    expiry_month:
+                      type: string
+                      description: The 2 digit expiry date month of the card.
+                      example: '05'
+                      minLength: 2
+                      maxLength: 2
+                    expiry_year:
+                      type: string
+                      description: The 2 digit expiry date year of the card.
+                      example: '25'
+                      minLength: 2
+                      maxLength: 2
+                  description: Data relating to the card payment method.
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+            X-GP-Idempotency:
+              schema:
+                description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+                type: string
+                minLength: 1
+                maxLength: 50
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_record_count:
+                    type: number
+                    description: 'The total number of records across all pages for the search filter. When searching for a collection of resoures, this is returned on the first page only and when the date range is a month or less.'
+                    example: 3412
+                  current_page_size:
+                    type: number
+                    description: The total number of records returned on the current page. If current_page_size is less than the page_size using in the querystring then this is the final page for that search.
+                    example: 3412
+                  merchant_id:
+                    type: string
+                    description: A unique identifier for the merchant set by Global Payments.
+                    example: MER_c4c0df11039c48a9b63701adeaa296c3
+                    minLength: 1
+                    maxLength: 50
+                  merchant_name:
+                    type: string
+                    description: A meaningful label for the merchant set by Global Payments.
+                    example: Sandbox_merchant_2
+                    minLength: 1
+                    maxLength: 50
+                  account_id:
+                    type: string
+                    description: A unique identifier for the merchant account set by Global Payments.
+                    example: TRA_6716058969854a48b33347043ff8225f
+                    minLength: 1
+                    maxLength: 50
+                  account_name:
+                    type: string
+                    description: A meaningful label for the merchant account set by Global Payments.
+                    example: Transaction_Processing
+                    minLength: 1
+                    maxLength: 50
+                  filter:
+                    type: object
+                    description: Indicates what fields and values used to filter the current list of resource objects in the current response.
+                  paging:
+                    type: object
+                    description: The paging values used to generate this response.
+                    properties:
+                      page:
+                        description: Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.
+                        maximum: 1000
+                        minimum: 1
+                        type: number
+                        default: 1
+                      page_size:
+                        description: The total number of objects to return in a single page for that list.
+                        maximum: 1000
+                        minimum: 1
+                        type: number
+                        default: 5
+                      order_by:
+                        description: 'The value to order the entire list by. '
+                        type: string
+                        enum:
+                          - TIME_CREATED
+                      order:
+                        description: 'The direction of the ordering of the entire list, ASC or DESC'
+                        type: string
+                        enum:
+                          - ASC
+                          - DESC
+                  payment_methods:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        account_name:
+                          type: string
+                          description: A meaningful label for the merchant account set by Global Payments.
+                          example: Transaction_Processing
+                          minLength: 1
+                          maxLength: 50
+                        time_created:
+                          type: string
+                          format: date-time
+                          description: Global Payments time indicating when the object was created in ISO-8601 format.
+                          example: '2021-05-03T21:23:39.718Z'
+                        status:
+                          type: string
+                          description: Indicates where a resource object is in it's lifecylce.
+                          example: ACTIVE
+                        reference:
+                          type: string
+                          description: Merchant defined field to uniquely reference the stored payment method.
+                          example: CustABC_Card_1
+                          minLength: 1
+                          maxLength: 50
+                        name:
+                          type: string
+                          description: The full name of the owner of the payment method.
+                          example: James Mason
+                          minLength: 0
+                          maxLength: 100
+                        card:
+                          type: object
+                          properties:
+                            number_last4:
+                              type: string
+                              description: Last 4 digits of card number
+                              minLength: 4
+                              maxLength: 4
+                            brand:
+                              type: string
+                              description: Indicates the card brand that issued the card.
+                              enum:
+                                - VISA
+                                - MASTERCARD
+                                - AMEX
+                                - DINERS
+                                - DISCOVER
+                                - JCB
+                                - CUP
+                              minLength: 0
+                              maxLength: 50
+                            expiry_month:
+                              type: string
+                              description: The 2 digit expiry date month of the card.
+                              example: '05'
+                              minLength: 2
+                              maxLength: 2
+                            expiry_year:
+                              type: string
+                              description: The 2 digit expiry date year of the card.
+                              example: '25'
+                              minLength: 2
+                              maxLength: 2
+                          description: Data relating to the card payment method.
+                  action:
+                    type: object
+                    description: Information about the Action executed.
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Indicates the action taken.
+                      time_created:
+                        type: string
+                        format: date-time
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        description: The result of the action executed.
+                        enum:
+                          - SUCCESS
+                          - DECLINE
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        description: The id of the app that was used to create the token.
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        description: The name of the app the user gave to the application.
+                        example: demo_app
+                        minLength: 1
+                        maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+components:
+  schemas:
+    create_request:
+      required:
+        - card
+        - reference
+      type: object
+      properties:
+        account_name:
+          type: string
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Transaction_Processing
+          minLength: 1
+          maxLength: 50
+        reference:
+          type: string
+          description: Merchant defined field to uniquely reference the stored payment method.
+          example: CustABC_Card_1
+          minLength: 1
+          maxLength: 50
+        usage_mode:
+          type: string
+          description: 'Indicates whether to store the card for a short or long periond of time. SINGLE indicates store the payment_method details for the duration of the checkout, less than 10 minutes. MULTIPLE (Default) stores the details until the Merchant deletes them. * `SINGLE` - The payment token is temporary and will be removed once a transaction is executed or after a short period of time. * `MULTIPLE` -  The payment token is permanent and can be used to create many transactions.'
+          enum:
+            - SINGLE
+            - MULTIPLE
+          default: MULTIPLE
+          minLength: 1
+          maxLength: 50
+        fingerprint_mode:
+          type: string
+          description: Indicates whether to execute the fingerprint signature functionality. * `ALWAYS` - Always check and create the fingerprint value regardless of the result of the card authorization. * `ON_SUCCESS` - Always check and create the fingerprint value when the card authorization is successful.
+          enum:
+            - ALWAYS
+            - ON_SUCCESS
+          minLength: 1
+          maxLength: 50
+        name:
+          type: string
+          description: The full name of the owner of the payment method.
+          example: James Mason
+          minLength: 0
+          maxLength: 100
+        card:
+          type: object
+          properties:
+            number:
+              type: string
+              description: The the card account number used to authorize the transaction. Also known as PAN.
+              example: '4263970000005262'
+              minLength: 1
+              maxLength: 50
+            expiry_month:
+              type: string
+              description: The 2 digit expiry date month of the card.
+              example: '05'
+              minLength: 2
+              maxLength: 2
+            expiry_year:
+              type: string
+              description: The 2 digit expiry date year of the card.
+              example: '25'
+              minLength: 2
+              maxLength: 2
+          description: Data relating to the card payment method.
+    create_response:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+          example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+          maxLength: 50
+        time_created:
+          type: string
+          format: date-time
+          description: Global Payments time indicating when the object was created in ISO-8601 format.
+          example: '2021-05-03T21:23:39.718Z'
+        status:
+          type: string
+          description: Indicates where a resource object is in it's lifecylce.
+          example: ACTIVE
+        reference:
+          type: string
+          description: Merchant defined field to uniquely reference the stored payment method.
+          example: CustABC_Card_1
+          minLength: 1
+          maxLength: 50
+        merchant_id:
+          type: string
+          description: A unique identifier for the merchant set by Global Payments.
+          example: MER_c4c0df11039c48a9b63701adeaa296c3
+          minLength: 1
+          maxLength: 50
+        merchant_name:
+          type: string
+          description: A meaningful label for the merchant set by Global Payments.
+          example: Sandbox_merchant_2
+          minLength: 1
+          maxLength: 50
+        account_id:
+          type: string
+          description: A unique identifier for the merchant account set by Global Payments.
+          example: TRA_6716058969854a48b33347043ff8225f
+          minLength: 1
+          maxLength: 50
+        account_name:
+          type: string
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Transaction_Processing
+          minLength: 1
+          maxLength: 50
+        fingerprint_presence_indicator:
+          type: string
+          description: 'If enabled, this field indicates whether the payment method has been seen before or is new. * `EXISTS` -  Indicates that the payment method was seen on the platform before by this merchant. * `NEW` - Indicates that the payment method was not seen on the platform before by this merchant.'
+          enum:
+            - NEW
+            - EXISTS
+          minLength: 0
+          maxLength: 256
+        fingerprint:
+          type: string
+          description: 'If enabled, this field contains the unique fingerprint signature for that payment method for that merchant. If the payment method is seen again this same value is generated. For cards the primary account number is checked only. The expiry date or the CVV is not used for this check.'
+          minLength: 0
+          maxLength: 256
+        card:
+          type: object
+          properties:
+            number_last4:
+              type: string
+              description: Last 4 digits of card number
+              minLength: 4
+              maxLength: 4
+            brand:
+              type: string
+              description: Indicates the card brand that issued the card.
+              enum:
+                - VISA
+                - MASTERCARD
+                - AMEX
+                - DINERS
+                - DISCOVER
+                - JCB
+                - CUP
+              minLength: 0
+              maxLength: 50
+            expiry_month:
+              type: string
+              description: The 2 digit expiry date month of the card.
+              example: '05'
+              minLength: 2
+              maxLength: 2
+            expiry_year:
+              type: string
+              description: The 2 digit expiry date year of the card.
+              example: '25'
+              minLength: 2
+              maxLength: 2
+          description: Data relating to the card payment method.
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    payment_method_list_response:
+      type: object
+      properties:
+        total_record_count:
+          type: number
+          description: 'The total number of records across all pages for the search filter. When searching for a collection of resoures, this is returned on the first page only and when the date range is a month or less.'
+          example: 3412
+        current_page_size:
+          type: number
+          description: The total number of records returned on the current page. If current_page_size is less than the page_size using in the querystring then this is the final page for that search.
+          example: 3412
+        merchant_id:
+          type: string
+          description: A unique identifier for the merchant set by Global Payments.
+          example: MER_c4c0df11039c48a9b63701adeaa296c3
+          minLength: 1
+          maxLength: 50
+        merchant_name:
+          type: string
+          description: A meaningful label for the merchant set by Global Payments.
+          example: Sandbox_merchant_2
+          minLength: 1
+          maxLength: 50
+        account_id:
+          type: string
+          description: A unique identifier for the merchant account set by Global Payments.
+          example: TRA_6716058969854a48b33347043ff8225f
+          minLength: 1
+          maxLength: 50
+        account_name:
+          type: string
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Transaction_Processing
+          minLength: 1
+          maxLength: 50
+        filter:
+          type: object
+          description: Indicates what fields and values used to filter the current list of resource objects in the current response.
+        paging:
+          type: object
+          description: The paging values used to generate this response.
+          properties:
+            page:
+              description: Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.
+              maximum: 1000
+              minimum: 1
+              type: number
+              default: 1
+            page_size:
+              description: The total number of objects to return in a single page for that list.
+              maximum: 1000
+              minimum: 1
+              type: number
+              default: 5
+            order_by:
+              description: 'The value to order the entire list by. '
+              type: string
+              enum:
+                - TIME_CREATED
+            order:
+              description: 'The direction of the ordering of the entire list, ASC or DESC'
+              type: string
+              enum:
+                - ASC
+                - DESC
+        payment_methods:
+          type: array
+          items:
+            type: object
+            properties:
+              account_name:
+                type: string
+                description: A meaningful label for the merchant account set by Global Payments.
+                example: Transaction_Processing
+                minLength: 1
+                maxLength: 50
+              time_created:
+                type: string
+                format: date-time
+                description: Global Payments time indicating when the object was created in ISO-8601 format.
+                example: '2021-05-03T21:23:39.718Z'
+              status:
+                type: string
+                description: Indicates where a resource object is in it's lifecylce.
+                example: ACTIVE
+              reference:
+                type: string
+                description: Merchant defined field to uniquely reference the stored payment method.
+                example: CustABC_Card_1
+                minLength: 1
+                maxLength: 50
+              name:
+                type: string
+                description: The full name of the owner of the payment method.
+                example: James Mason
+                minLength: 0
+                maxLength: 100
+              card:
+                type: object
+                properties:
+                  number_last4:
+                    type: string
+                    description: Last 4 digits of card number
+                    minLength: 4
+                    maxLength: 4
+                  brand:
+                    type: string
+                    description: Indicates the card brand that issued the card.
+                    enum:
+                      - VISA
+                      - MASTERCARD
+                      - AMEX
+                      - DINERS
+                      - DISCOVER
+                      - JCB
+                      - CUP
+                    minLength: 0
+                    maxLength: 50
+                  expiry_month:
+                    type: string
+                    description: The 2 digit expiry date month of the card.
+                    example: '05'
+                    minLength: 2
+                    maxLength: 2
+                  expiry_year:
+                    type: string
+                    description: The 2 digit expiry date year of the card.
+                    example: '25'
+                    minLength: 2
+                    maxLength: 2
+                description: Data relating to the card payment method.
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    search_payment_method_request:
+      required:
+        - account_name
+      type: object
+      properties:
+        account_name:
+          type: string
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Transaction_Processing
+          minLength: 1
+          maxLength: 50
+        card:
+          type: object
+          properties:
+            number:
+              type: string
+              description: The the card account number used to authorize the transaction. Also known as PAN.
+              example: '4263970000005262'
+              minLength: 1
+              maxLength: 50
+            expiry_month:
+              type: string
+              description: The 2 digit expiry date month of the card.
+              example: '05'
+              minLength: 2
+              maxLength: 2
+            expiry_year:
+              type: string
+              description: The 2 digit expiry date year of the card.
+              example: '25'
+              minLength: 2
+              maxLength: 2
+          description: Data relating to the card payment method.
+    payment_method_single_response:
+      type: object
+      properties:
+        account_name:
+          type: string
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Transaction_Processing
+          minLength: 1
+          maxLength: 50
+        time_created:
+          type: string
+          format: date-time
+          description: Global Payments time indicating when the object was created in ISO-8601 format.
+          example: '2021-05-03T21:23:39.718Z'
+        status:
+          type: string
+          description: Indicates where a resource object is in it's lifecylce.
+          example: ACTIVE
+        reference:
+          type: string
+          description: Merchant defined field to uniquely reference the stored payment method.
+          example: CustABC_Card_1
+          minLength: 1
+          maxLength: 50
+        name:
+          type: string
+          description: The full name of the owner of the payment method.
+          example: James Mason
+          minLength: 0
+          maxLength: 100
+        card:
+          type: object
+          properties:
+            number_last4:
+              type: string
+              description: Last 4 digits of card number
+              minLength: 4
+              maxLength: 4
+            brand:
+              type: string
+              description: Indicates the card brand that issued the card.
+              enum:
+                - VISA
+                - MASTERCARD
+                - AMEX
+                - DINERS
+                - DISCOVER
+                - JCB
+                - CUP
+              minLength: 0
+              maxLength: 50
+            expiry_month:
+              type: string
+              description: The 2 digit expiry date month of the card.
+              example: '05'
+              minLength: 2
+              maxLength: 2
+            expiry_year:
+              type: string
+              description: The 2 digit expiry date year of the card.
+              example: '25'
+              minLength: 2
+              maxLength: 2
+          description: Data relating to the card payment method.
+    payment_method_patch_request:
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Merchant defined field to uniquely reference the stored payment method.
+          example: CustABC_Card_1
+          minLength: 1
+          maxLength: 50
+        usage_mode:
+          type: string
+          description: 'Indicates whether to store the card for a short or long periond of time. SINGLE indicates store the payment_method details for the duration of the checkout, less than 10 minutes. MULTIPLE (Default) stores the details until the Merchant deletes them. * `SINGLE` - The payment token is temporary and will be removed once a transaction is executed or after a short period of time. * `MULTIPLE` -  The payment token is permanent and can be used to create many transactions.'
+          enum:
+            - SINGLE
+            - MULTIPLE
+          default: MULTIPLE
+          minLength: 1
+          maxLength: 50
+        name:
+          type: string
+          description: The full name of the owner of the payment method.
+          example: James Mason
+          minLength: 0
+          maxLength: 100
+        card:
+          type: object
+          properties:
+            number:
+              type: string
+              description: The the card account number used to authorize the transaction. Also known as PAN.
+              example: '4263970000005262'
+              minLength: 1
+              maxLength: 50
+            expiry_month:
+              type: string
+              description: The 2 digit expiry date month of the card.
+              example: '05'
+              minLength: 2
+              maxLength: 2
+            expiry_year:
+              type: string
+              description: The 2 digit expiry date year of the card.
+              example: '25'
+              minLength: 2
+              maxLength: 2
+          description: Data relating to the card payment method.
+    payment_method_patch_response:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+          example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+          maxLength: 50
+        time_created:
+          type: string
+          format: date-time
+          description: Global Payments time indicating when the object was created in ISO-8601 format.
+          example: '2021-05-03T21:23:39.718Z'
+        status:
+          type: string
+          description: Indicates where a resource object is in it's lifecylce.
+          example: ACTIVE
+        reference:
+          type: string
+          description: Merchant defined field to uniquely reference the stored payment method.
+          example: CustABC_Card_1
+          minLength: 1
+          maxLength: 50
+        name:
+          type: string
+          description: The full name of the owner of the payment method.
+          example: James Mason
+          minLength: 0
+          maxLength: 100
+        card:
+          type: object
+          properties:
+            number_last4:
+              type: string
+              description: Last 4 digits of card number
+              minLength: 4
+              maxLength: 4
+            brand:
+              type: string
+              description: Indicates the card brand that issued the card.
+              enum:
+                - VISA
+                - MASTERCARD
+                - AMEX
+                - DINERS
+                - DISCOVER
+                - JCB
+                - CUP
+              minLength: 0
+              maxLength: 50
+            expiry_month:
+              type: string
+              description: The 2 digit expiry date month of the card.
+              example: '05'
+              minLength: 2
+              maxLength: 2
+            expiry_year:
+              type: string
+              description: The 2 digit expiry date year of the card.
+              example: '25'
+              minLength: 2
+              maxLength: 2
+          description: Data relating to the card payment method.
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    payment_method_detokenize_response:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+          example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+          maxLength: 50
+        time_created:
+          type: string
+          format: date-time
+          description: Global Payments time indicating when the object was created in ISO-8601 format.
+          example: '2021-05-03T21:23:39.718Z'
+        status:
+          type: string
+          description: Indicates where a resource object is in it's lifecylce.
+          example: ACTIVE
+        reference:
+          type: string
+          description: Merchant defined field to uniquely reference the stored payment method.
+          example: CustABC_Card_1
+          minLength: 1
+          maxLength: 50
+        name:
+          type: string
+          description: The full name of the owner of the payment method.
+          example: James Mason
+          minLength: 0
+          maxLength: 100
+        card:
+          type: object
+          properties:
+            number_last4:
+              type: string
+              description: Last 4 digits of card number
+              minLength: 4
+              maxLength: 4
+            brand:
+              type: string
+              description: Indicates the card brand that issued the card.
+              enum:
+                - VISA
+                - MASTERCARD
+                - AMEX
+                - DINERS
+                - DISCOVER
+                - JCB
+                - CUP
+              minLength: 0
+              maxLength: 50
+            number:
+              type: string
+              description: The the card account number used to authorize the transaction. Also known as PAN.
+              example: '4263970000005262'
+              minLength: 1
+              maxLength: 50
+            expiry_month:
+              type: string
+              description: The 2 digit expiry date month of the card.
+              example: '05'
+              minLength: 2
+              maxLength: 2
+            expiry_year:
+              type: string
+              description: The 2 digit expiry date year of the card.
+              example: '25'
+              minLength: 2
+              maxLength: 2
+          description: Data relating to the card payment method.
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    payment_method_delete:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+          example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+          maxLength: 50
+        time_created:
+          type: string
+          format: date-time
+          description: Global Payments time indicating when the object was created in ISO-8601 format.
+          example: '2021-05-03T21:23:39.718Z'
+        status:
+          type: string
+          description: Indicates where a resource object is in it's lifecylce.
+          example: ACTIVE
+        reference:
+          type: string
+          description: Merchant defined field to uniquely reference the stored payment method.
+          example: CustABC_Card_1
+          minLength: 1
+          maxLength: 50
+        name:
+          type: string
+          description: The full name of the owner of the payment method.
+          example: James Mason
+          minLength: 0
+          maxLength: 100
+        card:
+          type: object
+          properties:
+            number_last4:
+              type: string
+              description: Last 4 digits of card number
+              minLength: 4
+              maxLength: 4
+            brand:
+              type: string
+              description: Indicates the card brand that issued the card.
+              enum:
+                - VISA
+                - MASTERCARD
+                - AMEX
+                - DINERS
+                - DISCOVER
+                - JCB
+                - CUP
+              minLength: 0
+              maxLength: 50
+            expiry_month:
+              type: string
+              description: The 2 digit expiry date month of the card.
+              example: '05'
+              minLength: 2
+              maxLength: 2
+            expiry_year:
+              type: string
+              description: The 2 digit expiry date year of the card.
+              example: '25'
+              minLength: 2
+              maxLength: 2
+          description: Data relating to the card payment method.
+        action:
+          type: object
+          description: Information about the Action executed.
+          properties:
+            id:
+              type: string
+              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              description: Indicates the action taken.
+            time_created:
+              type: string
+              format: date-time
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              description: The result of the action executed.
+              enum:
+                - SUCCESS
+                - DECLINE
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              description: The id of the app that was used to create the token.
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              description: The name of the app the user gave to the application.
+              example: demo_app
+              minLength: 1
+              maxLength: 50
+    payment_method_card_request:
+      type: object
+      properties:
+        number:
+          type: string
+          description: The the card account number used to authorize the transaction. Also known as PAN.
+          example: '4263970000005262'
+          minLength: 1
+          maxLength: 50
+        expiry_month:
+          type: string
+          description: The 2 digit expiry date month of the card.
+          example: '05'
+          minLength: 2
+          maxLength: 2
+        expiry_year:
+          type: string
+          description: The 2 digit expiry date year of the card.
+          example: '25'
+          minLength: 2
+          maxLength: 2
+      description: Data relating to the card payment method.
+    payment_method_card_response:
+      type: object
+      properties:
+        number_last4:
+          type: string
+          description: Last 4 digits of card number
+          minLength: 4
+          maxLength: 4
+        brand:
+          type: string
+          description: Indicates the card brand that issued the card.
+          enum:
+            - VISA
+            - MASTERCARD
+            - AMEX
+            - DINERS
+            - DISCOVER
+            - JCB
+            - CUP
+          minLength: 0
+          maxLength: 50
+        expiry_month:
+          type: string
+          description: The 2 digit expiry date month of the card.
+          example: '05'
+          minLength: 2
+          maxLength: 2
+        expiry_year:
+          type: string
+          description: The 2 digit expiry date year of the card.
+          example: '25'
+          minLength: 2
+          maxLength: 2
+      description: Data relating to the card payment method.
+    payment_method_card_search_request:
+      type: object
+      properties:
+        number:
+          type: string
+          description: The the card account number used to authorize the transaction. Also known as PAN.
+          example: '4263970000005262'
+          minLength: 1
+          maxLength: 50
+        expiry_month:
+          type: string
+          description: The 2 digit expiry date month of the card.
+          example: '05'
+          minLength: 2
+          maxLength: 2
+        expiry_year:
+          type: string
+          description: The 2 digit expiry date year of the card.
+          example: '25'
+          minLength: 2
+          maxLength: 2
+      description: Data relating to the card payment method.
+    payment_method_card_detokenize_response:
+      type: object
+      properties:
+        number_last4:
+          type: string
+          description: Last 4 digits of card number
+          minLength: 4
+          maxLength: 4
+        brand:
+          type: string
+          description: Indicates the card brand that issued the card.
+          enum:
+            - VISA
+            - MASTERCARD
+            - AMEX
+            - DINERS
+            - DISCOVER
+            - JCB
+            - CUP
+          minLength: 0
+          maxLength: 50
+        number:
+          type: string
+          description: The the card account number used to authorize the transaction. Also known as PAN.
+          example: '4263970000005262'
+          minLength: 1
+          maxLength: 50
+        expiry_month:
+          type: string
+          description: The 2 digit expiry date month of the card.
+          example: '05'
+          minLength: 2
+          maxLength: 2
+        expiry_year:
+          type: string
+          description: The 2 digit expiry date year of the card.
+          example: '25'
+          minLength: 2
+          maxLength: 2
+      description: Data relating to the card payment method.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - bearerAuth: []

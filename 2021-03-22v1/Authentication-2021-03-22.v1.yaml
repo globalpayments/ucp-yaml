@@ -35,8 +35,8 @@ paths:
           schema:
             description: Bearer access token value used to access the API.
             type: string
-            default: Bearer 8iZjQyEQeriGfqtA1V5wVDagEMAI
-            example: Bearer 8iZjQyEQeriGfqtA1V5wVDagEMAI
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
         - in: header
           name: X-GP-Idempotency
           description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
@@ -51,7 +51,7 @@ paths:
           schema:
             description: Indicates the version of the GP-API for this message.
             type: string
-            default: '2020-12-22'
+            default: '2021-03-22'
             minLength: 1
             maxLength: 50
         - in: header
@@ -264,7 +264,7 @@ paths:
               schema:
                 description: Indicates the version of the GP-API for this message.
                 type: string
-                default: '2020-12-22'
+                default: '2021-03-22'
                 minLength: 1
                 maxLength: 50
           content:
@@ -282,7 +282,7 @@ paths:
                     type: string
                     format: date-time
                     description: Global Payments time indicating when the object was created in ISO-8601 format.
-                    example: '2020-05-03T21:23:39.718Z'
+                    example: '2021-05-03T21:23:39.718Z'
                   transaction_type:
                     type: string
                     description: 'Describes whether the transaction is a SALE, that moves funds from Payer to Merchant, or a REFUND where funds move from Merchant to Payer. * `SALE` - indicates the movement, or the attempt to move, funds from payer to a merchant. * `REFUND` - indicates the movement, or the attempt to move, funds from merchant to the payer.'
@@ -293,7 +293,7 @@ paths:
                       - REFUND
                   status:
                     type: string
-                    description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+                    description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
                     enum:
                       - AVAILABLE
                       - NOT_ENROLLED
@@ -513,15 +513,11 @@ paths:
                       type:
                         type: string
                         description: Indicates the action taken.
-                        example: DEPOSIT_LIST
-                        enum:
-                          - DEPOSIT_LIST
-                          - DEPOSIT_SINGLE
                       time_created:
                         type: string
                         format: date-time
                         description: Global Payments time indicating when the object was created in ISO-8601 format.
-                        example: '2020-05-03T21:23:39.718Z'
+                        example: '2021-05-03T21:23:39.718Z'
                       result_code:
                         type: string
                         description: The result of the action executed.
@@ -533,7 +529,7 @@ paths:
                       app_id:
                         type: string
                         description: The id of the app that was used to create the token.
-                        example: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
                         minLength: 1
                         maxLength: 50
                       app_name:
@@ -745,7 +741,7 @@ paths:
                   schema:
                     description: Indicates the version of the GP-API for this message.
                     type: string
-                    default: '2020-12-22'
+                    default: '2021-03-22'
                     minLength: 1
                     maxLength: 50
                 - in: header
@@ -779,10 +775,10 @@ paths:
                           type: string
                           format: date-time
                           description: Global Payments time indicating when the object was created in ISO-8601 format.
-                          example: '2020-05-03T21:23:39.718Z'
+                          example: '2021-05-03T21:23:39.718Z'
                         status:
                           type: string
-                          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+                          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
                           enum:
                             - AVAILABLE
                             - NOT_ENROLLED
@@ -898,15 +894,11 @@ paths:
                             type:
                               type: string
                               description: Indicates the action taken.
-                              example: DEPOSIT_LIST
-                              enum:
-                                - DEPOSIT_LIST
-                                - DEPOSIT_SINGLE
                             time_created:
                               type: string
                               format: date-time
                               description: Global Payments time indicating when the object was created in ISO-8601 format.
-                              example: '2020-05-03T21:23:39.718Z'
+                              example: '2021-05-03T21:23:39.718Z'
                             result_code:
                               type: string
                               description: The result of the action executed.
@@ -918,7 +910,7 @@ paths:
                             app_id:
                               type: string
                               description: The id of the app that was used to create the token.
-                              example: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
+                              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
                               minLength: 1
                               maxLength: 50
                             app_name:
@@ -946,8 +938,8 @@ paths:
           schema:
             description: Bearer access token value used to access the API.
             type: string
-            default: Bearer 8iZjQyEQeriGfqtA1V5wVDagEMAI
-            example: Bearer 8iZjQyEQeriGfqtA1V5wVDagEMAI
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
         - in: header
           name: X-GP-Idempotency
           description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
@@ -962,7 +954,7 @@ paths:
           schema:
             description: Indicates the version of the GP-API for this message.
             type: string
-            default: '2020-12-22'
+            default: '2021-03-22'
             minLength: 1
             maxLength: 50
         - in: header
@@ -987,20 +979,23 @@ paths:
           application/json:
             schema:
               required:
-                - source
+                - three_ds
                 - merchant_contact_url
                 - payment_method
                 - order
                 - browser_data
               type: object
               properties:
-                source:
-                  type: string
-                  description: Indicates the type of channel used to initiate the transaction.
-                  enum:
-                    - BROWSER
-                    - MERCHANT_INITIATED
-                    - MOBILE_SDK
+                three_ds:
+                  type: object
+                  properties:
+                    source:
+                      type: string
+                      description: Indicates the type of channel used to initiate the transaction.
+                      enum:
+                        - BROWSER
+                        - MERCHANT_INITIATED
+                        - MOBILE_SDK
                 merchant_contact_url:
                   type: string
                   description: The URL of the merchant's website or customer care site. Should provide contact information for use in the event of a problem.
@@ -1117,21 +1112,21 @@ paths:
                           example: INV#88547
                           minLength: 0
                           maxLength: 50
+                        state:
+                          type: string
+                          description: 'The state or region of the address. ISO 3166-2 minus the country code itself. For example, US Illinois = IL, or in the case of GB counties Wiltshire = WI or Aberdeenshire = ABD'
+                          minLength: 0
+                          maxLength: 3
                         postal_code:
                           type: string
                           description: The city or town of the address.
                           minLength: 0
                           maxLength: 50
-                        state:
-                          type: string
-                          description: The status or region of the address
-                          minLength: 0
-                          maxLength: 50
                         country:
                           type: string
-                          description: The county of the address.
+                          description: The country of the address. Countries are represented by the ISO-3166-1(alpha-2 code).
                           minLength: 0
-                          maxLength: 50
+                          maxLength: 2
                     gift_card_count:
                       type: number
                       description: The total number of prepaid or gift cards purchased.
@@ -1161,7 +1156,7 @@ paths:
                         - TWO_DAYS_OR_MORE
                     shipping_method:
                       type: string
-                      description: 'Indicates shipping method chosen for the transaction. Must be speific to this transaction, not generally to the merchant. If one or more items are included in the sale, use the Shipping Indicator code for the physical goods. If all the goods are digital, use the Shipping Method code that describes the most expensive item.'
+                      description: 'Indicates shipping method chosen for the transaction. Must be specific to this transaction, not generally to the merchant. If one or more items are included in the sale, use the Shipping Indicator code for the physical goods. If all the goods are digital, use the Shipping Method code that describes the most expensive item.'
                       enum:
                         - BILLING_ADDRESS
                         - ANOTHER_VERIFIED_ADDRESS UNVERIFIED_ADDRESS
@@ -1181,7 +1176,7 @@ paths:
                     preorder_availability_date:
                       type: string
                       format: date
-                      example: '2020-11-11'
+                      example: '2021-11-11'
                       description: In the case of a preorder; the expected date when the merchandise will be available
                     category:
                       type: string
@@ -1351,12 +1346,12 @@ paths:
                       type: string
                       format: date
                       description: Date the customer opened their account with the merchant.
-                      example: '2020-11-11'
+                      example: '2021-11-11'
                     account_change_date:
                       type: string
                       format: date
                       description: 'Date the customer''s account with the merchant was last changed. For example, if the billing or shipping details changed, new payment account or new users added.'
-                      example: '2020-11-11'
+                      example: '2021-11-11'
                     account_change_indicator:
                       type: string
                       description: Length of time since the account has changed.
@@ -1369,7 +1364,7 @@ paths:
                       type: string
                       format: date
                       description: Date the customer's account with the merchant had a password change or account reset.
-                      example: '2020-11-11'
+                      example: '2021-11-11'
                     account_password_change_indicator:
                       type: string
                       description: Length of time since the customer's account with the merchant has had a password change or account reset.
@@ -1409,21 +1404,21 @@ paths:
                           example: INV#88547
                           minLength: 0
                           maxLength: 50
+                        state:
+                          type: string
+                          description: 'The state or region of the address. ISO 3166-2 minus the country code itself. For example, US Illinois = IL, or in the case of GB counties Wiltshire = WI or Aberdeenshire = ABD'
+                          minLength: 0
+                          maxLength: 3
                         postal_code:
                           type: string
                           description: The city or town of the address.
                           minLength: 0
                           maxLength: 50
-                        state:
-                          type: string
-                          description: The status or region of the address
-                          minLength: 0
-                          maxLength: 50
                         country:
                           type: string
-                          description: The county of the address.
+                          description: The country of the address. Countries are represented by the ISO-3166-1(alpha-2 code).
                           minLength: 0
-                          maxLength: 50
+                          maxLength: 2
                     home_phone:
                       type: object
                       properties:
@@ -1454,7 +1449,7 @@ paths:
                       type: string
                       format: date
                       description: Date the payment account was associated with the customer's account.
-                      example: '2020-11-11'
+                      example: '2021-11-11'
                     payment_account_age_indicator:
                       type: string
                       description: Length of time the customer has had an account with the merchant.
@@ -1486,7 +1481,7 @@ paths:
                       type: string
                       format: date
                       description: Date the shipping address was first used with the merchant.
-                      example: '2020-11-11'
+                      example: '2021-11-11'
                     shipping_address_creation_indicator:
                       type: string
                       description: When the shipping address was first used with the merchant.
@@ -1556,7 +1551,8 @@ paths:
               Initiate - 3DS 2 Challenge:
                 value:
                   method_url_completion_status: 'YES'
-                  source: BROWSER
+                  three_ds:
+                    source: BROWSER
                   merchant_contact_url: 'https://enp4qhvjseljg.x.pipedream.net/'
                   order:
                     time_created_reference: '2019-04-26T10:19:32.552327Z'
@@ -1636,6 +1632,90 @@ paths:
                     challenge_window_size: FULL_SCREEN
                     timezone: '0'
                     user_agent: 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/70.0.3538.110 Safari/537.36'
+              Initiate - 3DS 2 Frictionless:
+                value:
+                  method_url_completion_status: 'YES'
+                  three_ds:
+                    source: BROWSER
+                  merchant_contact_url: 'https://enp4qhvjseljg.x.pipedream.net/'
+                  order:
+                    time_created_reference: '2019-04-26T10:19:32.552327Z'
+                    amount: 5089
+                    currency: EUR
+                    reference: 3400dd37-101d-4940-be15-3c963b6109b3
+                    address_match_indicator: 'false'
+                    shipping_address:
+                      line1: Apartment 852
+                      line2: Complex 741
+                      line3: House 963
+                      city: Chicago
+                      postal_code: '50001'
+                      state: IL
+                      country: '840'
+                    gift_card_count: '01'
+                    gift_card_currency: EUR
+                    gift_card_amount: '25000'
+                    delivery_email: james.mason@example.com
+                    delivery_timeframe: ELECTRONIC_DELIVERY
+                    shipping_method: ANOTHER_VERIFIED_ADDRESS
+                    shipping_name_matches_cardholder_name: 'true'
+                    preorder_indicator: MERCHANDISE_AVAILABLE
+                    preorder_availability_date: '2019-04-18'
+                    reorder_indicator: FIRST_TIME_ORDER
+                    category: GOODS_SERVICE_PURCHASE
+                  payment_method:
+                    card:
+                      number: '4263970000005262'
+                      expiry_month: '12'
+                      expiry_year: '25'
+                  payer:
+                    reference: 6dcb24f5-74a0-4da3-98da-4f0aa0e88db3
+                    account_age: LESS_THAN_THIRTY_DAYS
+                    account_creation_date: '2019-01-10'
+                    account_change_date: '2019-01-28'
+                    account_change_indicator: THIS_TRANSACTION
+                    account_password_change_date: '2019-01-15'
+                    account_password_change_indicator: LESS_THAN_THIRTY_DAYS
+                    home_phone:
+                      country_code: '44'
+                      subscriber_number: '123456789'
+                    work_phone:
+                      country_code: '44'
+                      subscriber_number: '1801555888'
+                    payment_account_creation_date: '2019-01-01'
+                    payment_account_age_indicator: LESS_THAN_THIRTY_DAYS
+                    suspicious_account_activity: NO_SUSPICIOUS_ACTIVITY
+                    purchases_last_6months_count: '03'
+                    transactions_last_24hours_count: '01'
+                    transaction_last_year_count: '05'
+                    provision_attempt_last_24hours_count: '01'
+                    shipping_address_time_created_reference: '2019-01-28'
+                    shipping_address_creation_indicator: THIS_TRANSACTION
+                  payer_prior_three_ds_authentication_data:
+                    authentication_method: FRICTIONLESS_AUTHENTICATION
+                    acs_transaction_reference: 26c3f619-39a4-4040-bf1f-6fd433e6d615
+                    authentication_timestamp: '2020-07-28T10:26:49.712Z'
+                    authentication_data: secret123
+                  recurring_authorization_data:
+                    max_number_of_instalments: '05'
+                    frequency: '25'
+                    expiry_date: '2019-08-25'
+                  payer_login_data:
+                    authentication_data: secret123
+                    authentication_timestamp: '2020-07-28T10:26:49.712Z'
+                    authentication_type: MERCHANT_SYSTEM_AUTHENTICATION
+                  browser_data:
+                    accept_header: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
+                    color_depth: TWENTY_FOUR_BITS
+                    ip: 123.123.123.123
+                    java_enabled: 'true'
+                    javascript_enabled: 'true'
+                    language: en-US
+                    screen_height: '1080'
+                    screen_width: '1920'
+                    challenge_window_size: FULL_SCREEN
+                    timezone: '0'
+                    user_agent: 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/70.0.3538.110 Safari/537.36'
         required: true
       responses:
         '200':
@@ -1661,7 +1741,7 @@ paths:
               schema:
                 description: Indicates the version of the GP-API for this message.
                 type: string
-                default: '2020-12-22'
+                default: '2021-03-22'
                 minLength: 1
                 maxLength: 50
           content:
@@ -1679,7 +1759,7 @@ paths:
                     type: string
                     format: date-time
                     description: Global Payments time indicating when the object was created in ISO-8601 format.
-                    example: '2020-05-03T21:23:39.718Z'
+                    example: '2021-05-03T21:23:39.718Z'
                   time_last_updated:
                     description: The date and time the resource object was last changed.
                     type: string
@@ -1694,7 +1774,7 @@ paths:
                       - REFUND
                   status:
                     type: string
-                    description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+                    description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
                     enum:
                       - AVAILABLE
                       - NOT_ENROLLED
@@ -1775,7 +1855,7 @@ paths:
                         maxLength: 50
                       status:
                         type: string
-                        description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+                        description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
                         enum:
                           - AVAILABLE
                           - NOT_ENROLLED
@@ -1914,15 +1994,11 @@ paths:
                       type:
                         type: string
                         description: Indicates the action taken.
-                        example: DEPOSIT_LIST
-                        enum:
-                          - DEPOSIT_LIST
-                          - DEPOSIT_SINGLE
                       time_created:
                         type: string
                         format: date-time
                         description: Global Payments time indicating when the object was created in ISO-8601 format.
-                        example: '2020-05-03T21:23:39.718Z'
+                        example: '2021-05-03T21:23:39.718Z'
                       result_code:
                         type: string
                         description: The result of the action executed.
@@ -1934,7 +2010,7 @@ paths:
                       app_id:
                         type: string
                         description: The id of the app that was used to create the token.
-                        example: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
                         minLength: 1
                         maxLength: 50
                       app_name:
@@ -2146,7 +2222,7 @@ paths:
                   schema:
                     description: Indicates the version of the GP-API for this message.
                     type: string
-                    default: '2020-12-22'
+                    default: '2021-03-22'
                     minLength: 1
                     maxLength: 50
                 - in: header
@@ -2180,10 +2256,10 @@ paths:
                           type: string
                           format: date-time
                           description: Global Payments time indicating when the object was created in ISO-8601 format.
-                          example: '2020-05-03T21:23:39.718Z'
+                          example: '2021-05-03T21:23:39.718Z'
                         status:
                           type: string
-                          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+                          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
                           enum:
                             - AVAILABLE
                             - NOT_ENROLLED
@@ -2299,15 +2375,11 @@ paths:
                             type:
                               type: string
                               description: Indicates the action taken.
-                              example: DEPOSIT_LIST
-                              enum:
-                                - DEPOSIT_LIST
-                                - DEPOSIT_SINGLE
                             time_created:
                               type: string
                               format: date-time
                               description: Global Payments time indicating when the object was created in ISO-8601 format.
-                              example: '2020-05-03T21:23:39.718Z'
+                              example: '2021-05-03T21:23:39.718Z'
                             result_code:
                               type: string
                               description: The result of the action executed.
@@ -2319,7 +2391,7 @@ paths:
                             app_id:
                               type: string
                               description: The id of the app that was used to create the token.
-                              example: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
+                              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
                               minLength: 1
                               maxLength: 50
                             app_name:
@@ -2347,8 +2419,8 @@ paths:
           schema:
             description: Bearer access token value used to access the API.
             type: string
-            default: Bearer 8iZjQyEQeriGfqtA1V5wVDagEMAI
-            example: Bearer 8iZjQyEQeriGfqtA1V5wVDagEMAI
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
         - in: header
           name: X-GP-Idempotency
           description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
@@ -2363,7 +2435,7 @@ paths:
           schema:
             description: Indicates the version of the GP-API for this message.
             type: string
-            default: '2020-12-22'
+            default: '2021-03-22'
             minLength: 1
             maxLength: 50
         - in: header
@@ -2399,7 +2471,7 @@ paths:
                       maxLength: 10000
             examples:
               Obtain Result - 3DS 2:
-                value: null
+                value: {}
               Obtain Result - 3DS 1:
                 value:
                   three_ds:
@@ -2429,7 +2501,7 @@ paths:
               schema:
                 description: Indicates the version of the GP-API for this message.
                 type: string
-                default: '2020-12-22'
+                default: '2021-03-22'
                 minLength: 1
                 maxLength: 50
           content:
@@ -2447,10 +2519,10 @@ paths:
                     type: string
                     format: date-time
                     description: Global Payments time indicating when the object was created in ISO-8601 format.
-                    example: '2020-05-03T21:23:39.718Z'
+                    example: '2021-05-03T21:23:39.718Z'
                   status:
                     type: string
-                    description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+                    description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
                     enum:
                       - AVAILABLE
                       - NOT_ENROLLED
@@ -2547,7 +2619,7 @@ paths:
                         maxLength: 2
                       status:
                         type: string
-                        description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+                        description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
                         enum:
                           - AVAILABLE
                           - NOT_ENROLLED
@@ -2671,15 +2743,11 @@ paths:
                       type:
                         type: string
                         description: Indicates the action taken.
-                        example: DEPOSIT_LIST
-                        enum:
-                          - DEPOSIT_LIST
-                          - DEPOSIT_SINGLE
                       time_created:
                         type: string
                         format: date-time
                         description: Global Payments time indicating when the object was created in ISO-8601 format.
-                        example: '2020-05-03T21:23:39.718Z'
+                        example: '2021-05-03T21:23:39.718Z'
                       result_code:
                         type: string
                         description: The result of the action executed.
@@ -2691,7 +2759,7 @@ paths:
                       app_id:
                         type: string
                         description: The id of the app that was used to create the token.
-                        example: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
+                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
                         minLength: 1
                         maxLength: 50
                       app_name:
@@ -3015,7 +3083,7 @@ components:
           type: string
           format: date-time
           description: Global Payments time indicating when the object was created in ISO-8601 format.
-          example: '2020-05-03T21:23:39.718Z'
+          example: '2021-05-03T21:23:39.718Z'
         transaction_type:
           type: string
           description: 'Describes whether the transaction is a SALE, that moves funds from Payer to Merchant, or a REFUND where funds move from Merchant to Payer. * `SALE` - indicates the movement, or the attempt to move, funds from payer to a merchant. * `REFUND` - indicates the movement, or the attempt to move, funds from merchant to the payer.'
@@ -3026,7 +3094,7 @@ components:
             - REFUND
         status:
           type: string
-          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
           enum:
             - AVAILABLE
             - NOT_ENROLLED
@@ -3246,15 +3314,11 @@ components:
             type:
               type: string
               description: Indicates the action taken.
-              example: DEPOSIT_LIST
-              enum:
-                - DEPOSIT_LIST
-                - DEPOSIT_SINGLE
             time_created:
               type: string
               format: date-time
               description: Global Payments time indicating when the object was created in ISO-8601 format.
-              example: '2020-05-03T21:23:39.718Z'
+              example: '2021-05-03T21:23:39.718Z'
             result_code:
               type: string
               description: The result of the action executed.
@@ -3266,7 +3330,7 @@ components:
             app_id:
               type: string
               description: The id of the app that was used to create the token.
-              example: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
               minLength: 1
               maxLength: 50
             app_name:
@@ -3489,20 +3553,23 @@ components:
               description: 'JSON object containing the Base64Url encoded string, made up of the integator''s method_notification_url and the server_trans_ref which must be sent to the method_url when facilitating the ACS to gather device information.'
     initiate_request:
       required:
-        - source
+        - three_ds
         - merchant_contact_url
         - payment_method
         - order
         - browser_data
       type: object
       properties:
-        source:
-          type: string
-          description: Indicates the type of channel used to initiate the transaction.
-          enum:
-            - BROWSER
-            - MERCHANT_INITIATED
-            - MOBILE_SDK
+        three_ds:
+          type: object
+          properties:
+            source:
+              type: string
+              description: Indicates the type of channel used to initiate the transaction.
+              enum:
+                - BROWSER
+                - MERCHANT_INITIATED
+                - MOBILE_SDK
         merchant_contact_url:
           type: string
           description: The URL of the merchant's website or customer care site. Should provide contact information for use in the event of a problem.
@@ -3619,21 +3686,21 @@ components:
                   example: INV#88547
                   minLength: 0
                   maxLength: 50
+                state:
+                  type: string
+                  description: 'The state or region of the address. ISO 3166-2 minus the country code itself. For example, US Illinois = IL, or in the case of GB counties Wiltshire = WI or Aberdeenshire = ABD'
+                  minLength: 0
+                  maxLength: 3
                 postal_code:
                   type: string
                   description: The city or town of the address.
                   minLength: 0
                   maxLength: 50
-                state:
-                  type: string
-                  description: The status or region of the address
-                  minLength: 0
-                  maxLength: 50
                 country:
                   type: string
-                  description: The county of the address.
+                  description: The country of the address. Countries are represented by the ISO-3166-1(alpha-2 code).
                   minLength: 0
-                  maxLength: 50
+                  maxLength: 2
             gift_card_count:
               type: number
               description: The total number of prepaid or gift cards purchased.
@@ -3663,7 +3730,7 @@ components:
                 - TWO_DAYS_OR_MORE
             shipping_method:
               type: string
-              description: 'Indicates shipping method chosen for the transaction. Must be speific to this transaction, not generally to the merchant. If one or more items are included in the sale, use the Shipping Indicator code for the physical goods. If all the goods are digital, use the Shipping Method code that describes the most expensive item.'
+              description: 'Indicates shipping method chosen for the transaction. Must be specific to this transaction, not generally to the merchant. If one or more items are included in the sale, use the Shipping Indicator code for the physical goods. If all the goods are digital, use the Shipping Method code that describes the most expensive item.'
               enum:
                 - BILLING_ADDRESS
                 - ANOTHER_VERIFIED_ADDRESS UNVERIFIED_ADDRESS
@@ -3683,7 +3750,7 @@ components:
             preorder_availability_date:
               type: string
               format: date
-              example: '2020-11-11'
+              example: '2021-11-11'
               description: In the case of a preorder; the expected date when the merchandise will be available
             category:
               type: string
@@ -3853,12 +3920,12 @@ components:
               type: string
               format: date
               description: Date the customer opened their account with the merchant.
-              example: '2020-11-11'
+              example: '2021-11-11'
             account_change_date:
               type: string
               format: date
               description: 'Date the customer''s account with the merchant was last changed. For example, if the billing or shipping details changed, new payment account or new users added.'
-              example: '2020-11-11'
+              example: '2021-11-11'
             account_change_indicator:
               type: string
               description: Length of time since the account has changed.
@@ -3871,7 +3938,7 @@ components:
               type: string
               format: date
               description: Date the customer's account with the merchant had a password change or account reset.
-              example: '2020-11-11'
+              example: '2021-11-11'
             account_password_change_indicator:
               type: string
               description: Length of time since the customer's account with the merchant has had a password change or account reset.
@@ -3911,21 +3978,21 @@ components:
                   example: INV#88547
                   minLength: 0
                   maxLength: 50
+                state:
+                  type: string
+                  description: 'The state or region of the address. ISO 3166-2 minus the country code itself. For example, US Illinois = IL, or in the case of GB counties Wiltshire = WI or Aberdeenshire = ABD'
+                  minLength: 0
+                  maxLength: 3
                 postal_code:
                   type: string
                   description: The city or town of the address.
                   minLength: 0
                   maxLength: 50
-                state:
-                  type: string
-                  description: The status or region of the address
-                  minLength: 0
-                  maxLength: 50
                 country:
                   type: string
-                  description: The county of the address.
+                  description: The country of the address. Countries are represented by the ISO-3166-1(alpha-2 code).
                   minLength: 0
-                  maxLength: 50
+                  maxLength: 2
             home_phone:
               type: object
               properties:
@@ -3956,7 +4023,7 @@ components:
               type: string
               format: date
               description: Date the payment account was associated with the customer's account.
-              example: '2020-11-11'
+              example: '2021-11-11'
             payment_account_age_indicator:
               type: string
               description: Length of time the customer has had an account with the merchant.
@@ -3988,7 +4055,7 @@ components:
               type: string
               format: date
               description: Date the shipping address was first used with the merchant.
-              example: '2020-11-11'
+              example: '2021-11-11'
             shipping_address_creation_indicator:
               type: string
               description: When the shipping address was first used with the merchant.
@@ -4067,7 +4134,7 @@ components:
           type: string
           format: date-time
           description: Global Payments time indicating when the object was created in ISO-8601 format.
-          example: '2020-05-03T21:23:39.718Z'
+          example: '2021-05-03T21:23:39.718Z'
         time_last_updated:
           description: The date and time the resource object was last changed.
           type: string
@@ -4082,7 +4149,7 @@ components:
             - REFUND
         status:
           type: string
-          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
           enum:
             - AVAILABLE
             - NOT_ENROLLED
@@ -4163,7 +4230,7 @@ components:
               maxLength: 50
             status:
               type: string
-              description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+              description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
               enum:
                 - AVAILABLE
                 - NOT_ENROLLED
@@ -4302,15 +4369,11 @@ components:
             type:
               type: string
               description: Indicates the action taken.
-              example: DEPOSIT_LIST
-              enum:
-                - DEPOSIT_LIST
-                - DEPOSIT_SINGLE
             time_created:
               type: string
               format: date-time
               description: Global Payments time indicating when the object was created in ISO-8601 format.
-              example: '2020-05-03T21:23:39.718Z'
+              example: '2021-05-03T21:23:39.718Z'
             result_code:
               type: string
               description: The result of the action executed.
@@ -4322,7 +4385,7 @@ components:
             app_id:
               type: string
               description: The id of the app that was used to create the token.
-              example: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
               minLength: 1
               maxLength: 50
             app_name:
@@ -4371,7 +4434,7 @@ components:
           maxLength: 50
         status:
           type: string
-          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
           enum:
             - AVAILABLE
             - NOT_ENROLLED
@@ -4514,10 +4577,10 @@ components:
           type: string
           format: date-time
           description: Global Payments time indicating when the object was created in ISO-8601 format.
-          example: '2020-05-03T21:23:39.718Z'
+          example: '2021-05-03T21:23:39.718Z'
         status:
           type: string
-          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
           enum:
             - AVAILABLE
             - NOT_ENROLLED
@@ -4614,7 +4677,7 @@ components:
               maxLength: 2
             status:
               type: string
-              description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+              description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
               enum:
                 - AVAILABLE
                 - NOT_ENROLLED
@@ -4738,15 +4801,11 @@ components:
             type:
               type: string
               description: Indicates the action taken.
-              example: DEPOSIT_LIST
-              enum:
-                - DEPOSIT_LIST
-                - DEPOSIT_SINGLE
             time_created:
               type: string
               format: date-time
               description: Global Payments time indicating when the object was created in ISO-8601 format.
-              example: '2020-05-03T21:23:39.718Z'
+              example: '2021-05-03T21:23:39.718Z'
             result_code:
               type: string
               description: The result of the action executed.
@@ -4758,7 +4817,7 @@ components:
             app_id:
               type: string
               description: The id of the app that was used to create the token.
-              example: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
+              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
               minLength: 1
               maxLength: 50
             app_name:
@@ -4823,7 +4882,7 @@ components:
           maxLength: 2
         status:
           type: string
-          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
+          description: 'Indicates where the authentication is in its lifecycle * `AVAILABLE` - An authentication mechanism is available. The next step is to initiate the authentication. No liabilty shift at this stage. * `NOT_AVAILABLE` - The authentication mechanism is not available. The next step is to check for availability of another authentication mechanism. No liabilty shift at this stage. * `NOT_ENROLLED` - The payer''''s payment method is not enrolled in 3DS version 1 or version 2. If the card is a Visa or Mastercard a liability shift is achieved and the recommendation is execute the care authorization. However there us no liabilty shift at this stage for Amex,so the recommendation is not for go for card authorization. * `CHALLENGE_REQUIRED` - The authentication mechanism is available and the next step is to facilitate authentication of the payer. No liabilty shift at this stage. * `SUCCESS_AUTHENTICATED` - The authentication of the payer has been a success and a liabilty shift has been achieved so the recommendation is to go for authorization * `SUCCESS_ATTEMPT_MADE` - A valid attempt to authenticate the payer has been executed and a liabilty shift has been achieved so the recommendation is to go for authorization. * `NOT_AUTHENTICATED` - The payer did not authenticate therefore a liabilty shift has not been achieved. The recommendation is to not proceed with card authorization. * `FAILED` - A step in the authentication process has errored and there do not go for card authorization. * `CHALLENGE_PREFERENCE_ACKNOWLEDGED_INFORMATIONAL_ONLY`'
           enum:
             - AVAILABLE
             - NOT_ENROLLED
