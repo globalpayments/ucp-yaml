@@ -1,0 +1,833 @@
+openapi: 3.0.3
+info:
+  version: 2021 03 22
+  title: Installments
+  description: 'Installments represent the installment payment programs that are available to your customers for a specific transaction. We support installment payment programs in both Asia Pacific and Mexico. These programs allow the cardholder to select the terms and the number of payments.  The merchant''s transaction settles for the full amount, but the cardholder gets billed a flat amount for a set number of months.'
+  contact:
+    name: API Integrations
+    email: api.integrations@globalpay.com
+servers:
+  - url: 'https://apis.sandbox.globalpay.com/ucp'
+    description: Sandbox Environment
+  - url: 'https://apis.globalpay.com/ucp'
+    description: Production Environment
+paths:
+  /installments:
+    post:
+      tags:
+        - Create an Installment
+      summary: Confirm installment plans available
+      description: Confirm which installments plans are available to the cardholder for a specific transaction.
+      operationId: create-installment
+      parameters:
+        - name: X-GP-Version
+          in: header
+          description: The version of the API to execute the request.
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 50
+            default: '2021-03-22'
+            example: '2021-03-22'
+        - name: Authorization
+          in: header
+          description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
+          required: true
+          schema:
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        - name: Content-type
+          in: header
+          description: Format of the message body.
+          required: true
+          schema:
+            type: string
+            default: application/json
+            example: application/json
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account_name:
+                  type: string
+                  title: account_name_INSTALLMENTS.account_name
+                  description: A meaningful label that better identifies the account.
+                  minLength: 1
+                  maxLength: 50
+                  example: transaction_processing
+                channel:
+                  type: string
+                  enum:
+                    - CP
+                    - CNP
+                  description: |
+                    Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. 
+                                    * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. 
+                                    * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+                  minLength: 1
+                  maxLength: 50
+                  example: CP
+                amount:
+                  type: string
+                  description: The amount to transfer between Payer and Merchant for a SALE or a REFUND. It is always represented in the lowest denomination of the related currency. and with no decimal point.
+                  minLength: 1
+                  maxLength: 50
+                  example: '11099'
+                currency:
+                  type: string
+                  enum:
+                    - USD
+                    - EUR
+                    - GBP
+                    - CAD
+                    - CHF
+                    - etc.
+                  description: The currency of the amount in ISO-4217(alpha-3).
+                  minLength: 3
+                  maxLength: 3
+                  example: USD
+                country:
+                  type: string
+                  description: |
+
+                    This is the countty the merchant is domiciled in. For example, If if the merchant is based in Canada it must be set to CA.If if the merchant is based in England it must be set to GB.If if the merchant is based in USA it must be set to US.The country in ISO-3166-1(alpha-2 code) format.
+                  minLength: 2
+                  maxLength: 2
+                  example: US
+                reference:
+                  type: string
+                  description: Merchant defined field to reference the transaction.
+                  minLength: 1
+                  maxLength: 50
+                  example: becf9f3e-4d33-459c-8ed2-0c4affc9555e
+                program:
+                  type: string
+                  description: This field indicates the installment program the merchant is participating in.
+                  example: SIP
+                payment_method:
+                  type: object
+                  properties:
+                    entry_mode:
+                      type: string
+                      enum:
+                        - MOTO
+                        - ECOM
+                        - IN_APP
+                        - CHIP
+                        - SWIPE
+                        - MANUAL
+                        - PHONE
+                        - MAIL
+                        - CONTACTLESS_CHIP
+                        - CONTACTLESS_SWIPE
+                        - PRESENT
+                        - UNKNOWN
+                      description: |
+                        Indicates how the payment method information was obtained by the Merchant for this transaction. 
+                                                 * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail. 
+                                                 * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser. 
+                                                 * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only. 
+                                                 * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip. 
+                                                 * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information. 
+                                                 * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device. 
+                                                 * `CONTACTLESS_CHIP` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a card on or near a device to exchange card information. 
+                                                 * `CONTACTLESS_SWIPE` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information 
+                                                 * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone. 
+                                                 * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
+                                                 * `PRESENT`- The entry mode cannot be determined but it is a Customer Present transaction.
+                                                 * `UNKNOWN` - The entry mode for this transaction cannot be determined.
+                      minLength: 1
+                      maxLength: 50
+                      example: ECOM
+                    card:
+                      type: object
+                      properties:
+                        number:
+                          type: string
+                          description: The the card account number used to authorize the transaction. Also known as PAN.
+                          minLength: 1
+                          maxLength: 50
+                          example: '4263970000005262'
+                        expiry_month:
+                          type: string
+                          description: The 2 digit expiry date month of the card.
+                          minLength: 1
+                          maxLength: 50
+                          example: '12'
+                        expiry_year:
+                          type: string
+                          description: The 2 digit expiry date year of the card.
+                          minLength: 1
+                          maxLength: 50
+                          example: '29'
+            examples:
+              SIP Example:
+                value:
+                  account_name: Transaction_Processing
+                  channel: CP
+                  amount: '11099'
+                  currency: USD
+                  country: US
+                  reference: becf9f3e-4d33-459c-8ed2-0c4affc9555e
+                  program: SIP
+                  payment_method:
+                    entry_mode: ECOM
+                    card:
+                      number: '4263970000005262'
+                      expiry_month: '12'
+                      expiry_year: '29'
+              MIPP Example:
+                value:
+                  account_name: Transaction_Processing
+                  channel: CP
+                  amount: '11099'
+                  currency: USD
+                  country: US
+                  reference: becf9f3e-4d33-459c-8ed2-0c4affc9555e
+                  program: MIPP
+                  payment_method:
+                    entry_mode: ECOM
+                    card:
+                      number: '4263970000005262'
+                      expiry_month: '12'
+                      expiry_year: '29'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: 'A unique identifier that is used to identify and reference an instance of this resource. This id is used when actioning or referencing a specific installment request. Begins with the three letters, INS.'
+                    minLength: 1
+                    maxLength: 50
+                    example: INS_hAxxDJ3C4pWKh039jkGNqQ8xF1Oa4w
+                  time_created:
+                    type: string
+                    description: Global Payments time indicating when the object was created in ISO-8601 format.
+                    format: date-time
+                    example: '2026-05-03T21:23:39.718Z'
+                  type:
+                    type: string
+                    enum:
+                      - INSTALLMENT_QUERY
+                    description: The type of installment request.
+                    example: INSTALLMENT_QUERY
+                  status:
+                    type: string
+                    enum:
+                      - AVAILABLE
+                      - NOT_AVAILABLE
+                    description: Indicates the status of the installment.
+                    example: AVAILABLE
+                  channel:
+                    type: string
+                    enum:
+                      - CP
+                      - CNP
+                    description: |
+                      Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. 
+                                      * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. 
+                                      * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+                    minLength: 1
+                    maxLength: 50
+                    example: CP
+                  amount:
+                    type: string
+                    description: The amount to transfer between Payer and Merchant for a SALE or a REFUND. It is always represented in the lowest denomination of the related currency. and with no decimal point.
+                    minLength: 1
+                    maxLength: 50
+                    example: '11099'
+                  currency:
+                    type: string
+                    enum:
+                      - USD
+                      - EUR
+                      - GBP
+                      - CAD
+                      - CHF
+                      - etc.
+                    description: The currency of the amount in ISO-4217(alpha-3).
+                    minLength: 3
+                    maxLength: 3
+                    example: USD
+                  country:
+                    type: string
+                    description: |
+
+                      This is the countty the merchant is domiciled in. For example, If if the merchant is based in Canada it must be set to CA.If if the merchant is based in England it must be set to GB.If if the merchant is based in USA it must be set to US.The country in ISO-3166-1(alpha-2 code) format.
+                    minLength: 2
+                    maxLength: 2
+                    example: US
+                  merchant_id:
+                    type: string
+                    description: 'A unique identifier that is used to identify and reference an instance of this resource. This id is used when actioning or referencing a specific merchant. Begins with the three letters, MER.'
+                    minLength: 1
+                    maxLength: 50
+                    example: MER_A6A1EC44522F96630ABEA17A
+                  merchant_name:
+                    type: string
+                    title: merchant_name_INSTALLMENTS.merchant_name
+                    description: A meaningful label that better identifies the merchant.
+                    minLength: 1
+                    maxLength: 50
+                    example: ABC INDUSTRIES
+                  account_id:
+                    type: string
+                    description: 'A unique identifier that is used to identify and reference an instance of this resource. This id is used when actioning or referencing a specific account. Begins with the three letters, TRA.'
+                    minLength: 1
+                    maxLength: 50
+                    example: TRA_86920f927028745yt34d077d88beb29b
+                  account_name:
+                    type: string
+                    title: account_name_INSTALLMENTS.account_name
+                    description: A meaningful label that better identifies the account.
+                    minLength: 1
+                    maxLength: 50
+                    example: transaction_processing
+                  reference:
+                    type: string
+                    description: Merchant defined field to reference the transaction.
+                    minLength: 1
+                    maxLength: 50
+                    example: becf9f3e-4d33-459c-8ed2-0c4affc9555e
+                  program:
+                    type: string
+                    description: This field indicates the installment program the merchant is participating in.
+                    example: SIP
+                  terms:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: The reference to the installment option being offered. This field is applicable only if the installment.program is SIP.
+                          example: '1'
+                        time_unit:
+                          type: string
+                          description: 'This field indicates if installment.term.time_unit_number is days, months or years'
+                          example: MONTH
+                        time_unit_numbers:
+                          type: array
+                          description: This field indicates the total number of payments to be made over the course of the installment payment plan.
+                          items:
+                            type: string
+                          example:
+                            - '3'
+                            - '6'
+                  payment_method:
+                    type: object
+                    properties:
+                      result:
+                        type: string
+                        description: The result code associated with the payment method used to process this transaction.
+                        minLength: 1
+                        maxLength: 50
+                        example: '00'
+                      message:
+                        type: string
+                        description: The result message that better explains the result code.
+                        minLength: 1
+                        maxLength: 50
+                        example: APPROVAL
+                      entry_mode:
+                        type: string
+                        enum:
+                          - MOTO
+                          - ECOM
+                          - IN_APP
+                          - CHIP
+                          - SWIPE
+                          - MANUAL
+                          - PHONE
+                          - MAIL
+                          - CONTACTLESS_CHIP
+                          - CONTACTLESS_SWIPE
+                          - PRESENT
+                          - UNKNOWN
+                        description: |
+                          Indicates how the payment method information was obtained by the Merchant for this transaction. 
+                                                   * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail. 
+                                                   * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser. 
+                                                   * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only. 
+                                                   * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip. 
+                                                   * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information. 
+                                                   * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device. 
+                                                   * `CONTACTLESS_CHIP` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a card on or near a device to exchange card information. 
+                                                   * `CONTACTLESS_SWIPE` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information 
+                                                   * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone. 
+                                                   * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
+                                                   * `PRESENT`- The entry mode cannot be determined but it is a Customer Present transaction.
+                                                   * `UNKNOWN` - The entry mode for this transaction cannot be determined.
+                        minLength: 1
+                        maxLength: 50
+                        example: ECOM
+                      card:
+                        type: object
+                        properties:
+                          brand:
+                            type: string
+                            enum:
+                              - VISA
+                              - MASTERCARD
+                              - AMEX
+                              - DINERS
+                              - DISCOVER
+                              - JCB
+                              - CUP
+                            description: Indicates the card brand that issued the card.
+                            minLength: 1
+                            maxLength: 50
+                            example: VISA
+                          masked_number_last4:
+                            type: string
+                            description: Masked card number with last 4 digits visible.
+                            minLength: 1
+                            maxLength: 50
+                            example: xxxxxxxxxxxx5262
+                          authcode:
+                            type: string
+                            description: Code generated by the card provider when the card is successfully authorized.
+                            minLength: 1
+                            maxLength: 50
+                          brand_reference:
+                            type: string
+                            description: The unique reference created by the brands/schemes to uniquely identify the transaction.
+                            minLength: 1
+                            maxLength: 50
+                  action:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: A unique identifier generated by Global Payments to identify an action.
+                        minLength: 1
+                        maxLength: 50
+                        example: ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+                      type:
+                        type: string
+                        enum:
+                          - INSTALLMENT_QUERY
+                        description: Indicates the specific action taken.
+                        minLength: 1
+                        maxLength: 50
+                        example: INSTALLMENT_QUERY
+                      time_created:
+                        type: string
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        minLength: 1
+                        maxLength: 50
+                        example: '2026-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        enum:
+                          - SUCCESS
+                          - DECLINED
+                          - PENDING
+                          - ERROR
+                        description: The result of the action executed.
+                        minLength: 1
+                        maxLength: 50
+                        example: SUCCESS
+                      app_id:
+                        type: string
+                        description: The id of the app that was used to create the token.
+                        minLength: 1
+                        maxLength: 50
+                        example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+                      app_name:
+                        type: string
+                        description: The name of the app the user gave to the application.
+                        minLength: 1
+                        maxLength: 50
+                        example: my_lovely_app
+                x-examples:
+                  Example 1:
+                    id: INS_ltYS39jFJO8HUvFRAbYzQgbZBu0Yzo
+                    time_created: '2024-04-08T08:45:10.605Z'
+                    type: INSTALLMENT_QUERY
+                    status: AVAILABLE
+                    channel: CP
+                    amount: '0'
+                    currency: USD
+                    country: US
+                    merchant_id: MER_5f74ce576da3417f9f7f3a03f59ee0a0
+                    merchant_name: AP IPP SIP
+                    account_id: TRA_065bd008015542efa80a6d8e34dd0098
+                    account_name: SIP_Transaction_Processing
+                    reference: TRANS-20180114123459878
+                    program: SIP
+                    terms:
+                      - id: '01'
+                        time_unit: MONTH
+                        time_unit_numbers:
+                          - 3
+                          - 6
+                          - 9
+                          - 12
+                          - 24
+                          - 36
+                      - id: '02'
+                        time_unit: MONTH
+                        time_unit_numbers:
+                          - 12
+                          - 24
+                          - 36
+                      - id: '03'
+                        time_unit: MONTH
+                        time_unit_numbers:
+                          - 3
+                          - 6
+                          - 12
+                    payment_method:
+                      result: '00'
+                      message: APPROVAL
+                      entry_mode: ECOM
+                      card:
+                        brand: VISA
+                        masked_number_last4: XXXXXXXXXXXX5512
+                        authcode: ''
+                        brand_reference: '409916002706'
+                    action:
+                      id: ACT_ltYS39jFJO8HUvFRAbYzQgbZBu0Yzo
+                      type: INSTALLMENT_QUERY
+                      time_created: '2024-04-08T08:45:10.605Z'
+                      result_code: SUCCESS
+                      app_id: GPuBZzGzNyywi2bk08i18L2FOgtHS3v3
+                      app_name: gpqa_ap_sip
+              examples:
+                Example 1:
+                  value:
+                    id: INS_hAxxDJ3C4pWKh039jkGNqQ8xF1Oa4w
+                    time_created: '2019-08-24T14:15:22Z'
+                    type: INSTALLMENT_QUERY
+                    status: AVAILABLE
+                    channel: CP
+                    amount: '11099'
+                    currency: USD
+                    country: US
+                    merchant_id: MER_A6A1EC44522F96630ABEA17A
+                    merchant_name: ABC INDUSTRIES
+                    account_id: TRA_86920f927028745yt34d077d88beb29b
+                    account_name: transaction_processing
+                    reference: becf9f3e-4d33-459c-8ed2-0c4affc9555e
+                    program: SIP
+                    terms:
+                      - id: '1'
+                        time_unit: MONTH
+                        time_unit_numbers:
+                          - '3'
+                          - '6'
+                    payment_method:
+                      result: string
+                      message: string
+                      entry_mode: ECOM
+                      card:
+                        brand: VISA
+                        masked_number_last4: xxxxxxxxxxxx5262
+                        authcode: string
+                        brand_reference: string
+                    action:
+                      id: ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+                      type: INSTALLMENT_QUERY
+                      time_created: '2026-05-03T21:23:39.718Z'
+                      result_code: SUCCESS
+                      app_id: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+                      app_name: my_lovely_app
+        '404':
+          description: User Not Found
+      servers:
+        - url: 'https://apis.sandbox.globalpay.com/ucp'
+          description: Sandbox Environment
+        - url: 'https://apis.globalpay.com/ucp'
+          description: Production Environment
+components:
+  parameters:
+    X-GP-Version:
+      name: X-GP-Version
+      in: header
+      description: The version of the API to execute the request.
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 50
+        default: '2021-03-22'
+        example: '2021-03-22'
+    Authorization:
+      name: Authorization
+      in: header
+      description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
+      required: true
+      schema:
+        type: string
+        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+    Content-type:
+      name: Content-type
+      in: header
+      description: Format of the message body.
+      required: true
+      schema:
+        type: string
+        default: application/json
+        example: application/json
+  schemas:
+    account_name_INSTALLMENTS.account_name:
+      type: string
+      title: account_name_INSTALLMENTS.account_name
+      description: A meaningful label that better identifies the account.
+      minLength: 1
+      maxLength: 50
+      example: transaction_processing
+    channel_INSTALLMENTS.channel:
+      type: string
+      enum:
+        - CP
+        - CNP
+      description: |
+        Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. 
+                        * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. 
+                        * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+      minLength: 1
+      maxLength: 50
+      example: CP
+    amount_INSTALLMENTS.amount:
+      type: string
+      description: The amount to transfer between Payer and Merchant for a SALE or a REFUND. It is always represented in the lowest denomination of the related currency. and with no decimal point.
+      minLength: 1
+      maxLength: 50
+      example: '11099'
+    currency_INSTALLMENTS.currency:
+      type: string
+      enum:
+        - USD
+        - EUR
+        - GBP
+        - CAD
+        - CHF
+        - etc.
+      description: The currency of the amount in ISO-4217(alpha-3).
+      minLength: 3
+      maxLength: 3
+      example: USD
+    country_INSTALLMENTS.country:
+      type: string
+      description: |
+
+        This is the countty the merchant is domiciled in. For example, If if the merchant is based in Canada it must be set to CA.If if the merchant is based in England it must be set to GB.If if the merchant is based in USA it must be set to US.The country in ISO-3166-1(alpha-2 code) format.
+      minLength: 2
+      maxLength: 2
+      example: US
+    reference_INSTALLMENTS.reference:
+      type: string
+      description: Merchant defined field to reference the transaction.
+      minLength: 1
+      maxLength: 50
+      example: becf9f3e-4d33-459c-8ed2-0c4affc9555e
+    program_INSTALLMENTS.program:
+      type: string
+      description: This field indicates the installment program the merchant is participating in.
+      example: SIP
+    entry_mode_INSTALLMENTS.payment_method.entry_mode:
+      type: string
+      enum:
+        - MOTO
+        - ECOM
+        - IN_APP
+        - CHIP
+        - SWIPE
+        - MANUAL
+        - PHONE
+        - MAIL
+        - CONTACTLESS_CHIP
+        - CONTACTLESS_SWIPE
+        - PRESENT
+        - UNKNOWN
+      description: |
+        Indicates how the payment method information was obtained by the Merchant for this transaction. 
+                                 * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail. 
+                                 * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser. 
+                                 * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only. 
+                                 * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip. 
+                                 * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information. 
+                                 * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device. 
+                                 * `CONTACTLESS_CHIP` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a card on or near a device to exchange card information. 
+                                 * `CONTACTLESS_SWIPE` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information 
+                                 * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone. 
+                                 * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
+                                 * `PRESENT`- The entry mode cannot be determined but it is a Customer Present transaction.
+                                 * `UNKNOWN` - The entry mode for this transaction cannot be determined.
+      minLength: 1
+      maxLength: 50
+      example: ECOM
+    number_INSTALLMENTS.payment_method.card.number:
+      type: string
+      description: The the card account number used to authorize the transaction. Also known as PAN.
+      minLength: 1
+      maxLength: 50
+      example: '4263970000005262'
+    expiry_month_INSTALLMENTS.payment_method.card.expiry_month:
+      type: string
+      description: The 2 digit expiry date month of the card.
+      minLength: 1
+      maxLength: 50
+      example: '12'
+    expiry_year_INSTALLMENTS.payment_method.card.expiry_year:
+      type: string
+      description: The 2 digit expiry date year of the card.
+      minLength: 1
+      maxLength: 50
+      example: '29'
+    id_INSTALLMENTS.id:
+      type: string
+      description: 'A unique identifier that is used to identify and reference an instance of this resource. This id is used when actioning or referencing a specific installment request. Begins with the three letters, INS.'
+      minLength: 1
+      maxLength: 50
+      example: INS_hAxxDJ3C4pWKh039jkGNqQ8xF1Oa4w
+    time_created_INSTALLMENTS.time_created:
+      type: string
+      description: Global Payments time indicating when the object was created in ISO-8601 format.
+      format: date-time
+      example: '2026-05-03T21:23:39.718Z'
+    type_INSTALLMENTS.type:
+      type: string
+      enum:
+        - INSTALLMENT_QUERY
+      description: The type of installment request.
+      example: INSTALLMENT_QUERY
+    status_INSTALLMENTS.status:
+      type: string
+      enum:
+        - AVAILABLE
+        - NOT_AVAILABLE
+      description: Indicates the status of the installment.
+      example: AVAILABLE
+    merchant_id_INSTALLMENTS.merchant_id:
+      type: string
+      description: 'A unique identifier that is used to identify and reference an instance of this resource. This id is used when actioning or referencing a specific merchant. Begins with the three letters, MER.'
+      minLength: 1
+      maxLength: 50
+      example: MER_A6A1EC44522F96630ABEA17A
+    merchant_name_INSTALLMENTS.merchant_name:
+      type: string
+      title: merchant_name_INSTALLMENTS.merchant_name
+      description: A meaningful label that better identifies the merchant.
+      minLength: 1
+      maxLength: 50
+      example: ABC INDUSTRIES
+    account_id_INSTALLMENTS.account_id:
+      type: string
+      description: 'A unique identifier that is used to identify and reference an instance of this resource. This id is used when actioning or referencing a specific account. Begins with the three letters, TRA.'
+      minLength: 1
+      maxLength: 50
+      example: TRA_86920f927028745yt34d077d88beb29b
+    id_INSTALLMENTS.terms.id:
+      type: string
+      description: The reference to the installment option being offered. This field is applicable only if the installment.program is SIP.
+      example: '1'
+    time_unit_INSTALLMENTS.terms.time_unit:
+      type: string
+      description: 'This field indicates if installment.term.time_unit_number is days, months or years'
+      example: MONTH
+    time_unit_numbers_INSTALLMENTS.terms.time_unit_numbers:
+      type: array
+      description: This field indicates the total number of payments to be made over the course of the installment payment plan.
+      items:
+        type: string
+      example:
+        - '3'
+        - '6'
+    result_INSTALLMENTS.payment_method.result:
+      type: string
+      description: The result code associated with the payment method used to process this transaction.
+      minLength: 1
+      maxLength: 50
+      example: '00'
+    message_INSTALLMENTS.payment_method.message:
+      type: string
+      description: The result message that better explains the result code.
+      minLength: 1
+      maxLength: 50
+      example: APPROVAL
+    brand_INSTALLMENTS.payment_method.card.brand:
+      type: string
+      enum:
+        - VISA
+        - MASTERCARD
+        - AMEX
+        - DINERS
+        - DISCOVER
+        - JCB
+        - CUP
+      description: Indicates the card brand that issued the card.
+      minLength: 1
+      maxLength: 50
+      example: VISA
+    masked_number_last4_INSTALLMENTS.payment_method.card.masked_number_last4:
+      type: string
+      description: Masked card number with last 4 digits visible.
+      minLength: 1
+      maxLength: 50
+      example: xxxxxxxxxxxx5262
+    authcode_INSTALLMENTS.payment_method.card.authcode:
+      type: string
+      description: Code generated by the card provider when the card is successfully authorized.
+      minLength: 1
+      maxLength: 50
+    brand_reference_INSTALLMENTS.payment_method.card.brand_reference:
+      type: string
+      description: The unique reference created by the brands/schemes to uniquely identify the transaction.
+      minLength: 1
+      maxLength: 50
+    id_INSTALLMENTS.action.id:
+      type: string
+      description: A unique identifier generated by Global Payments to identify an action.
+      minLength: 1
+      maxLength: 50
+      example: ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    type_INSTALLMENTS.action.type:
+      type: string
+      enum:
+        - INSTALLMENT_QUERY
+      description: Indicates the specific action taken.
+      minLength: 1
+      maxLength: 50
+      example: INSTALLMENT_QUERY
+    time_created_INSTALLMENTS.action.time_created:
+      type: string
+      description: Global Payments time indicating when the object was created in ISO-8601 format.
+      minLength: 1
+      maxLength: 50
+      example: '2026-05-03T21:23:39.718Z'
+    result_code_INSTALLMENTS.action.result_code:
+      type: string
+      enum:
+        - SUCCESS
+        - DECLINED
+        - PENDING
+        - ERROR
+      description: The result of the action executed.
+      minLength: 1
+      maxLength: 50
+      example: SUCCESS
+    app_id_INSTALLMENTS.action.app_id:
+      type: string
+      description: The id of the app that was used to create the token.
+      minLength: 1
+      maxLength: 50
+      example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    app_name_INSTALLMENTS.action.app_name:
+      type: string
+      description: The name of the app the user gave to the application.
+      minLength: 1
+      maxLength: 50
+      example: my_lovely_app

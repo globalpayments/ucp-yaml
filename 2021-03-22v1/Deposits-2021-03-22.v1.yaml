@@ -1,0 +1,2648 @@
+openapi: 3.0.3
+x-stoplight:
+  id: cu3v1805t5fz0
+info:
+  title: Deposits
+  description: 'Deposits represent the initiation of a Debit or a Credit to a Merchant''s Bank Account that relates to Transactions and Disputes processed, or fees charged to the Merchant.'
+  contact:
+    name: API Integrations
+    url: 'https://developer.globalpay.com/?gp-api=true'
+    email: api.integrations@globalpay.com
+  version: 2021 03 22
+servers:
+  - url: 'https://apis.sandbox.globalpay.com/ucp'
+    description: Sandbox Environment
+  - url: 'https://apis.globalpay.com/ucp'
+    description: Production Environment
+tags:
+  - name: Get a list of Deposit information
+    description: Get information about the amounts Global Payments affected to merchant's bank account(s).
+    externalDocs:
+      url: 'https://developer.globalpay.com/settlement-reporting/step-by-step-guide'
+  - name: Get a Single Deposit
+    description: Get information about a single amount Global Payments affected to merchant's bank account.
+    externalDocs:
+      url: 'https://developer.globalpay.com/settlement-reporting/step-by-step-guide'
+paths:
+  /settlement/deposits:
+    get:
+      operationId: getDepositList
+      tags:
+        - Get a list of Deposit information
+      summary: Get a list of Deposits using criteria passed in the query string. Page through the result set to access all records.
+      description: Get a list of Deposits using criteria passed in the query string. Page through the result set to access all records.
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+          description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
+          required: true
+        - name: X-GP-Version
+          in: header
+          required: true
+          schema:
+            type: string
+            default: '2021-03-22'
+            example: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+          description: The version of the API to execute the request.
+        - name: page
+          in: query
+          schema:
+            type: number
+            x-stoplight:
+              id: f3yalmtk1ht36
+            description: 'Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.1 means the first page, 2 the second and so on.'
+            minLength: 1
+            maxLength: 1000
+            default: 1
+            example: 1
+        - name: page_size
+          in: query
+          schema:
+            type: number
+            x-stoplight:
+              id: c4xjzukdboxq1
+            description: The total number of records to return in a single page for a list.
+            example: 5
+            minLength: 1
+            maxLength: 1000
+            default: 5
+        - name: order
+          in: query
+          schema:
+            type: string
+            x-stoplight:
+              id: pp5vl4k2xa2fq
+            description: 'The direction of the ordering of the entire list, ASC or DESC'
+            example: ASC
+            enum:
+              - ASC
+              - DESC
+        - name: order_by
+          in: query
+          schema:
+            type: string
+            x-stoplight:
+              id: ovazxjcolt61j
+            description: The field to order the list by.
+            example: TIME_CREATED
+            default: TIME_CREATED
+        - name: account_name
+          in: query
+          required: true
+          example: Settlement Reporting
+          schema:
+            type: string
+            x-stoplight:
+              id: hx5u9826qul64
+            description: A meaningful label for the merchant account set by Global Payments.
+            example: Settlement Reporting
+            minLength: 1
+            maxLength: 50
+        - name: from_time_created
+          in: query
+          schema:
+            type: string
+            x-stoplight:
+              id: g3jamr1p7cqs4
+            example: '2022-05-01'
+            format: date-time
+            description: |
+              The start time to search for in a range, using the resource time_created value.
+        - name: to_time_created
+          in: query
+          schema:
+            type: string
+            x-stoplight:
+              id: 461e0zku4tbpa
+            example: '2023-05-01'
+            format: date-time
+            description: |
+              The end time to search for in a range, using the resource time_created value.
+        - name: id
+          in: query
+          schema:
+            type: string
+            x-stoplight:
+              id: r4rf3zxw9xsgu
+            description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+            minLength: 1
+            maxLength: 50
+        - name: status
+          in: query
+          schema:
+            type: string
+            x-stoplight:
+              id: byvfuvk51rqdj
+            description: |
+              Indicates where a resource object is in it's lifecycle. *`FUNDED` - Deposit Funded to bank account
+              *`IRREG` - Deposit not funded by Global Payments
+              *`RESERVED `-  Deposit on reserve.
+
+               *`DELAYED` - Deposit delayed for funding.
+
+               *`RELEASED` - Deposit released by Global Payments from a status of DELAYED
+            example: FUNDED
+        - name: amount
+          in: query
+          schema:
+            type: string
+            x-stoplight:
+              id: nvdzu64quo04u
+            description: The amount that should be credited or debited. It is always represented in the lowest denomiation of the related currency.
+            example: '500'
+        - name: masked_account_number_last4
+          in: query
+          schema:
+            type: string
+            x-stoplight:
+              id: cizqdxzq2rw0s
+            description: Data relating to a bank transfer directly to or from the Payer's bank account.
+            minLength: 1
+            maxLength: 50
+        - name: system.mid
+          in: query
+          schema:
+            type: string
+            x-stoplight:
+              id: ycm7wq504kyoj
+            description: Merchant Identifier from Global Payments system for some features.
+            minLength: 1
+            maxLength: 50
+        - name: system.hierarchy
+          in: query
+          schema:
+            type: string
+            x-stoplight:
+              id: z6m96ycdeitn2
+            description: Identifies the location of a merchant within the merchant's corporate hierarchical structure.
+            minLength: 1
+            maxLength: 50
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+                x-stoplight:
+                  id: qdoiuafa6zsf8
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+                x-stoplight:
+                  id: rgi0h47svaey8
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+                x-stoplight:
+                  id: r6rjivm6gr5z6
+          content:
+            application/json:
+              schema:
+                type: object
+                x-stoplight:
+                  id: 012ol5w7jxpo8
+                properties:
+                  total_record_count:
+                    type: number
+                    x-stoplight:
+                      id: q703a2i7gvk06
+                    description: 'The total number of records across all pages for the search filter. When searching for a collection of resoures, this is returned on the first page only and when the date range is a month or less.'
+                    example: 1000
+                  current_page_size:
+                    type: number
+                    x-stoplight:
+                      id: ztcr1dqx08z8l
+                    description: The total number of records returned on the current page. If current_page_size is less than the page_size using in the querystring then this is the final page for that search.
+                    example: 564
+                  merchant_id:
+                    type: string
+                    x-stoplight:
+                      id: iqbq2s2ryxqxn
+                    description: A unique identifier for the merchant set by Global Payments.
+                    example: MER_c4c0df11039c48a9b63701adeaa296c3
+                    minLength: 1
+                    maxLength: 50
+                  merchant_name:
+                    type: string
+                    x-stoplight:
+                      id: 7z1itlxnfrtjm
+                    description: A meaningful label for the merchant set by Global Payments.
+                    example: Sandbox_merchant_2
+                    minLength: 1
+                    maxLength: 50
+                  account_id:
+                    type: string
+                    x-stoplight:
+                      id: wacihrt8unw7p
+                    description: A unique identifier for the merchant account set by Global Payments.
+                    example: TRA_86920f927028745yt34d077d88beb29b
+                    minLength: 1
+                    maxLength: 50
+                  account_name:
+                    type: string
+                    x-stoplight:
+                      id: hx5u9826qul64
+                    description: A meaningful label for the merchant account set by Global Payments.
+                    example: Settlement Reporting
+                    minLength: 1
+                    maxLength: 50
+                  filter:
+                    type: object
+                    properties:
+                      from_time_created:
+                        type: string
+                        x-stoplight:
+                          id: g3jamr1p7cqs4
+                        example: '2022-05-01'
+                        format: date-time
+                        description: |
+                          The start time to search for in a range, using the resource time_created value.
+                      to_time_created:
+                        type: string
+                        x-stoplight:
+                          id: 461e0zku4tbpa
+                        example: '2023-05-01'
+                        format: date-time
+                        description: |
+                          The end time to search for in a range, using the resource time_created value.
+                  paging:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                        x-stoplight:
+                          id: f3yalmtk1ht36
+                        description: 'Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.1 means the first page, 2 the second and so on.'
+                        minLength: 1
+                        maxLength: 1000
+                        default: 1
+                        example: 1
+                      page_size:
+                        type: number
+                        x-stoplight:
+                          id: c4xjzukdboxq1
+                        description: The total number of records to return in a single page for a list.
+                        example: 5
+                        minLength: 1
+                        maxLength: 1000
+                        default: 5
+                      order_by:
+                        type: string
+                        x-stoplight:
+                          id: ovazxjcolt61j
+                        description: The field to order the list by.
+                        example: TIME_CREATED
+                        default: TIME_CREATED
+                      order:
+                        type: string
+                        x-stoplight:
+                          id: pp5vl4k2xa2fq
+                        description: 'The direction of the ordering of the entire list, ASC or DESC'
+                        example: ASC
+                        enum:
+                          - ASC
+                          - DESC
+                  deposits:
+                    type: array
+                    description: A list of Deposit records.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          x-stoplight:
+                            id: r4rf3zxw9xsgu
+                          description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                          minLength: 1
+                          maxLength: 50
+                        time_created:
+                          type: string
+                          x-stoplight:
+                            id: 5npnx6z8kv5fg
+                          description: Global Payments time indicating when the object was created in ISO-8601 format..
+                          example: '2021-05-03'
+                        status:
+                          type: string
+                          x-stoplight:
+                            id: byvfuvk51rqdj
+                          description: |
+                            Indicates where a resource object is in it's lifecycle. *`FUNDED` - Deposit Funded to bank account
+                            *`IRREG` - Deposit not funded by Global Payments
+                            *`RESERVED `-  Deposit on reserve.
+
+                             *`DELAYED` - Deposit delayed for funding.
+
+                             *`RELEASED` - Deposit released by Global Payments from a status of DELAYED
+                          example: FUNDED
+                        funding_type:
+                          type: string
+                          x-stoplight:
+                            id: zxvfx7v8waqje
+                          description: Indicates if the amount relates to a Debit or Credit to the merchant's bank account.
+                          example: DEBIT
+                        amount:
+                          type: string
+                          x-stoplight:
+                            id: nvdzu64quo04u
+                          description: The amount that should be credited or debited. It is always represented in the lowest denomiation of the related currency.
+                          example: '500'
+                        currency:
+                          type: string
+                          x-stoplight:
+                            id: f19fb6yiv2p4f
+                          description: The currency of the amount in ISO-4217(alpha-3)
+                          example: USD
+                          minLength: 3
+                          maxLength: 3
+                        aggregation_model:
+                          type: string
+                          x-stoplight:
+                            id: a99gccfmr6n4k
+                          description: 'Indicates how a merchant''s payment processing activity across Sales, Refunds, Disputes and Fees is structured for a Deposit. Activity can be aggregated into one daily amount or all activity separately funded via different deposits.'
+                          example: 4-No Summary
+                        bank_transfer:
+                          type: object
+                          x-stoplight:
+                            id: tn0w8bqiqkjuj
+                          properties:
+                            masked_account_number_last4:
+                              type: string
+                              x-stoplight:
+                                id: cizqdxzq2rw0s
+                              description: Data relating to a bank transfer directly to or from the Payer's bank account.
+                              minLength: 1
+                              maxLength: 50
+                            bank:
+                              type: object
+                              x-stoplight:
+                                id: 8skzpysebmgiz
+                              properties:
+                                code:
+                                  type: string
+                                  x-stoplight:
+                                    id: bygy1aeip7vht
+                                  description: The local identifier code for the bank.
+                                  example: 124002971
+                                  maxLength: 50
+                        system:
+                          type: object
+                          x-stoplight:
+                            id: tdt30xpfms43e
+                          properties:
+                            mid:
+                              type: string
+                              x-stoplight:
+                                id: ycm7wq504kyoj
+                              description: Merchant Identifier from Global Payments system for some features.
+                              minLength: 1
+                              maxLength: 50
+                            hierarchy:
+                              type: string
+                              x-stoplight:
+                                id: z6m96ycdeitn2
+                              description: Identifies the location of a merchant within the merchant's corporate hierarchical structure.
+                              minLength: 1
+                              maxLength: 50
+                            name:
+                              type: string
+                              x-stoplight:
+                                id: 52tyn7fg9clv9
+                              description: The merchant name that is associated with the merchant.
+                              example: MERCHANT ABC INC.
+                              minLength: 1
+                              maxLength: 100
+                            dba:
+                              type: string
+                              x-stoplight:
+                                id: afay0ofmacpjb
+                              description: The alternate name the merchant may be known as.
+                              example: MERCHANT XYZ INC
+                              minLength: 1
+                              maxLength: 100
+                        sales:
+                          type: object
+                          x-stoplight:
+                            id: mc1f95ci98o1x
+                          properties:
+                            count:
+                              type: number
+                              x-stoplight:
+                                id: m5jk5u1fbpzei
+                              description: The total number of items.
+                              example: 123
+                            amount:
+                              type: string
+                              x-stoplight:
+                                id: gb2wfwmxvm3xc
+                              description: The total amount across one or more items
+                              example: '120'
+                        refunds:
+                          type: object
+                          x-stoplight:
+                            id: x4ntbuphy7hzj
+                          properties:
+                            count:
+                              type: number
+                              x-stoplight:
+                                id: b9lwonymvurb5
+                              description: The total number of items.
+                              example: 123
+                            amount:
+                              type: string
+                              x-stoplight:
+                                id: n18gon3tsi09z
+                              description: The total amount across one or more items.
+                              example: '120'
+                        disputes:
+                          type: object
+                          x-stoplight:
+                            id: 1jsz93vk0rsnf
+                          properties:
+                            chargebacks:
+                              type: object
+                              x-stoplight:
+                                id: m2sk2vj2cpsfs
+                              properties:
+                                count:
+                                  type: number
+                                  x-stoplight:
+                                    id: ziqcphyj9y62c
+                                  description: The total number of items.
+                                  example: 123
+                                amount:
+                                  type: string
+                                  x-stoplight:
+                                    id: gek6fvdbn41z0
+                                  description: The total amount across one or more items.
+                                  example: '120'
+                            reversals:
+                              type: object
+                              x-stoplight:
+                                id: rdvdiqqsmd3pf
+                              properties:
+                                count:
+                                  type: number
+                                  x-stoplight:
+                                    id: 26kaukbql35ht
+                                  description: The total number of items.
+                                  example: 123
+                                amount:
+                                  type: string
+                                  x-stoplight:
+                                    id: a3x431bih246f
+                                  description: The total amount across one or more items.
+                                  example: '120'
+                        discounts:
+                          type: object
+                          x-stoplight:
+                            id: zlxvaov21egm1
+                          properties:
+                            count:
+                              type: number
+                              x-stoplight:
+                                id: do9q4psmhop0x
+                              description: The total number of items.
+                              example: 123
+                            amount:
+                              type: string
+                              x-stoplight:
+                                id: qyhsiecihza7e
+                              description: The total amount across one or more items.
+                              example: '120'
+                        fees:
+                          type: object
+                          x-stoplight:
+                            id: ku3gfg22k7zde
+                          properties:
+                            amount:
+                              type: string
+                              x-stoplight:
+                                id: zgd619uvkedhe
+                              description: The total amount across one or more items.
+                              example: '120'
+                  action:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        x-stoplight:
+                          id: 6003668svw7pp
+                        description: A unique identifier generated by Global Payments to identify an action.
+                        example: ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+                      type:
+                        type: string
+                        x-stoplight:
+                          id: z099h2chk03kh
+                        description: Indicates the specific action taken.
+                        example: DEPOSIT_SINGLE
+                        enum:
+                          - DEPOSIT_SINGLE
+                          - DEPOSIT_LIST
+                      time_created:
+                        type: string
+                        x-stoplight:
+                          id: yiwv1vnf6h0co
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        x-stoplight:
+                          id: lt982m1ujjdb1
+                        description: The result of the action executed.
+                        example: SUCCESS
+                        enum:
+                          - SUCCESS
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        x-stoplight:
+                          id: srf0ut49rngwn
+                        description: The id of the app that was used to create the token.
+                        example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        x-stoplight:
+                          id: qdwr0elfm1kod
+                        description: The name of the app the user gave to the application.
+                        example: my_lovely_app
+                        minLength: 1
+                        maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+                x-stoplight:
+                  id: 4bq8e4zmuh5ef
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+                x-stoplight:
+                  id: xz7ijn9g6wuhp
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+                x-stoplight:
+                  id: klomm831n3xe4
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+                x-stoplight:
+                  id: 9h5t2qirsa09t
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+                x-stoplight:
+                  id: bbg3lue873fk0
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+                x-stoplight:
+                  id: af8ttv0haa7zk
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+                x-stoplight:
+                  id: urr7utebg8ys7
+  '/settlement/deposits/{id}':
+    get:
+      operationId: getDepositSingle
+      tags:
+        - Get a Single Deposit
+      summary: Get the details of a single Deposit using its unique id.
+      description: Get the details of a single Deposit using its unique id.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer access token value used to access the API.
+          schema:
+            description: Bearer access token value used to access the API.
+            type: string
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            x-stoplight:
+              id: stor96sg67n8f
+        - in: header
+          name: X-GP-Version
+          required: true
+          schema:
+            description: Indicates the version of the GP-API for this message.
+            type: string
+            default: '2021-03-22'
+            minLength: 1
+            maxLength: 50
+            x-stoplight:
+              id: r6rjivm6gr5z6
+          description: The version of the API to execute the request.
+        - name: id
+          in: path
+          description: This is the deposit id created to uniquely identify it in the Global Payments system.
+          required: true
+          schema:
+            type: string
+            x-stoplight:
+              id: r4rf3zxw9xsgu
+            description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+            minLength: 1
+            maxLength: 50
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                description: Indicates the format of the message.
+                type: string
+                default: application/json
+                x-stoplight:
+                  id: qdoiuafa6zsf8
+            Content-Encoding:
+              schema:
+                description: Indicates if the message is compressed and using what compression mechanism.
+                type: string
+                default: gzip
+                x-stoplight:
+                  id: rgi0h47svaey8
+            X-GP-Version:
+              schema:
+                description: Indicates the version of the GP-API for this message.
+                type: string
+                default: '2021-03-22'
+                minLength: 1
+                maxLength: 50
+                x-stoplight:
+                  id: r6rjivm6gr5z6
+          content:
+            application/json:
+              schema:
+                type: object
+                x-stoplight:
+                  id: lrvs5knsc55fs
+                properties:
+                  id:
+                    type: string
+                    x-stoplight:
+                      id: r4rf3zxw9xsgu
+                    description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                    minLength: 1
+                    maxLength: 50
+                  time_created:
+                    type: string
+                    x-stoplight:
+                      id: 5npnx6z8kv5fg
+                    description: Global Payments time indicating when the object was created in ISO-8601 format..
+                    example: '2021-05-03'
+                  status:
+                    type: string
+                    x-stoplight:
+                      id: byvfuvk51rqdj
+                    description: |
+                      Indicates where a resource object is in it's lifecycle. *`FUNDED` - Deposit Funded to bank account
+                      *`IRREG` - Deposit not funded by Global Payments
+                      *`RESERVED `-  Deposit on reserve.
+
+                       *`DELAYED` - Deposit delayed for funding.
+
+                       *`RELEASED` - Deposit released by Global Payments from a status of DELAYED
+                    example: FUNDED
+                  funding_type:
+                    type: string
+                    x-stoplight:
+                      id: zxvfx7v8waqje
+                    description: Indicates if the amount relates to a Debit or Credit to the merchant's bank account.
+                    example: DEBIT
+                  amount:
+                    type: string
+                    x-stoplight:
+                      id: nvdzu64quo04u
+                    description: The amount that should be credited or debited. It is always represented in the lowest denomiation of the related currency.
+                    example: '500'
+                  currency:
+                    type: string
+                    x-stoplight:
+                      id: f19fb6yiv2p4f
+                    description: The currency of the amount in ISO-4217(alpha-3)
+                    example: USD
+                    minLength: 3
+                    maxLength: 3
+                  aggregation_model:
+                    type: string
+                    x-stoplight:
+                      id: a99gccfmr6n4k
+                    description: 'Indicates how a merchant''s payment processing activity across Sales, Refunds, Disputes and Fees is structured for a Deposit. Activity can be aggregated into one daily amount or all activity separately funded via different deposits.'
+                    example: 4-No Summary
+                  bank_transfer:
+                    type: object
+                    properties:
+                      masked_account_number_last4:
+                        type: string
+                        x-stoplight:
+                          id: cizqdxzq2rw0s
+                        description: Data relating to a bank transfer directly to or from the Payer's bank account.
+                        minLength: 1
+                        maxLength: 50
+                      bank:
+                        type: object
+                        x-stoplight:
+                          id: o8tcveqh7zxw6
+                        properties:
+                          code:
+                            type: string
+                            x-stoplight:
+                              id: bygy1aeip7vht
+                            description: The local identifier code for the bank.
+                            example: 124002971
+                            maxLength: 50
+                  system:
+                    type: object
+                    properties:
+                      mid:
+                        type: string
+                        x-stoplight:
+                          id: ycm7wq504kyoj
+                        description: Merchant Identifier from Global Payments system for some features.
+                        minLength: 1
+                        maxLength: 50
+                      hierarchy:
+                        type: string
+                        x-stoplight:
+                          id: z6m96ycdeitn2
+                        description: Identifies the location of a merchant within the merchant's corporate hierarchical structure.
+                        minLength: 1
+                        maxLength: 50
+                      name:
+                        type: string
+                        x-stoplight:
+                          id: 52tyn7fg9clv9
+                        description: The merchant name that is associated with the merchant.
+                        example: MERCHANT ABC INC.
+                        minLength: 1
+                        maxLength: 100
+                      dba:
+                        type: string
+                        x-stoplight:
+                          id: afay0ofmacpjb
+                        description: The alternate name the merchant may be known as.
+                        example: MERCHANT XYZ INC
+                        minLength: 1
+                        maxLength: 100
+                  sales:
+                    type: object
+                    properties:
+                      count:
+                        type: number
+                        x-stoplight:
+                          id: m5jk5u1fbpzei
+                        description: The total number of items.
+                        example: 123
+                      amount:
+                        type: string
+                        x-stoplight:
+                          id: gb2wfwmxvm3xc
+                        description: The total amount across one or more items
+                        example: '120'
+                  refunds:
+                    type: object
+                    properties:
+                      count:
+                        type: number
+                        x-stoplight:
+                          id: b9lwonymvurb5
+                        description: The total number of items.
+                        example: 123
+                      amount:
+                        type: string
+                        x-stoplight:
+                          id: n18gon3tsi09z
+                        description: The total amount across one or more items.
+                        example: '120'
+                  disputes:
+                    type: object
+                    description: Data relating to the dispute totals across chargebacks and chargeback reversals.
+                    properties:
+                      chargebacks:
+                        type: object
+                        properties:
+                          count:
+                            type: number
+                            x-stoplight:
+                              id: ziqcphyj9y62c
+                            description: The total number of items.
+                            example: 123
+                          amount:
+                            type: string
+                            x-stoplight:
+                              id: gek6fvdbn41z0
+                            description: The total amount across one or more items.
+                            example: '120'
+                      reversals:
+                        type: object
+                        properties:
+                          count:
+                            type: number
+                            x-stoplight:
+                              id: 26kaukbql35ht
+                            description: The total number of items.
+                            example: 123
+                          amount:
+                            type: string
+                            x-stoplight:
+                              id: a3x431bih246f
+                            description: The total amount across one or more items.
+                            example: '120'
+                  discounts:
+                    type: object
+                    properties:
+                      count:
+                        type: number
+                        x-stoplight:
+                          id: do9q4psmhop0x
+                        description: The total number of items.
+                        example: 123
+                      amount:
+                        type: string
+                        x-stoplight:
+                          id: qyhsiecihza7e
+                        description: The total amount across one or more items.
+                        example: '120'
+                  fees:
+                    type: object
+                    description: The total fees amount in the currency of the Deposit.
+                    properties:
+                      amount:
+                        type: string
+                        x-stoplight:
+                          id: zgd619uvkedhe
+                        description: The total amount across one or more items.
+                        example: '120'
+                  action:
+                    type: object
+                    x-stoplight:
+                      id: kcg41dwc4zbt9
+                    properties:
+                      id:
+                        type: string
+                        x-stoplight:
+                          id: srf0ut49rngwn
+                        description: The id of the app that was used to create the token.
+                        example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+                        minLength: 1
+                        maxLength: 50
+                      type:
+                        type: string
+                        x-stoplight:
+                          id: z099h2chk03kh
+                        description: Indicates the specific action taken.
+                        example: DEPOSIT_SINGLE
+                        enum:
+                          - DEPOSIT_SINGLE
+                          - DEPOSIT_LIST
+                      time_created:
+                        type: string
+                        x-stoplight:
+                          id: yiwv1vnf6h0co
+                        description: Global Payments time indicating when the object was created in ISO-8601 format.
+                        example: '2021-05-03T21:23:39.718Z'
+                      result_code:
+                        type: string
+                        x-stoplight:
+                          id: lt982m1ujjdb1
+                        description: The result of the action executed.
+                        example: SUCCESS
+                        enum:
+                          - SUCCESS
+                        minLength: 1
+                        maxLength: 50
+                      app_id:
+                        type: string
+                        x-stoplight:
+                          id: srf0ut49rngwn
+                        description: The id of the app that was used to create the token.
+                        example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+                        minLength: 1
+                        maxLength: 50
+                      app_name:
+                        type: string
+                        x-stoplight:
+                          id: qdwr0elfm1kod
+                        description: The name of the app the user gave to the application.
+                        example: my_lovely_app
+                        minLength: 1
+                        maxLength: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: Bad Request
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an issue with the API request.
+                    example: MANDATORY_DATA_MISSING
+                    enum:
+                      - DUPLICATE_TRANSACTION
+                      - INVALID_BATCH_ACTION
+                      - INVALID_REQUEST_DATA
+                      - INVALID_TRANSACTION_ACTION
+                      - MANDATORY_DATA_MISSING
+                      - TRANSACTION_NOT_FOUND
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40016'
+                    enum:
+                      - '40016'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Bad track data
+                x-stoplight:
+                  id: 4bq8e4zmuh5ef
+        '401':
+          description: Not Authenticated
+          content:
+            application/json:
+              schema:
+                description: Not Authenticated
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action failed as token in the request is not valid.
+                    example: NOT_AUTHENTICATED
+                    enum:
+                      - NOT_AUTHENTICATED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40001'
+                    enum:
+                      - '40001'
+                      - '40002'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Invalid Access Token
+                x-stoplight:
+                  id: xz7ijn9g6wuhp
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This action is not authorized with the credentials being used.
+                    example: ACTION_NOT_AUTHORIZED
+                    enum:
+                      - ACTION_NOT_AUTHORIZED
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '40003'
+                    enum:
+                      - '40003'
+                      - '40004'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Permission not enabled to execute action
+                x-stoplight:
+                  id: klomm831n3xe4
+        '404':
+          description: Resource Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This indicates an unexpected issue occurred on the Global Payments system.
+                    example: SYSTEM_ERROR_DOWNSTREAM
+                    enum:
+                      - SYSTEM_ERROR_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50011'
+                    enum:
+                      - '50011'
+                  detailed_error_description:
+                    type: string
+                    description: Unique Text describing the specific error.
+                    example: Processor Configuration error
+                x-stoplight:
+                  id: 9h5t2qirsa09t
+        '501':
+          description: Not implemented
+          content:
+            application/json:
+              schema:
+                description: Not implemented
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error not yet handled or mapped properly.
+                    example: UNKNOWN_RESPONSE
+                    enum:
+                      - UNKNOWN_RESPONSE
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50012'
+                    enum:
+                      - '50012'
+                  detailed_error_description:
+                    type: string
+                    description: 'Unique Text describing the specific error not yet handled.      '
+                x-stoplight:
+                  id: bbg3lue873fk0
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                description: Bad Gateway
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was an issue connecting to a partner system..
+                    example: UNAUTHORIZED_DOWNSTREAM
+                    enum:
+                      - UNAUTHORIZED_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50002'
+                    enum:
+                      - '50002'
+                  detailed_error_description:
+                    type: string
+                    description: Authentication error—Verify and correct credentials.
+                x-stoplight:
+                  id: af8ttv0haa7zk
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                description: Timeout
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    description: This is an error indicating there was a timeout issue to another  system.
+                    example: TIMEOUT_DOWNSTREAM
+                    enum:
+                      - TIMEOUT_DOWNSTREAM
+                  detailed_error_code:
+                    type: string
+                    description: Unique reference to identify the error.
+                    example: '50008'
+                    enum:
+                      - '50008'
+                  detailed_error_description:
+                    type: string
+                    description: No response from payment method provider.
+                x-stoplight:
+                  id: urr7utebg8ys7
+components:
+  schemas:
+    deposits_list:
+      type: object
+      x-stoplight:
+        id: 012ol5w7jxpo8
+      properties:
+        total_record_count:
+          type: number
+          x-stoplight:
+            id: q703a2i7gvk06
+          description: 'The total number of records across all pages for the search filter. When searching for a collection of resoures, this is returned on the first page only and when the date range is a month or less.'
+          example: 1000
+        current_page_size:
+          type: number
+          x-stoplight:
+            id: ztcr1dqx08z8l
+          description: The total number of records returned on the current page. If current_page_size is less than the page_size using in the querystring then this is the final page for that search.
+          example: 564
+        merchant_id:
+          type: string
+          x-stoplight:
+            id: iqbq2s2ryxqxn
+          description: A unique identifier for the merchant set by Global Payments.
+          example: MER_c4c0df11039c48a9b63701adeaa296c3
+          minLength: 1
+          maxLength: 50
+        merchant_name:
+          type: string
+          x-stoplight:
+            id: 7z1itlxnfrtjm
+          description: A meaningful label for the merchant set by Global Payments.
+          example: Sandbox_merchant_2
+          minLength: 1
+          maxLength: 50
+        account_id:
+          type: string
+          x-stoplight:
+            id: wacihrt8unw7p
+          description: A unique identifier for the merchant account set by Global Payments.
+          example: TRA_86920f927028745yt34d077d88beb29b
+          minLength: 1
+          maxLength: 50
+        account_name:
+          type: string
+          x-stoplight:
+            id: hx5u9826qul64
+          description: A meaningful label for the merchant account set by Global Payments.
+          example: Settlement Reporting
+          minLength: 1
+          maxLength: 50
+        filter:
+          type: object
+          properties:
+            from_time_created:
+              type: string
+              x-stoplight:
+                id: g3jamr1p7cqs4
+              example: '2022-05-01'
+              format: date-time
+              description: |
+                The start time to search for in a range, using the resource time_created value.
+            to_time_created:
+              type: string
+              x-stoplight:
+                id: 461e0zku4tbpa
+              example: '2023-05-01'
+              format: date-time
+              description: |
+                The end time to search for in a range, using the resource time_created value.
+        paging:
+          type: object
+          properties:
+            page:
+              type: number
+              x-stoplight:
+                id: f3yalmtk1ht36
+              description: 'Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.1 means the first page, 2 the second and so on.'
+              minLength: 1
+              maxLength: 1000
+              default: 1
+              example: 1
+            page_size:
+              type: number
+              x-stoplight:
+                id: c4xjzukdboxq1
+              description: The total number of records to return in a single page for a list.
+              example: 5
+              minLength: 1
+              maxLength: 1000
+              default: 5
+            order_by:
+              type: string
+              x-stoplight:
+                id: ovazxjcolt61j
+              description: The field to order the list by.
+              example: TIME_CREATED
+              default: TIME_CREATED
+            order:
+              type: string
+              x-stoplight:
+                id: pp5vl4k2xa2fq
+              description: 'The direction of the ordering of the entire list, ASC or DESC'
+              example: ASC
+              enum:
+                - ASC
+                - DESC
+        deposits:
+          type: array
+          description: A list of Deposit records.
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                x-stoplight:
+                  id: r4rf3zxw9xsgu
+                description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+                minLength: 1
+                maxLength: 50
+              time_created:
+                type: string
+                x-stoplight:
+                  id: 5npnx6z8kv5fg
+                description: Global Payments time indicating when the object was created in ISO-8601 format..
+                example: '2021-05-03'
+              status:
+                type: string
+                x-stoplight:
+                  id: byvfuvk51rqdj
+                description: |
+                  Indicates where a resource object is in it's lifecycle. *`FUNDED` - Deposit Funded to bank account
+                  *`IRREG` - Deposit not funded by Global Payments
+                  *`RESERVED `-  Deposit on reserve.
+
+                   *`DELAYED` - Deposit delayed for funding.
+
+                   *`RELEASED` - Deposit released by Global Payments from a status of DELAYED
+                example: FUNDED
+              funding_type:
+                type: string
+                x-stoplight:
+                  id: zxvfx7v8waqje
+                description: Indicates if the amount relates to a Debit or Credit to the merchant's bank account.
+                example: DEBIT
+              amount:
+                type: string
+                x-stoplight:
+                  id: nvdzu64quo04u
+                description: The amount that should be credited or debited. It is always represented in the lowest denomiation of the related currency.
+                example: '500'
+              currency:
+                type: string
+                x-stoplight:
+                  id: f19fb6yiv2p4f
+                description: The currency of the amount in ISO-4217(alpha-3)
+                example: USD
+                minLength: 3
+                maxLength: 3
+              aggregation_model:
+                type: string
+                x-stoplight:
+                  id: a99gccfmr6n4k
+                description: 'Indicates how a merchant''s payment processing activity across Sales, Refunds, Disputes and Fees is structured for a Deposit. Activity can be aggregated into one daily amount or all activity separately funded via different deposits.'
+                example: 4-No Summary
+              bank_transfer:
+                type: object
+                x-stoplight:
+                  id: tn0w8bqiqkjuj
+                properties:
+                  masked_account_number_last4:
+                    type: string
+                    x-stoplight:
+                      id: cizqdxzq2rw0s
+                    description: Data relating to a bank transfer directly to or from the Payer's bank account.
+                    minLength: 1
+                    maxLength: 50
+                  bank:
+                    type: object
+                    x-stoplight:
+                      id: 8skzpysebmgiz
+                    properties:
+                      code:
+                        type: string
+                        x-stoplight:
+                          id: bygy1aeip7vht
+                        description: The local identifier code for the bank.
+                        example: 124002971
+                        maxLength: 50
+              system:
+                type: object
+                x-stoplight:
+                  id: tdt30xpfms43e
+                properties:
+                  mid:
+                    type: string
+                    x-stoplight:
+                      id: ycm7wq504kyoj
+                    description: Merchant Identifier from Global Payments system for some features.
+                    minLength: 1
+                    maxLength: 50
+                  hierarchy:
+                    type: string
+                    x-stoplight:
+                      id: z6m96ycdeitn2
+                    description: Identifies the location of a merchant within the merchant's corporate hierarchical structure.
+                    minLength: 1
+                    maxLength: 50
+                  name:
+                    type: string
+                    x-stoplight:
+                      id: 52tyn7fg9clv9
+                    description: The merchant name that is associated with the merchant.
+                    example: MERCHANT ABC INC.
+                    minLength: 1
+                    maxLength: 100
+                  dba:
+                    type: string
+                    x-stoplight:
+                      id: afay0ofmacpjb
+                    description: The alternate name the merchant may be known as.
+                    example: MERCHANT XYZ INC
+                    minLength: 1
+                    maxLength: 100
+              sales:
+                type: object
+                x-stoplight:
+                  id: mc1f95ci98o1x
+                properties:
+                  count:
+                    type: number
+                    x-stoplight:
+                      id: m5jk5u1fbpzei
+                    description: The total number of items.
+                    example: 123
+                  amount:
+                    type: string
+                    x-stoplight:
+                      id: gb2wfwmxvm3xc
+                    description: The total amount across one or more items
+                    example: '120'
+              refunds:
+                type: object
+                x-stoplight:
+                  id: x4ntbuphy7hzj
+                properties:
+                  count:
+                    type: number
+                    x-stoplight:
+                      id: b9lwonymvurb5
+                    description: The total number of items.
+                    example: 123
+                  amount:
+                    type: string
+                    x-stoplight:
+                      id: n18gon3tsi09z
+                    description: The total amount across one or more items.
+                    example: '120'
+              disputes:
+                type: object
+                x-stoplight:
+                  id: 1jsz93vk0rsnf
+                properties:
+                  chargebacks:
+                    type: object
+                    x-stoplight:
+                      id: m2sk2vj2cpsfs
+                    properties:
+                      count:
+                        type: number
+                        x-stoplight:
+                          id: ziqcphyj9y62c
+                        description: The total number of items.
+                        example: 123
+                      amount:
+                        type: string
+                        x-stoplight:
+                          id: gek6fvdbn41z0
+                        description: The total amount across one or more items.
+                        example: '120'
+                  reversals:
+                    type: object
+                    x-stoplight:
+                      id: rdvdiqqsmd3pf
+                    properties:
+                      count:
+                        type: number
+                        x-stoplight:
+                          id: 26kaukbql35ht
+                        description: The total number of items.
+                        example: 123
+                      amount:
+                        type: string
+                        x-stoplight:
+                          id: a3x431bih246f
+                        description: The total amount across one or more items.
+                        example: '120'
+              discounts:
+                type: object
+                x-stoplight:
+                  id: zlxvaov21egm1
+                properties:
+                  count:
+                    type: number
+                    x-stoplight:
+                      id: do9q4psmhop0x
+                    description: The total number of items.
+                    example: 123
+                  amount:
+                    type: string
+                    x-stoplight:
+                      id: qyhsiecihza7e
+                    description: The total amount across one or more items.
+                    example: '120'
+              fees:
+                type: object
+                x-stoplight:
+                  id: ku3gfg22k7zde
+                properties:
+                  amount:
+                    type: string
+                    x-stoplight:
+                      id: zgd619uvkedhe
+                    description: The total amount across one or more items.
+                    example: '120'
+        action:
+          type: object
+          properties:
+            id:
+              type: string
+              x-stoplight:
+                id: 6003668svw7pp
+              description: A unique identifier generated by Global Payments to identify an action.
+              example: ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+            type:
+              type: string
+              x-stoplight:
+                id: z099h2chk03kh
+              description: Indicates the specific action taken.
+              example: DEPOSIT_SINGLE
+              enum:
+                - DEPOSIT_SINGLE
+                - DEPOSIT_LIST
+            time_created:
+              type: string
+              x-stoplight:
+                id: yiwv1vnf6h0co
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              x-stoplight:
+                id: lt982m1ujjdb1
+              description: The result of the action executed.
+              example: SUCCESS
+              enum:
+                - SUCCESS
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              x-stoplight:
+                id: srf0ut49rngwn
+              description: The id of the app that was used to create the token.
+              example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              x-stoplight:
+                id: qdwr0elfm1kod
+              description: The name of the app the user gave to the application.
+              example: my_lovely_app
+              minLength: 1
+              maxLength: 50
+    deposits_single:
+      type: object
+      x-stoplight:
+        id: lrvs5knsc55fs
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: r4rf3zxw9xsgu
+          description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+          minLength: 1
+          maxLength: 50
+        time_created:
+          type: string
+          x-stoplight:
+            id: 5npnx6z8kv5fg
+          description: Global Payments time indicating when the object was created in ISO-8601 format..
+          example: '2021-05-03'
+        status:
+          type: string
+          x-stoplight:
+            id: byvfuvk51rqdj
+          description: |
+            Indicates where a resource object is in it's lifecycle. *`FUNDED` - Deposit Funded to bank account
+            *`IRREG` - Deposit not funded by Global Payments
+            *`RESERVED `-  Deposit on reserve.
+
+             *`DELAYED` - Deposit delayed for funding.
+
+             *`RELEASED` - Deposit released by Global Payments from a status of DELAYED
+          example: FUNDED
+        funding_type:
+          type: string
+          x-stoplight:
+            id: zxvfx7v8waqje
+          description: Indicates if the amount relates to a Debit or Credit to the merchant's bank account.
+          example: DEBIT
+        amount:
+          type: string
+          x-stoplight:
+            id: nvdzu64quo04u
+          description: The amount that should be credited or debited. It is always represented in the lowest denomiation of the related currency.
+          example: '500'
+        currency:
+          type: string
+          x-stoplight:
+            id: f19fb6yiv2p4f
+          description: The currency of the amount in ISO-4217(alpha-3)
+          example: USD
+          minLength: 3
+          maxLength: 3
+        aggregation_model:
+          type: string
+          x-stoplight:
+            id: a99gccfmr6n4k
+          description: 'Indicates how a merchant''s payment processing activity across Sales, Refunds, Disputes and Fees is structured for a Deposit. Activity can be aggregated into one daily amount or all activity separately funded via different deposits.'
+          example: 4-No Summary
+        bank_transfer:
+          type: object
+          properties:
+            masked_account_number_last4:
+              type: string
+              x-stoplight:
+                id: cizqdxzq2rw0s
+              description: Data relating to a bank transfer directly to or from the Payer's bank account.
+              minLength: 1
+              maxLength: 50
+            bank:
+              type: object
+              x-stoplight:
+                id: o8tcveqh7zxw6
+              properties:
+                code:
+                  type: string
+                  x-stoplight:
+                    id: bygy1aeip7vht
+                  description: The local identifier code for the bank.
+                  example: 124002971
+                  maxLength: 50
+        system:
+          type: object
+          properties:
+            mid:
+              type: string
+              x-stoplight:
+                id: ycm7wq504kyoj
+              description: Merchant Identifier from Global Payments system for some features.
+              minLength: 1
+              maxLength: 50
+            hierarchy:
+              type: string
+              x-stoplight:
+                id: z6m96ycdeitn2
+              description: Identifies the location of a merchant within the merchant's corporate hierarchical structure.
+              minLength: 1
+              maxLength: 50
+            name:
+              type: string
+              x-stoplight:
+                id: 52tyn7fg9clv9
+              description: The merchant name that is associated with the merchant.
+              example: MERCHANT ABC INC.
+              minLength: 1
+              maxLength: 100
+            dba:
+              type: string
+              x-stoplight:
+                id: afay0ofmacpjb
+              description: The alternate name the merchant may be known as.
+              example: MERCHANT XYZ INC
+              minLength: 1
+              maxLength: 100
+        sales:
+          type: object
+          properties:
+            count:
+              type: number
+              x-stoplight:
+                id: m5jk5u1fbpzei
+              description: The total number of items.
+              example: 123
+            amount:
+              type: string
+              x-stoplight:
+                id: gb2wfwmxvm3xc
+              description: The total amount across one or more items
+              example: '120'
+        refunds:
+          type: object
+          properties:
+            count:
+              type: number
+              x-stoplight:
+                id: b9lwonymvurb5
+              description: The total number of items.
+              example: 123
+            amount:
+              type: string
+              x-stoplight:
+                id: n18gon3tsi09z
+              description: The total amount across one or more items.
+              example: '120'
+        disputes:
+          type: object
+          description: Data relating to the dispute totals across chargebacks and chargeback reversals.
+          properties:
+            chargebacks:
+              type: object
+              properties:
+                count:
+                  type: number
+                  x-stoplight:
+                    id: ziqcphyj9y62c
+                  description: The total number of items.
+                  example: 123
+                amount:
+                  type: string
+                  x-stoplight:
+                    id: gek6fvdbn41z0
+                  description: The total amount across one or more items.
+                  example: '120'
+            reversals:
+              type: object
+              properties:
+                count:
+                  type: number
+                  x-stoplight:
+                    id: 26kaukbql35ht
+                  description: The total number of items.
+                  example: 123
+                amount:
+                  type: string
+                  x-stoplight:
+                    id: a3x431bih246f
+                  description: The total amount across one or more items.
+                  example: '120'
+        discounts:
+          type: object
+          properties:
+            count:
+              type: number
+              x-stoplight:
+                id: do9q4psmhop0x
+              description: The total number of items.
+              example: 123
+            amount:
+              type: string
+              x-stoplight:
+                id: qyhsiecihza7e
+              description: The total amount across one or more items.
+              example: '120'
+        fees:
+          type: object
+          description: The total fees amount in the currency of the Deposit.
+          properties:
+            amount:
+              type: string
+              x-stoplight:
+                id: zgd619uvkedhe
+              description: The total amount across one or more items.
+              example: '120'
+        action:
+          type: object
+          x-stoplight:
+            id: kcg41dwc4zbt9
+          properties:
+            id:
+              type: string
+              x-stoplight:
+                id: srf0ut49rngwn
+              description: The id of the app that was used to create the token.
+              example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+              minLength: 1
+              maxLength: 50
+            type:
+              type: string
+              x-stoplight:
+                id: z099h2chk03kh
+              description: Indicates the specific action taken.
+              example: DEPOSIT_SINGLE
+              enum:
+                - DEPOSIT_SINGLE
+                - DEPOSIT_LIST
+            time_created:
+              type: string
+              x-stoplight:
+                id: yiwv1vnf6h0co
+              description: Global Payments time indicating when the object was created in ISO-8601 format.
+              example: '2021-05-03T21:23:39.718Z'
+            result_code:
+              type: string
+              x-stoplight:
+                id: lt982m1ujjdb1
+              description: The result of the action executed.
+              example: SUCCESS
+              enum:
+                - SUCCESS
+              minLength: 1
+              maxLength: 50
+            app_id:
+              type: string
+              x-stoplight:
+                id: srf0ut49rngwn
+              description: The id of the app that was used to create the token.
+              example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+              minLength: 1
+              maxLength: 50
+            app_name:
+              type: string
+              x-stoplight:
+                id: qdwr0elfm1kod
+              description: The name of the app the user gave to the application.
+              example: my_lovely_app
+              minLength: 1
+              maxLength: 50
+    Aggregation_model_DEPOSITS_Aggregation_model:
+      type: string
+      x-stoplight:
+        id: a99gccfmr6n4k
+      description: 'Indicates how a merchant''s payment processing activity across Sales, Refunds, Disputes and Fees is structured for a Deposit. Activity can be aggregated into one daily amount or all activity separately funded via different deposits.'
+      example: 4-No Summary
+    Amount_DEPOSITS_Amount:
+      type: string
+      x-stoplight:
+        id: nvdzu64quo04u
+      description: The amount that should be credited or debited. It is always represented in the lowest denomiation of the related currency.
+      example: '500'
+    Amount_DEPOSITS_Discounts_Amount:
+      type: string
+      x-stoplight:
+        id: qyhsiecihza7e
+      description: The total amount across one or more items.
+      example: '120'
+    Amount_DEPOSITS_Disputes_Chargebacks_Amount:
+      type: string
+      x-stoplight:
+        id: gek6fvdbn41z0
+      description: The total amount across one or more items.
+      example: '120'
+    Amount_DEPOSITS_Disputes_Reversals_Amount:
+      type: string
+      x-stoplight:
+        id: a3x431bih246f
+      description: The total amount across one or more items.
+      example: '120'
+    Amount_DEPOSITS_Fees_Amount:
+      type: string
+      x-stoplight:
+        id: zgd619uvkedhe
+      description: The total amount across one or more items.
+      example: '120'
+    Amount_DEPOSITS_Refunds_Amount:
+      type: string
+      x-stoplight:
+        id: n18gon3tsi09z
+      description: The total amount across one or more items.
+      example: '120'
+    Amount_DEPOSITS_Sales_Amount:
+      type: string
+      x-stoplight:
+        id: gb2wfwmxvm3xc
+      description: The total amount across one or more items
+      example: '120'
+    App_id_DEPOSITS_Action_App_id:
+      type: string
+      x-stoplight:
+        id: srf0ut49rngwn
+      description: The id of the app that was used to create the token.
+      example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+      minLength: 1
+      maxLength: 50
+    App_name_DEPOSITS_Action_App_name:
+      type: string
+      x-stoplight:
+        id: qdwr0elfm1kod
+      description: The name of the app the user gave to the application.
+      example: my_lovely_app
+      minLength: 1
+      maxLength: 50
+    Code_DEPOSITS_Bank_transfer_Bank_Code:
+      type: string
+      x-stoplight:
+        id: bygy1aeip7vht
+      description: The local identifier code for the bank.
+      example: 124002971
+      maxLength: 50
+    Count_DEPOSITS_Discounts_Count:
+      type: number
+      x-stoplight:
+        id: do9q4psmhop0x
+      description: The total number of items.
+      example: 123
+    Count_DEPOSITS_Disputes_Chargebacks_Count:
+      type: number
+      x-stoplight:
+        id: ziqcphyj9y62c
+      description: The total number of items.
+      example: 123
+    Count_DEPOSITS_Disputes_Reversals_Count:
+      type: number
+      x-stoplight:
+        id: 26kaukbql35ht
+      description: The total number of items.
+      example: 123
+    Count_DEPOSITS_Refunds_Count:
+      type: number
+      x-stoplight:
+        id: b9lwonymvurb5
+      description: The total number of items.
+      example: 123
+    Count_DEPOSITS_Sales_Count:
+      type: number
+      x-stoplight:
+        id: m5jk5u1fbpzei
+      description: The total number of items.
+      example: 123
+    Currency_DEPOSITS_Currency:
+      type: string
+      x-stoplight:
+        id: f19fb6yiv2p4f
+      description: The currency of the amount in ISO-4217(alpha-3)
+      example: USD
+      minLength: 3
+      maxLength: 3
+    Dba_DEPOSITS_System_Dba:
+      type: string
+      x-stoplight:
+        id: afay0ofmacpjb
+      description: The alternate name the merchant may be known as.
+      example: MERCHANT XYZ INC
+      minLength: 1
+      maxLength: 100
+    Funding_type_DEPOSITS_Funding_type:
+      type: string
+      x-stoplight:
+        id: zxvfx7v8waqje
+      description: Indicates if the amount relates to a Debit or Credit to the merchant's bank account.
+      example: DEBIT
+    Hierarchy_DEPOSITS_System_Hierarchy:
+      type: string
+      x-stoplight:
+        id: z6m96ycdeitn2
+      description: Identifies the location of a merchant within the merchant's corporate hierarchical structure.
+      minLength: 1
+      maxLength: 50
+    Id_DEPOSITS_Action_Id:
+      type: string
+      x-stoplight:
+        id: 6003668svw7pp
+      description: A unique identifier generated by Global Payments to identify an action.
+      example: ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    Id_DEPOSITS_Id:
+      type: string
+      x-stoplight:
+        id: r4rf3zxw9xsgu
+      description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
+      minLength: 1
+      maxLength: 50
+    Masked_account_number_last4_DEPOSITS_Bank_transfer_Masked_account_number_last4:
+      type: string
+      x-stoplight:
+        id: cizqdxzq2rw0s
+      description: Data relating to a bank transfer directly to or from the Payer's bank account.
+      minLength: 1
+      maxLength: 50
+    Mid_DEPOSITS_System_Mid:
+      type: string
+      x-stoplight:
+        id: ycm7wq504kyoj
+      description: Merchant Identifier from Global Payments system for some features.
+      minLength: 1
+      maxLength: 50
+    Name_DEPOSITS_System_Name:
+      type: string
+      x-stoplight:
+        id: 52tyn7fg9clv9
+      description: The merchant name that is associated with the merchant.
+      example: MERCHANT ABC INC.
+      minLength: 1
+      maxLength: 100
+    Result_code_DEPOSITS_Action_Result_code:
+      type: string
+      x-stoplight:
+        id: lt982m1ujjdb1
+      description: The result of the action executed.
+      example: SUCCESS
+      enum:
+        - SUCCESS
+      minLength: 1
+      maxLength: 50
+    Status_DEPOSITS_Status:
+      type: string
+      x-stoplight:
+        id: byvfuvk51rqdj
+      description: |
+        Indicates where a resource object is in it's lifecycle. *`FUNDED` - Deposit Funded to bank account
+        *`IRREG` - Deposit not funded by Global Payments
+        *`RESERVED `-  Deposit on reserve.
+
+         *`DELAYED` - Deposit delayed for funding.
+
+         *`RELEASED` - Deposit released by Global Payments from a status of DELAYED
+      example: FUNDED
+    Time_created_DEPOSITS_Action_Time_created:
+      type: string
+      x-stoplight:
+        id: yiwv1vnf6h0co
+      description: Global Payments time indicating when the object was created in ISO-8601 format.
+      example: '2021-05-03T21:23:39.718Z'
+    Time_created_DEPOSITS_Time_created:
+      type: string
+      x-stoplight:
+        id: 5npnx6z8kv5fg
+      description: Global Payments time indicating when the object was created in ISO-8601 format..
+      example: '2021-05-03'
+    Type_DEPOSITS_Action_Type:
+      type: string
+      x-stoplight:
+        id: z099h2chk03kh
+      description: Indicates the specific action taken.
+      example: DEPOSIT_SINGLE
+      enum:
+        - DEPOSIT_SINGLE
+        - DEPOSIT_LIST
+    Account_id:
+      type: string
+      x-stoplight:
+        id: wacihrt8unw7p
+      description: A unique identifier for the merchant account set by Global Payments.
+      example: TRA_86920f927028745yt34d077d88beb29b
+      minLength: 1
+      maxLength: 50
+    Account_name:
+      type: string
+      x-stoplight:
+        id: hx5u9826qul64
+      description: A meaningful label for the merchant account set by Global Payments.
+      example: Settlement Reporting
+      minLength: 1
+      maxLength: 50
+    Current_page_size:
+      type: number
+      x-stoplight:
+        id: ztcr1dqx08z8l
+      description: The total number of records returned on the current page. If current_page_size is less than the page_size using in the querystring then this is the final page for that search.
+      example: 564
+    From_time_created:
+      type: string
+      x-stoplight:
+        id: g3jamr1p7cqs4
+      example: '2022-05-01'
+      format: date-time
+      description: |
+        The start time to search for in a range, using the resource time_created value.
+    Merchant_id:
+      type: string
+      x-stoplight:
+        id: iqbq2s2ryxqxn
+      description: A unique identifier for the merchant set by Global Payments.
+      example: MER_c4c0df11039c48a9b63701adeaa296c3
+      minLength: 1
+      maxLength: 50
+    Merchant_name:
+      type: string
+      x-stoplight:
+        id: 7z1itlxnfrtjm
+      description: A meaningful label for the merchant set by Global Payments.
+      example: Sandbox_merchant_2
+      minLength: 1
+      maxLength: 50
+    Order_Paging_Order:
+      type: string
+      x-stoplight:
+        id: pp5vl4k2xa2fq
+      description: 'The direction of the ordering of the entire list, ASC or DESC'
+      example: ASC
+      enum:
+        - ASC
+        - DESC
+    Order_by_Paging_Order_by:
+      type: string
+      x-stoplight:
+        id: ovazxjcolt61j
+      description: The field to order the list by.
+      example: TIME_CREATED
+      default: TIME_CREATED
+    Page_Paging_Page:
+      type: number
+      x-stoplight:
+        id: f3yalmtk1ht36
+      description: 'Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.1 means the first page, 2 the second and so on.'
+      minLength: 1
+      maxLength: 1000
+      default: 1
+      example: 1
+    Page_size_Paging_Page_size:
+      type: number
+      x-stoplight:
+        id: c4xjzukdboxq1
+      description: The total number of records to return in a single page for a list.
+      example: 5
+      minLength: 1
+      maxLength: 1000
+      default: 5
+    To_time_created:
+      type: string
+      x-stoplight:
+        id: 461e0zku4tbpa
+      example: '2023-05-01'
+      format: date-time
+      description: |
+        The end time to search for in a range, using the resource time_created value.
+    Total_record_count:
+      type: number
+      x-stoplight:
+        id: q703a2i7gvk06
+      description: 'The total number of records across all pages for the search filter. When searching for a collection of resoures, this is returned on the first page only and when the date range is a month or less.'
+      example: 1000
+    Data_dictionary.v1_Authorization:
+      description: Bearer access token value used to access the API.
+      type: string
+      default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+      example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+      x-stoplight:
+        id: stor96sg67n8f
+    Data_dictionary.v1_Content-Encoding:
+      description: Indicates if the message is compressed and using what compression mechanism.
+      type: string
+      default: gzip
+      x-stoplight:
+        id: rgi0h47svaey8
+    Data_dictionary.v1_Content-Type:
+      description: Indicates the format of the message.
+      type: string
+      default: application/json
+      x-stoplight:
+        id: qdoiuafa6zsf8
+    Data_dictionary.v1_X-GP-Version:
+      description: Indicates the version of the GP-API for this message.
+      type: string
+      default: '2021-03-22'
+      minLength: 1
+      maxLength: 50
+      x-stoplight:
+        id: r6rjivm6gr5z6
+    AuthenticationInvalid_401:
+      description: Not Authenticated
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: This action failed as token in the request is not valid.
+          example: NOT_AUTHENTICATED
+          enum:
+            - NOT_AUTHENTICATED
+        detailed_error_code:
+          type: string
+          description: Unique reference to identify the error.
+          example: '40001'
+          enum:
+            - '40001'
+            - '40002'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Invalid Access Token
+      x-stoplight:
+        id: xz7ijn9g6wuhp
+    NotAuthorized_403:
+      description: Forbidden
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: This action is not authorized with the credentials being used.
+          example: ACTION_NOT_AUTHORIZED
+          enum:
+            - ACTION_NOT_AUTHORIZED
+        detailed_error_code:
+          type: string
+          description: Unique reference to identify the error.
+          example: '40003'
+          enum:
+            - '40003'
+            - '40004'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Permission not enabled to execute action
+      x-stoplight:
+        id: klomm831n3xe4
+    ServerError_500:
+      description: Internal Server Error
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: This indicates an unexpected issue occurred on the Global Payments system.
+          example: SYSTEM_ERROR_DOWNSTREAM
+          enum:
+            - SYSTEM_ERROR_DOWNSTREAM
+        detailed_error_code:
+          type: string
+          description: Unique reference to identify the error.
+          example: '50011'
+          enum:
+            - '50011'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Processor Configuration error
+      x-stoplight:
+        id: 9h5t2qirsa09t
+    ServerTimeout_504:
+      description: Timeout
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: This is an error indicating there was a timeout issue to another  system.
+          example: TIMEOUT_DOWNSTREAM
+          enum:
+            - TIMEOUT_DOWNSTREAM
+        detailed_error_code:
+          type: string
+          description: Unique reference to identify the error.
+          example: '50008'
+          enum:
+            - '50008'
+        detailed_error_description:
+          type: string
+          description: No response from payment method provider.
+      x-stoplight:
+        id: urr7utebg8ys7
+    UnknownPlatformError_502:
+      description: Bad Gateway
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: This is an error indicating there was an issue connecting to a partner system..
+          example: UNAUTHORIZED_DOWNSTREAM
+          enum:
+            - UNAUTHORIZED_DOWNSTREAM
+        detailed_error_code:
+          type: string
+          description: Unique reference to identify the error.
+          example: '50002'
+          enum:
+            - '50002'
+        detailed_error_description:
+          type: string
+          description: Authentication error—Verify and correct credentials.
+      x-stoplight:
+        id: af8ttv0haa7zk
+    UnknownServerError_501:
+      description: Not implemented
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: This is an error not yet handled or mapped properly.
+          example: UNKNOWN_RESPONSE
+          enum:
+            - UNKNOWN_RESPONSE
+        detailed_error_code:
+          type: string
+          description: Unique reference to identify the error.
+          example: '50012'
+          enum:
+            - '50012'
+        detailed_error_description:
+          type: string
+          description: 'Unique Text describing the specific error not yet handled.      '
+      x-stoplight:
+        id: bbg3lue873fk0
+    ObjRequestInvalid_400:
+      description: Bad Request
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: This indicates an issue with the API request.
+          example: MANDATORY_DATA_MISSING
+          enum:
+            - DUPLICATE_TRANSACTION
+            - INVALID_BATCH_ACTION
+            - INVALID_REQUEST_DATA
+            - INVALID_TRANSACTION_ACTION
+            - MANDATORY_DATA_MISSING
+            - TRANSACTION_NOT_FOUND
+        detailed_error_code:
+          type: string
+          description: Unique reference to identify the error.
+          example: '40016'
+          enum:
+            - '40016'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Bad track data
+      x-stoplight:
+        id: 4bq8e4zmuh5ef
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    Parameters_Authorization:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+        example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+      description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
+      required: true
+    Parameters_X-GP-Version:
+      name: X-GP-Version
+      in: header
+      required: true
+      schema:
+        type: string
+        default: '2021-03-22'
+        example: '2021-03-22'
+        minLength: 1
+        maxLength: 50
+      description: The version of the API to execute the request.
+    Parameters.v1_Header_Authorization:
+      name: Authorization
+      in: header
+      required: true
+      description: Bearer access token value used to access the API.
+      schema:
+        description: Bearer access token value used to access the API.
+        type: string
+        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        x-stoplight:
+          id: stor96sg67n8f
+    Parameters.v1_Header_X-GP-Version:
+      in: header
+      name: X-GP-Version
+      required: true
+      schema:
+        description: Indicates the version of the GP-API for this message.
+        type: string
+        default: '2021-03-22'
+        minLength: 1
+        maxLength: 50
+        x-stoplight:
+          id: r6rjivm6gr5z6
+      description: The version of the API to execute the request.
+  responses:
+    Errors_AuthenticationInvalid_401:
+      description: Not Authenticated
+      content:
+        application/json:
+          schema:
+            description: Not Authenticated
+            type: object
+            properties:
+              error_code:
+                type: string
+                description: This action failed as token in the request is not valid.
+                example: NOT_AUTHENTICATED
+                enum:
+                  - NOT_AUTHENTICATED
+              detailed_error_code:
+                type: string
+                description: Unique reference to identify the error.
+                example: '40001'
+                enum:
+                  - '40001'
+                  - '40002'
+              detailed_error_description:
+                type: string
+                description: Unique Text describing the specific error.
+                example: Invalid Access Token
+            x-stoplight:
+              id: xz7ijn9g6wuhp
+    Errors_NotAuthorized_403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            description: Forbidden
+            type: object
+            properties:
+              error_code:
+                type: string
+                description: This action is not authorized with the credentials being used.
+                example: ACTION_NOT_AUTHORIZED
+                enum:
+                  - ACTION_NOT_AUTHORIZED
+              detailed_error_code:
+                type: string
+                description: Unique reference to identify the error.
+                example: '40003'
+                enum:
+                  - '40003'
+                  - '40004'
+              detailed_error_description:
+                type: string
+                description: Unique Text describing the specific error.
+                example: Permission not enabled to execute action
+            x-stoplight:
+              id: klomm831n3xe4
+    Errors_RequestInvalid_400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            description: Bad Request
+            type: object
+            properties:
+              error_code:
+                type: string
+                description: This indicates an issue with the API request.
+                example: MANDATORY_DATA_MISSING
+                enum:
+                  - DUPLICATE_TRANSACTION
+                  - INVALID_BATCH_ACTION
+                  - INVALID_REQUEST_DATA
+                  - INVALID_TRANSACTION_ACTION
+                  - MANDATORY_DATA_MISSING
+                  - TRANSACTION_NOT_FOUND
+              detailed_error_code:
+                type: string
+                description: Unique reference to identify the error.
+                example: '40016'
+                enum:
+                  - '40016'
+              detailed_error_description:
+                type: string
+                description: Unique Text describing the specific error.
+                example: Bad track data
+            x-stoplight:
+              id: 4bq8e4zmuh5ef
+    Errors_ServerError_500:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            description: Internal Server Error
+            type: object
+            properties:
+              error_code:
+                type: string
+                description: This indicates an unexpected issue occurred on the Global Payments system.
+                example: SYSTEM_ERROR_DOWNSTREAM
+                enum:
+                  - SYSTEM_ERROR_DOWNSTREAM
+              detailed_error_code:
+                type: string
+                description: Unique reference to identify the error.
+                example: '50011'
+                enum:
+                  - '50011'
+              detailed_error_description:
+                type: string
+                description: Unique Text describing the specific error.
+                example: Processor Configuration error
+            x-stoplight:
+              id: 9h5t2qirsa09t
+    Errors_ServerTimeout_504:
+      description: Timeout
+      content:
+        application/json:
+          schema:
+            description: Timeout
+            type: object
+            properties:
+              error_code:
+                type: string
+                description: This is an error indicating there was a timeout issue to another  system.
+                example: TIMEOUT_DOWNSTREAM
+                enum:
+                  - TIMEOUT_DOWNSTREAM
+              detailed_error_code:
+                type: string
+                description: Unique reference to identify the error.
+                example: '50008'
+                enum:
+                  - '50008'
+              detailed_error_description:
+                type: string
+                description: No response from payment method provider.
+            x-stoplight:
+              id: urr7utebg8ys7
+    Errors_UnknownPlatformError_502:
+      description: Bad Gateway
+      content:
+        application/json:
+          schema:
+            description: Bad Gateway
+            type: object
+            properties:
+              error_code:
+                type: string
+                description: This is an error indicating there was an issue connecting to a partner system..
+                example: UNAUTHORIZED_DOWNSTREAM
+                enum:
+                  - UNAUTHORIZED_DOWNSTREAM
+              detailed_error_code:
+                type: string
+                description: Unique reference to identify the error.
+                example: '50002'
+                enum:
+                  - '50002'
+              detailed_error_description:
+                type: string
+                description: Authentication error—Verify and correct credentials.
+            x-stoplight:
+              id: af8ttv0haa7zk
+    Errors_UnknownServerError_501:
+      description: Not implemented
+      content:
+        application/json:
+          schema:
+            description: Not implemented
+            type: object
+            properties:
+              error_code:
+                type: string
+                description: This is an error not yet handled or mapped properly.
+                example: UNKNOWN_RESPONSE
+                enum:
+                  - UNKNOWN_RESPONSE
+              detailed_error_code:
+                type: string
+                description: Unique reference to identify the error.
+                example: '50012'
+                enum:
+                  - '50012'
+              detailed_error_description:
+                type: string
+                description: 'Unique Text describing the specific error not yet handled.      '
+            x-stoplight:
+              id: bbg3lue873fk0
+security:
+  - bearerAuth: []

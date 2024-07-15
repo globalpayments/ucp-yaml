@@ -1,230 +1,37 @@
-openapi: 3.0.3
+openapi: 3.0.2
 info:
+  version: 2021 03 22
   title: Verifications
   description: Verifications represent the validation of a payment method to ensure it can be used in the creation of a Transaction.
   contact:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
-  version: 2021 03 22
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
   - url: 'https://apis.globalpay.com/ucp'
     description: Production Environment
-tags:
-  - name: Verify
-    description: Verify a payment method to ensure it can be used to create a Transaction at a later time.
 paths:
   /verifications:
     post:
-      operationId: createVerification
       tags:
         - Verify
+      summary: Verify
       description: Verify a payment method to ensure it can be used to create a Transaction at a later time.
+      operationId: createVerification
       parameters:
-        - in: header
-          name: X-GP-Version
-          required: true
-          schema:
-            description: Indicates the version of the GP-API for this message.
-            type: string
-            default: '2021-03-22'
-            minLength: 1
-            maxLength: 50
-        - name: Authorization
-          in: header
-          required: true
-          description: Bearer access token value used to access the API.
-          schema:
-            description: Bearer access token value used to access the API.
-            type: string
-            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
-            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
-        - in: header
-          name: X-GP-Idempotency
-          description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
-          schema:
-            description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
-            type: string
-            minLength: 1
-            maxLength: 50
-        - in: header
-          name: Content-type
-          description: Format of the message.
-          required: true
-          schema:
-            description: Indicates the format of the message.
-            type: string
-            default: application/json
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/X-GP-Idempotency'
+        - $ref: '#/components/parameters/X-GP-Version'
+        - $ref: '#/components/parameters/Content-type'
+        - $ref: '#/components/parameters/Accept'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              required:
-                - account_name
-                - channel
-                - currency
-                - country
-                - payment_method
-                - reference
-              type: object
-              properties:
-                account_name:
-                  type: string
-                  description: A meaningful label for the merchant account set by Global Payments.
-                  example: Transaction_Processing
-                  minLength: 1
-                  maxLength: 50
-                channel:
-                  type: string
-                  description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
-                  example: CNP
-                  enum:
-                    - CP
-                    - CNP
-                currency:
-                  type: string
-                  description: The currency of the amount in ISO-4217(alpha-3)
-                  example: USD
-                reference:
-                  type: string
-                  description: Merchant defined field to reference the transaction.
-                  minLength: 8
-                  maxLength: 50
-                country:
-                  type: string
-                  description: The country in ISO-3166-1(alpha-2 code) format.
-                  example: US
-                  enum:
-                    - ISO-3166-1(alpha-2 code)
-                    - US
-                payment_method:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
-                      example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
-                      maxLength: 50
-                    first_name:
-                      type: string
-                      description: Specify the first name of the owner of the payment method.
-                      example: James
-                      minLength: 0
-                      maxLength: 50
-                    last_name:
-                      type: string
-                      description: Specify the surname of the owner of the payment method.
-                      example: Mason
-                      minLength: 0
-                      maxLength: 50
-                    name:
-                      type: string
-                      description: The full name of the owner of the payment method.
-                      example: James Mason
-                      minLength: 0
-                      maxLength: 100
-                    entry_mode:
-                      type: string
-                      description: Indicates how the payment method information was obtained by the Merchant for this transaction. * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail. * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser. * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only. * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip. * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information. * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device. * `CONTACTLESS_CHIP` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a cardon or near a device to exchange card information. * `CONTACTLESS_SWIPE` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone. * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
-                      example: ECOM
-                      enum:
-                        - MOTO
-                        - ECOM
-                        - IN_APP
-                        - CHIP
-                        - SWIPE
-                        - MANUAL
-                        - PHONE
-                        - MAIL
-                        - CONTACTLESS_CHIP
-                        - CONTACTLESS_SWIPE
-                      minLength: 1
-                      maxLength: 50
-                    fingerprint_mode:
-                      type: string
-                      description: Indicates whether to execute the fingerprint signature functionality. * `ALWAYS` - Always check and create the fingerprint value regardless of the result of the card authorization. * `ON_SUCCESS` - Always check and create the fingerprint value when the card authorization is successful.
-                      enum:
-                        - ALWAYS
-                        - ON_SUCCESS
-                      minLength: 1
-                      maxLength: 50
-                    encryption:
-                      type: object
-                      properties:
-                        method:
-                          type: string
-                          description: The encryption method used when sending encrypted card data to Global Payments.
-                          enum:
-                            - KTB
-                            - KSN
-                          minLength: 1
-                          maxLength: 50
-                        version:
-                          type: string
-                          description: The version of encryption being used.
-                          minLength: 1
-                          maxLength: 50
-                        info:
-                          type: string
-                          description: The encryption info used when sending encrypted card data to Global Payments.
-                          minLength: 1
-                          maxLength: 2000
-                    card:
-                      type: object
-                      properties:
-                        number:
-                          type: string
-                          description: The the card account number used to authorize the transaction. Also known as PAN.
-                          example: '4263970000005262'
-                          minLength: 1
-                          maxLength: 50
-                        expiry_month:
-                          type: string
-                          description: The 2 digit expiry date month of the card.
-                          example: '05'
-                          minLength: 2
-                          maxLength: 2
-                        expiry_year:
-                          type: string
-                          description: The 2 digit expiry date year of the card.
-                          example: '25'
-                          minLength: 2
-                          maxLength: 2
-                        track:
-                          type: string
-                          description: Data from magnetic stripe of a card
-                          minLength: 1
-                          maxLength: 500
-                        cvv:
-                          type: string
-                          description: The numeric value printed on the physical card.
-                          example: '852'
-                          minLength: 0
-                          maxLength: 4
-                        cvv_indicator:
-                          type: string
-                          description: Card Verification Value Indicator sent by the Merchant indicating the CVV availability. * `ILLEGIBLE` - indicates the cvv is present but cannot be read. * `NOT_PRESENT` - indicates the cvv is not present on the card. * `PRESENT` - indicates the cvv is present.
-                          example: PRESENT
-                          minLength: 0
-                          maxLength: 50
-                          enum:
-                            - ILLEGIBLE
-                            - NOT_PRESENT
-                            - PRESENT
-                        avs_address:
-                          type: string
-                          description: First line of the address associated with the card.
-                          example: Apt 123
-                          minLength: 0
-                          maxLength: 50
-                        avs_postal_code:
-                          type: string
-                          description: Postal code of the address associated with the card.
-                          example: TGX562
-                          minLength: 0
-                          maxLength: 50
+              $ref: '#/components/schemas/create_request'
             examples:
               Verify a Card:
                 value:
@@ -240,1145 +47,790 @@ paths:
                       number: '4263970000005262'
                       expiry_month: '05'
                       expiry_year: '25'
-        required: true
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create_response'
           headers:
             Content-Type:
               schema:
-                description: Indicates the format of the message.
-                type: string
-                default: application/json
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
             Content-Encoding:
               schema:
-                description: Indicates if the message is compressed and using what compression mechanism.
-                type: string
-                default: gzip
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
             X-GP-Idempotency:
               schema:
-                description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
-                type: string
-                minLength: 1
-                maxLength: 50
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
             X-GP-Version:
               schema:
-                description: Indicates the version of the GP-API for this message.
-                type: string
-                default: '2021-03-22'
-                minLength: 1
-                maxLength: 50
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: A unique identifier generated by Global Payments to identify a vertification
-                    example: VER_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
-                    minLength: 1
-                    maxLength: 50
-                  time_created:
-                    type: string
-                    format: date-time
-                    description: Global Payments time indicating when the object was created in ISO-8601 format.
-                    example: '2021-05-03T21:23:39.718Z'
-                  status:
-                    type: string
-                    description: Indicates where a resource object is in it's lifecylce.
-                    example: VERIFIED
-                  channel:
-                    type: string
-                    description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
-                    example: CNP
-                    enum:
-                      - CP
-                      - CNP
-                  currency:
-                    type: string
-                    description: The currency of the amount in ISO-4217(alpha-3)
-                    example: USD
-                  country:
-                    type: string
-                    description: The country in ISO-3166-1(alpha-2 code) format.
-                    example: US
-                    enum:
-                      - ISO-3166-1(alpha-2 code)
-                      - US
-                  merchant_id:
-                    type: string
-                    description: A unique identifier for the merchant set by Global Payments.
-                    example: MER_c4c0df11039c48a9b63701adeaa296c3
-                    minLength: 1
-                    maxLength: 50
-                  merchant_name:
-                    type: string
-                    description: A meaningful label for the merchant set by Global Payments.
-                    example: Sandbox_merchant_2
-                    minLength: 1
-                    maxLength: 50
-                  account_id:
-                    type: string
-                    description: A unique identifier for the merchant account set by Global Payments.
-                    example: TRA_6716058969854a48b33347043ff8225f
-                    minLength: 1
-                    maxLength: 50
-                  account_name:
-                    type: string
-                    description: A meaningful label for the merchant account set by Global Payments.
-                    example: Transaction_Processing
-                    minLength: 1
-                    maxLength: 50
-                  reference:
-                    type: string
-                    description: Merchant defined field to reference the transaction.
-                    minLength: 8
-                    maxLength: 50
-                  payment_method:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
-                        example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
-                        maxLength: 50
-                      result:
-                        type: string
-                        description: Result code from the payment method provider.
-                      message:
-                        type: string
-                        description: Result message from the payment method provider corresponding to the result code.
-                      entry_mode:
-                        type: string
-                        description: Indicates how the payment method information was obtained by the Merchant for this transaction. * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail. * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser. * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only. * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip. * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information. * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device. * `CONTACTLESS_CHIP` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a cardon or near a device to exchange card information. * `CONTACTLESS_SWIPE` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone. * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
-                        example: ECOM
-                        enum:
-                          - MOTO
-                          - ECOM
-                          - IN_APP
-                          - CHIP
-                          - SWIPE
-                          - MANUAL
-                          - PHONE
-                          - MAIL
-                          - CONTACTLESS_CHIP
-                          - CONTACTLESS_SWIPE
-                        minLength: 1
-                        maxLength: 50
-                      fingerprint_presence_indicator:
-                        type: string
-                        description: 'If enabled, this field indicates whether the payment method has been seen before or is new. * `EXISTS` -  Indicates that the payment method was seen on the platform before by this merchant. * `NEW` - Indicates that the payment method was not seen on the platform before by this merchant.'
-                        enum:
-                          - NEW
-                          - EXISTS
-                        minLength: 0
-                        maxLength: 256
-                      fingerprint:
-                        type: string
-                        description: 'If enabled, this field contains the unique fingerprint signature for that payment method for that merchant. If the payment method is seen again this same value is generated. For cards the primary account number is checked only. The expiry date or the CVV is not used for this check.'
-                        minLength: 0
-                        maxLength: 256
-                      card:
-                        type: object
-                        properties:
-                          masked_number_last4:
-                            type: string
-                            description: Masked card number with last 4 digits showing.
-                            minLength: 12
-                            maxLength: 50
-                          brand:
-                            type: string
-                            description: Indicates the card brand that issued the card.
-                            enum:
-                              - VISA
-                              - MASTERCARD
-                              - AMEX
-                              - DINERS
-                              - DISCOVER
-                              - JCB
-                              - CUP
-                            minLength: 0
-                            maxLength: 50
-                          brand_reference:
-                            type: string
-                            description: The unique reference created by the brands/schemes to uniquely identify the transaction.
-                            minLength: 0
-                            maxLength: 50
-                          cvv_result:
-                            type: string
-                            description: The result of the CVV check.
-                            minLength: 0
-                            maxLength: 50
-                            enum:
-                              - MATCHED
-                              - NOT_MATCHED
-                              - NOT_CHECKED
-                          avs_address_result:
-                            type: string
-                            description: The result of the AVS address check.
-                            minLength: 0
-                            maxLength: 50
-                            enum:
-                              - MATCHED
-                              - NOT_MATCHED
-                              - NOT_CHECKED
-                          avs_postal_code_result:
-                            type: string
-                            description: The result of the AVS postal code check.
-                            minLength: 0
-                            maxLength: 50
-                            enum:
-                              - MATCHED
-                              - NOT_MATCHED
-                              - NOT_CHECKED
-                          avs_action:
-                            type: string
-                            description: The recommended AVS action to be taken by the agent processing the card transaction.
-                            minLength: 0
-                            maxLength: 50
-                            enum:
-                              - PROMPT
-                              - DECLINE
-                              - ACCEPT
-                  action:
-                    type: object
-                    description: Information about the Action executed.
-                    properties:
-                      id:
-                        type: string
-                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
-                        minLength: 1
-                        maxLength: 50
-                      type:
-                        type: string
-                        description: Indicates the action taken.
-                      time_created:
-                        type: string
-                        format: date-time
-                        description: Global Payments time indicating when the object was created in ISO-8601 format.
-                        example: '2021-05-03T21:23:39.718Z'
-                      result_code:
-                        type: string
-                        description: The result of the action executed.
-                        enum:
-                          - SUCCESS
-                          - DECLINE
-                        minLength: 1
-                        maxLength: 50
-                      app_id:
-                        type: string
-                        description: The id of the app that was used to create the token.
-                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
-                        minLength: 1
-                        maxLength: 50
-                      app_name:
-                        type: string
-                        description: The name of the app the user gave to the application.
-                        example: demo_app
-                        minLength: 1
-                        maxLength: 50
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                description: Bad Request
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This indicates an issue with the API request.
-                    example: MANDATORY_DATA_MISSING
-                    enum:
-                      - DUPLICATE_TRANSACTION
-                      - INVALID_BATCH_ACTION
-                      - INVALID_REQUEST_DATA
-                      - INVALID_TRANSACTION_ACTION
-                      - MANDATORY_DATA_MISSING
-                      - TRANSACTION_NOT_FOUND
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '40016'
-                    enum:
-                      - '40016'
-                  detailed_error_description:
-                    type: string
-                    description: Unique Text describing the specific error.
-                    example: Bad track data
+          $ref: '#/components/responses/RequestInvalid_400'
         '401':
-          description: Not Authenticated
-          content:
-            application/json:
-              schema:
-                description: Not Authenticated
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This action failed as token in the request is not valid.
-                    example: NOT_AUTHENTICATED
-                    enum:
-                      - NOT_AUTHENTICATED
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '40001'
-                    enum:
-                      - '40001'
-                      - '40002'
-                  detailed_error_description:
-                    type: string
-                    description: Unique Text describing the specific error.
-                    example: Invalid Access Token
+          $ref: '#/components/responses/AuthenticationInvalid_401'
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                description: Forbidden
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This action is not authorized with the credentials being used.
-                    example: ACTION_NOT_AUTHORIZED
-                    enum:
-                      - ACTION_NOT_AUTHORIZED
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '40003'
-                    enum:
-                      - '40003'
-                      - '40004'
-                  detailed_error_description:
-                    type: string
-                    description: Unique Text describing the specific error.
-                    example: Permission not enabled to execute action
+          $ref: '#/components/responses/NotAuthorized_403'
         '404':
           description: Resource Not Found
-          content: {}
         '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                description: Internal Server Error
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This indicates an unexpected issue occurred on the Global Payments system.
-                    example: SYSTEM_ERROR_DOWNSTREAM
-                    enum:
-                      - SYSTEM_ERROR_DOWNSTREAM
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '50011'
-                    enum:
-                      - '50011'
-                  detailed_error_description:
-                    type: string
-                    description: Unique Text describing the specific error.
-                    example: Processor Configuration error
+          $ref: '#/components/responses/ServerError_500'
         '501':
-          description: Not implemented
-          content:
-            application/json:
-              schema:
-                description: Not implemented
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This is an error not yet handled or mapped properly.
-                    example: UNKNOWN_RESPONSE
-                    enum:
-                      - UNKNOWN_RESPONSE
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '50012'
-                    enum:
-                      - '50012'
-                  detailed_error_description:
-                    type: string
-                    description: 'Unique Text describing the specific error not yet handled.      '
+          $ref: '#/components/responses/UnknownServerError_501'
         '502':
-          description: Bad Gateway
-          content:
-            application/json:
-              schema:
-                description: Bad Gateway
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This is an error indicating there was an issue connecting to a partner system..
-                    example: UNAUTHORIZED_DOWNSTREAM
-                    enum:
-                      - UNAUTHORIZED_DOWNSTREAM
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '50002'
-                    enum:
-                      - '50002'
-                  detailed_error_description:
-                    type: string
-                    description: Authentication error—Verify and correct credentials.
+          $ref: '#/components/responses/UnknownPlatformError_502'
         '504':
-          description: Timeout
-          content:
-            application/json:
-              schema:
-                description: Timeout
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This is an error indicating there was a timeout issue to another  system.
-                    example: TIMEOUT_DOWNSTREAM
-                    enum:
-                      - TIMEOUT_DOWNSTREAM
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '50008'
-                    enum:
-                      - '50008'
-                  detailed_error_description:
-                    type: string
-                    description: No response from payment method provider.
+          $ref: '#/components/responses/ServerTimeout_504'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: 'https://apis.sandbox.globalpay.com/ucp'
+          description: Sandbox Environment
+        - url: 'https://apis.globalpay.com/ucp'
+          description: Production Environment
+tags:
+  - name: Verify
+    description: Verify a payment method to ensure it can be used to create a Transaction at a later time.
 components:
-  schemas:
-    create_request:
-      required:
-        - account_name
-        - channel
-        - currency
-        - country
-        - payment_method
-        - reference
-      type: object
-      properties:
-        account_name:
-          type: string
-          description: A meaningful label for the merchant account set by Global Payments.
-          example: Transaction_Processing
-          minLength: 1
-          maxLength: 50
-        channel:
-          type: string
-          description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
-          example: CNP
-          enum:
-            - CP
-            - CNP
-        currency:
-          type: string
-          description: The currency of the amount in ISO-4217(alpha-3)
-          example: USD
-        reference:
-          type: string
-          description: Merchant defined field to reference the transaction.
-          minLength: 8
-          maxLength: 50
-        country:
-          type: string
-          description: The country in ISO-3166-1(alpha-2 code) format.
-          example: US
-          enum:
-            - ISO-3166-1(alpha-2 code)
-            - US
-        payment_method:
-          type: object
-          properties:
-            id:
-              type: string
-              description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
-              example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
-              maxLength: 50
-            first_name:
-              type: string
-              description: Specify the first name of the owner of the payment method.
-              example: James
-              minLength: 0
-              maxLength: 50
-            last_name:
-              type: string
-              description: Specify the surname of the owner of the payment method.
-              example: Mason
-              minLength: 0
-              maxLength: 50
-            name:
-              type: string
-              description: The full name of the owner of the payment method.
-              example: James Mason
-              minLength: 0
-              maxLength: 100
-            entry_mode:
-              type: string
-              description: Indicates how the payment method information was obtained by the Merchant for this transaction. * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail. * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser. * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only. * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip. * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information. * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device. * `CONTACTLESS_CHIP` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a cardon or near a device to exchange card information. * `CONTACTLESS_SWIPE` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone. * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
-              example: ECOM
-              enum:
-                - MOTO
-                - ECOM
-                - IN_APP
-                - CHIP
-                - SWIPE
-                - MANUAL
-                - PHONE
-                - MAIL
-                - CONTACTLESS_CHIP
-                - CONTACTLESS_SWIPE
-              minLength: 1
-              maxLength: 50
-            fingerprint_mode:
-              type: string
-              description: Indicates whether to execute the fingerprint signature functionality. * `ALWAYS` - Always check and create the fingerprint value regardless of the result of the card authorization. * `ON_SUCCESS` - Always check and create the fingerprint value when the card authorization is successful.
-              enum:
-                - ALWAYS
-                - ON_SUCCESS
-              minLength: 1
-              maxLength: 50
-            encryption:
-              type: object
-              properties:
-                method:
-                  type: string
-                  description: The encryption method used when sending encrypted card data to Global Payments.
-                  enum:
-                    - KTB
-                    - KSN
-                  minLength: 1
-                  maxLength: 50
-                version:
-                  type: string
-                  description: The version of encryption being used.
-                  minLength: 1
-                  maxLength: 50
-                info:
-                  type: string
-                  description: The encryption info used when sending encrypted card data to Global Payments.
-                  minLength: 1
-                  maxLength: 2000
-            card:
-              type: object
-              properties:
-                number:
-                  type: string
-                  description: The the card account number used to authorize the transaction. Also known as PAN.
-                  example: '4263970000005262'
-                  minLength: 1
-                  maxLength: 50
-                expiry_month:
-                  type: string
-                  description: The 2 digit expiry date month of the card.
-                  example: '05'
-                  minLength: 2
-                  maxLength: 2
-                expiry_year:
-                  type: string
-                  description: The 2 digit expiry date year of the card.
-                  example: '25'
-                  minLength: 2
-                  maxLength: 2
-                track:
-                  type: string
-                  description: Data from magnetic stripe of a card
-                  minLength: 1
-                  maxLength: 500
-                cvv:
-                  type: string
-                  description: The numeric value printed on the physical card.
-                  example: '852'
-                  minLength: 0
-                  maxLength: 4
-                cvv_indicator:
-                  type: string
-                  description: Card Verification Value Indicator sent by the Merchant indicating the CVV availability. * `ILLEGIBLE` - indicates the cvv is present but cannot be read. * `NOT_PRESENT` - indicates the cvv is not present on the card. * `PRESENT` - indicates the cvv is present.
-                  example: PRESENT
-                  minLength: 0
-                  maxLength: 50
-                  enum:
-                    - ILLEGIBLE
-                    - NOT_PRESENT
-                    - PRESENT
-                avs_address:
-                  type: string
-                  description: First line of the address associated with the card.
-                  example: Apt 123
-                  minLength: 0
-                  maxLength: 50
-                avs_postal_code:
-                  type: string
-                  description: Postal code of the address associated with the card.
-                  example: TGX562
-                  minLength: 0
-                  maxLength: 50
-    create_response:
-      type: object
-      properties:
-        id:
-          type: string
-          description: A unique identifier generated by Global Payments to identify a vertification
-          example: VER_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
-          minLength: 1
-          maxLength: 50
-        time_created:
-          type: string
-          format: date-time
-          description: Global Payments time indicating when the object was created in ISO-8601 format.
-          example: '2021-05-03T21:23:39.718Z'
-        status:
-          type: string
-          description: Indicates where a resource object is in it's lifecylce.
-          example: VERIFIED
-        channel:
-          type: string
-          description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
-          example: CNP
-          enum:
-            - CP
-            - CNP
-        currency:
-          type: string
-          description: The currency of the amount in ISO-4217(alpha-3)
-          example: USD
-        country:
-          type: string
-          description: The country in ISO-3166-1(alpha-2 code) format.
-          example: US
-          enum:
-            - ISO-3166-1(alpha-2 code)
-            - US
-        merchant_id:
-          type: string
-          description: A unique identifier for the merchant set by Global Payments.
-          example: MER_c4c0df11039c48a9b63701adeaa296c3
-          minLength: 1
-          maxLength: 50
-        merchant_name:
-          type: string
-          description: A meaningful label for the merchant set by Global Payments.
-          example: Sandbox_merchant_2
-          minLength: 1
-          maxLength: 50
-        account_id:
-          type: string
-          description: A unique identifier for the merchant account set by Global Payments.
-          example: TRA_6716058969854a48b33347043ff8225f
-          minLength: 1
-          maxLength: 50
-        account_name:
-          type: string
-          description: A meaningful label for the merchant account set by Global Payments.
-          example: Transaction_Processing
-          minLength: 1
-          maxLength: 50
-        reference:
-          type: string
-          description: Merchant defined field to reference the transaction.
-          minLength: 8
-          maxLength: 50
-        payment_method:
-          type: object
-          properties:
-            id:
-              type: string
-              description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
-              example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
-              maxLength: 50
-            result:
-              type: string
-              description: Result code from the payment method provider.
-            message:
-              type: string
-              description: Result message from the payment method provider corresponding to the result code.
-            entry_mode:
-              type: string
-              description: Indicates how the payment method information was obtained by the Merchant for this transaction. * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail. * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser. * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only. * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip. * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information. * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device. * `CONTACTLESS_CHIP` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a cardon or near a device to exchange card information. * `CONTACTLESS_SWIPE` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone. * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
-              example: ECOM
-              enum:
-                - MOTO
-                - ECOM
-                - IN_APP
-                - CHIP
-                - SWIPE
-                - MANUAL
-                - PHONE
-                - MAIL
-                - CONTACTLESS_CHIP
-                - CONTACTLESS_SWIPE
-              minLength: 1
-              maxLength: 50
-            fingerprint_presence_indicator:
-              type: string
-              description: 'If enabled, this field indicates whether the payment method has been seen before or is new. * `EXISTS` -  Indicates that the payment method was seen on the platform before by this merchant. * `NEW` - Indicates that the payment method was not seen on the platform before by this merchant.'
-              enum:
-                - NEW
-                - EXISTS
-              minLength: 0
-              maxLength: 256
-            fingerprint:
-              type: string
-              description: 'If enabled, this field contains the unique fingerprint signature for that payment method for that merchant. If the payment method is seen again this same value is generated. For cards the primary account number is checked only. The expiry date or the CVV is not used for this check.'
-              minLength: 0
-              maxLength: 256
-            card:
-              type: object
-              properties:
-                masked_number_last4:
-                  type: string
-                  description: Masked card number with last 4 digits showing.
-                  minLength: 12
-                  maxLength: 50
-                brand:
-                  type: string
-                  description: Indicates the card brand that issued the card.
-                  enum:
-                    - VISA
-                    - MASTERCARD
-                    - AMEX
-                    - DINERS
-                    - DISCOVER
-                    - JCB
-                    - CUP
-                  minLength: 0
-                  maxLength: 50
-                brand_reference:
-                  type: string
-                  description: The unique reference created by the brands/schemes to uniquely identify the transaction.
-                  minLength: 0
-                  maxLength: 50
-                cvv_result:
-                  type: string
-                  description: The result of the CVV check.
-                  minLength: 0
-                  maxLength: 50
-                  enum:
-                    - MATCHED
-                    - NOT_MATCHED
-                    - NOT_CHECKED
-                avs_address_result:
-                  type: string
-                  description: The result of the AVS address check.
-                  minLength: 0
-                  maxLength: 50
-                  enum:
-                    - MATCHED
-                    - NOT_MATCHED
-                    - NOT_CHECKED
-                avs_postal_code_result:
-                  type: string
-                  description: The result of the AVS postal code check.
-                  minLength: 0
-                  maxLength: 50
-                  enum:
-                    - MATCHED
-                    - NOT_MATCHED
-                    - NOT_CHECKED
-                avs_action:
-                  type: string
-                  description: The recommended AVS action to be taken by the agent processing the card transaction.
-                  minLength: 0
-                  maxLength: 50
-                  enum:
-                    - PROMPT
-                    - DECLINE
-                    - ACCEPT
-        action:
-          type: object
-          description: Information about the Action executed.
-          properties:
-            id:
-              type: string
-              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
-              minLength: 1
-              maxLength: 50
-            type:
-              type: string
-              description: Indicates the action taken.
-            time_created:
-              type: string
-              format: date-time
-              description: Global Payments time indicating when the object was created in ISO-8601 format.
-              example: '2021-05-03T21:23:39.718Z'
-            result_code:
-              type: string
-              description: The result of the action executed.
-              enum:
-                - SUCCESS
-                - DECLINE
-              minLength: 1
-              maxLength: 50
-            app_id:
-              type: string
-              description: The id of the app that was used to create the token.
-              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
-              minLength: 1
-              maxLength: 50
-            app_name:
-              type: string
-              description: The name of the app the user gave to the application.
-              example: demo_app
-              minLength: 1
-              maxLength: 50
-    payment_method_request:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
-          example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
-          maxLength: 50
-        first_name:
-          type: string
-          description: Specify the first name of the owner of the payment method.
-          example: James
-          minLength: 0
-          maxLength: 50
-        last_name:
-          type: string
-          description: Specify the surname of the owner of the payment method.
-          example: Mason
-          minLength: 0
-          maxLength: 50
-        name:
-          type: string
-          description: The full name of the owner of the payment method.
-          example: James Mason
-          minLength: 0
-          maxLength: 100
-        entry_mode:
-          type: string
-          description: Indicates how the payment method information was obtained by the Merchant for this transaction. * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail. * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser. * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only. * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip. * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information. * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device. * `CONTACTLESS_CHIP` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a cardon or near a device to exchange card information. * `CONTACTLESS_SWIPE` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone. * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
-          example: ECOM
-          enum:
-            - MOTO
-            - ECOM
-            - IN_APP
-            - CHIP
-            - SWIPE
-            - MANUAL
-            - PHONE
-            - MAIL
-            - CONTACTLESS_CHIP
-            - CONTACTLESS_SWIPE
-          minLength: 1
-          maxLength: 50
-        fingerprint_mode:
-          type: string
-          description: Indicates whether to execute the fingerprint signature functionality. * `ALWAYS` - Always check and create the fingerprint value regardless of the result of the card authorization. * `ON_SUCCESS` - Always check and create the fingerprint value when the card authorization is successful.
-          enum:
-            - ALWAYS
-            - ON_SUCCESS
-          minLength: 1
-          maxLength: 50
-        encryption:
-          type: object
-          properties:
-            method:
-              type: string
-              description: The encryption method used when sending encrypted card data to Global Payments.
-              enum:
-                - KTB
-                - KSN
-              minLength: 1
-              maxLength: 50
-            version:
-              type: string
-              description: The version of encryption being used.
-              minLength: 1
-              maxLength: 50
-            info:
-              type: string
-              description: The encryption info used when sending encrypted card data to Global Payments.
-              minLength: 1
-              maxLength: 2000
-        card:
-          type: object
-          properties:
-            number:
-              type: string
-              description: The the card account number used to authorize the transaction. Also known as PAN.
-              example: '4263970000005262'
-              minLength: 1
-              maxLength: 50
-            expiry_month:
-              type: string
-              description: The 2 digit expiry date month of the card.
-              example: '05'
-              minLength: 2
-              maxLength: 2
-            expiry_year:
-              type: string
-              description: The 2 digit expiry date year of the card.
-              example: '25'
-              minLength: 2
-              maxLength: 2
-            track:
-              type: string
-              description: Data from magnetic stripe of a card
-              minLength: 1
-              maxLength: 500
-            cvv:
-              type: string
-              description: The numeric value printed on the physical card.
-              example: '852'
-              minLength: 0
-              maxLength: 4
-            cvv_indicator:
-              type: string
-              description: Card Verification Value Indicator sent by the Merchant indicating the CVV availability. * `ILLEGIBLE` - indicates the cvv is present but cannot be read. * `NOT_PRESENT` - indicates the cvv is not present on the card. * `PRESENT` - indicates the cvv is present.
-              example: PRESENT
-              minLength: 0
-              maxLength: 50
-              enum:
-                - ILLEGIBLE
-                - NOT_PRESENT
-                - PRESENT
-            avs_address:
-              type: string
-              description: First line of the address associated with the card.
-              example: Apt 123
-              minLength: 0
-              maxLength: 50
-            avs_postal_code:
-              type: string
-              description: Postal code of the address associated with the card.
-              example: TGX562
-              minLength: 0
-              maxLength: 50
-    payment_method_response:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
-          example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
-          maxLength: 50
-        result:
-          type: string
-          description: Result code from the payment method provider.
-        message:
-          type: string
-          description: Result message from the payment method provider corresponding to the result code.
-        entry_mode:
-          type: string
-          description: Indicates how the payment method information was obtained by the Merchant for this transaction. * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail. * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser. * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only. * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip. * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information. * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device. * `CONTACTLESS_CHIP` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a cardon or near a device to exchange card information. * `CONTACTLESS_SWIPE` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone. * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
-          example: ECOM
-          enum:
-            - MOTO
-            - ECOM
-            - IN_APP
-            - CHIP
-            - SWIPE
-            - MANUAL
-            - PHONE
-            - MAIL
-            - CONTACTLESS_CHIP
-            - CONTACTLESS_SWIPE
-          minLength: 1
-          maxLength: 50
-        fingerprint_presence_indicator:
-          type: string
-          description: 'If enabled, this field indicates whether the payment method has been seen before or is new. * `EXISTS` -  Indicates that the payment method was seen on the platform before by this merchant. * `NEW` - Indicates that the payment method was not seen on the platform before by this merchant.'
-          enum:
-            - NEW
-            - EXISTS
-          minLength: 0
-          maxLength: 256
-        fingerprint:
-          type: string
-          description: 'If enabled, this field contains the unique fingerprint signature for that payment method for that merchant. If the payment method is seen again this same value is generated. For cards the primary account number is checked only. The expiry date or the CVV is not used for this check.'
-          minLength: 0
-          maxLength: 256
-        card:
-          type: object
-          properties:
-            masked_number_last4:
-              type: string
-              description: Masked card number with last 4 digits showing.
-              minLength: 12
-              maxLength: 50
-            brand:
-              type: string
-              description: Indicates the card brand that issued the card.
-              enum:
-                - VISA
-                - MASTERCARD
-                - AMEX
-                - DINERS
-                - DISCOVER
-                - JCB
-                - CUP
-              minLength: 0
-              maxLength: 50
-            brand_reference:
-              type: string
-              description: The unique reference created by the brands/schemes to uniquely identify the transaction.
-              minLength: 0
-              maxLength: 50
-            cvv_result:
-              type: string
-              description: The result of the CVV check.
-              minLength: 0
-              maxLength: 50
-              enum:
-                - MATCHED
-                - NOT_MATCHED
-                - NOT_CHECKED
-            avs_address_result:
-              type: string
-              description: The result of the AVS address check.
-              minLength: 0
-              maxLength: 50
-              enum:
-                - MATCHED
-                - NOT_MATCHED
-                - NOT_CHECKED
-            avs_postal_code_result:
-              type: string
-              description: The result of the AVS postal code check.
-              minLength: 0
-              maxLength: 50
-              enum:
-                - MATCHED
-                - NOT_MATCHED
-                - NOT_CHECKED
-            avs_action:
-              type: string
-              description: The recommended AVS action to be taken by the agent processing the card transaction.
-              minLength: 0
-              maxLength: 50
-              enum:
-                - PROMPT
-                - DECLINE
-                - ACCEPT
-    card_request:
-      type: object
-      properties:
-        number:
-          type: string
-          description: The the card account number used to authorize the transaction. Also known as PAN.
-          example: '4263970000005262'
-          minLength: 1
-          maxLength: 50
-        expiry_month:
-          type: string
-          description: The 2 digit expiry date month of the card.
-          example: '05'
-          minLength: 2
-          maxLength: 2
-        expiry_year:
-          type: string
-          description: The 2 digit expiry date year of the card.
-          example: '25'
-          minLength: 2
-          maxLength: 2
-        track:
-          type: string
-          description: Data from magnetic stripe of a card
-          minLength: 1
-          maxLength: 500
-        cvv:
-          type: string
-          description: The numeric value printed on the physical card.
-          example: '852'
-          minLength: 0
-          maxLength: 4
-        cvv_indicator:
-          type: string
-          description: Card Verification Value Indicator sent by the Merchant indicating the CVV availability. * `ILLEGIBLE` - indicates the cvv is present but cannot be read. * `NOT_PRESENT` - indicates the cvv is not present on the card. * `PRESENT` - indicates the cvv is present.
-          example: PRESENT
-          minLength: 0
-          maxLength: 50
-          enum:
-            - ILLEGIBLE
-            - NOT_PRESENT
-            - PRESENT
-        avs_address:
-          type: string
-          description: First line of the address associated with the card.
-          example: Apt 123
-          minLength: 0
-          maxLength: 50
-        avs_postal_code:
-          type: string
-          description: Postal code of the address associated with the card.
-          example: TGX562
-          minLength: 0
-          maxLength: 50
-    card_response:
-      type: object
-      properties:
-        masked_number_last4:
-          type: string
-          description: Masked card number with last 4 digits showing.
-          minLength: 12
-          maxLength: 50
-        brand:
-          type: string
-          description: Indicates the card brand that issued the card.
-          enum:
-            - VISA
-            - MASTERCARD
-            - AMEX
-            - DINERS
-            - DISCOVER
-            - JCB
-            - CUP
-          minLength: 0
-          maxLength: 50
-        brand_reference:
-          type: string
-          description: The unique reference created by the brands/schemes to uniquely identify the transaction.
-          minLength: 0
-          maxLength: 50
-        cvv_result:
-          type: string
-          description: The result of the CVV check.
-          minLength: 0
-          maxLength: 50
-          enum:
-            - MATCHED
-            - NOT_MATCHED
-            - NOT_CHECKED
-        avs_address_result:
-          type: string
-          description: The result of the AVS address check.
-          minLength: 0
-          maxLength: 50
-          enum:
-            - MATCHED
-            - NOT_MATCHED
-            - NOT_CHECKED
-        avs_postal_code_result:
-          type: string
-          description: The result of the AVS postal code check.
-          minLength: 0
-          maxLength: 50
-          enum:
-            - MATCHED
-            - NOT_MATCHED
-            - NOT_CHECKED
-        avs_action:
-          type: string
-          description: The recommended AVS action to be taken by the agent processing the card transaction.
-          minLength: 0
-          maxLength: 50
-          enum:
-            - PROMPT
-            - DECLINE
-            - ACCEPT
+  parameters:
+    Authorization:
+      name: Authorization
+      in: header
+      description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
+      required: true
+      schema:
+        type: string
+        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+    X-GP-Idempotency:
+      name: X-GP-Idempotency
+      in: header
+      description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+      required: false
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 50
+    X-GP-Version:
+      name: X-GP-Version
+      in: header
+      description: The version of the API to execute the request.
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 50
+        default: '2021-03-22'
+        example: '2021-03-22'
+    Content-type:
+      name: Content-type
+      in: header
+      description: Format of the message body.
+      required: true
+      schema:
+        type: string
+        default: application/json
+        example: application/json
+    Accept:
+      name: Accept
+      in: header
+      description: Indicates the expected format of the message response.
+      required: false
+      schema:
+        type: string
+        default: application/json
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+  responses:
+    RequestInvalid_400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/objRequestInvalid_400'
+    AuthenticationInvalid_401:
+      description: Not Authenticated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthenticationInvalid_401'
+    NotAuthorized_403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotAuthorized_403'
+    ServerError_500:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServerError_500'
+    UnknownServerError_501:
+      description: Not implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnknownServerError_501'
+    UnknownPlatformError_502:
+      description: Bad Gateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnknownPlatformError_502'
+    ServerTimeout_504:
+      description: Timeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServerTimeout_504'
+  schemas:
+    create_request:
+      type: object
+      properties:
+        account_name:
+          $ref: '#/components/schemas/account_name_VERIFICATIONS.account_name'
+        channel:
+          $ref: '#/components/schemas/channel_VERIFICATIONS.channel'
+        currency:
+          $ref: '#/components/schemas/currency_VERIFICATIONS.currency'
+        reference:
+          $ref: '#/components/schemas/reference_VERIFICATIONS.reference'
+        country:
+          $ref: '#/components/schemas/country_VERIFICATIONS.country'
+        payment_method:
+          type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/id_VERIFICATIONS.payment_method.id'
+            first_name:
+              $ref: '#/components/schemas/first_name_VERIFICATIONS.payment_method.first_name'
+            last_name:
+              $ref: '#/components/schemas/last_name_VERIFICATIONS.payment_method.last_name'
+            name:
+              $ref: '#/components/schemas/name_VERIFICATIONS.payment_method.name'
+            entry_mode:
+              $ref: '#/components/schemas/entry_mode_VERIFICATIONS.payment_method.entry_mode'
+            fingerprint_mode:
+              $ref: '#/components/schemas/fingerprint_mode_VERIFICATIONS.payment_method.fingerprint_mode'
+            encryption:
+              type: object
+              properties:
+                method:
+                  $ref: '#/components/schemas/method_VERIFICATIONS.payment_method.encryption.method'
+                version:
+                  $ref: '#/components/schemas/version_VERIFICATIONS.payment_method.encryption.version'
+                info:
+                  $ref: '#/components/schemas/info_VERIFICATIONS.payment_method.encryption.info'
+            authentication:
+              type: object
+              properties:
+                id:
+                  $ref: '#/components/schemas/id_VERIFICATIONS.payment_method.authentication.id'
+                three_ds:
+                  type: object
+                  properties:
+                    message_version:
+                      $ref: '#/components/schemas/message_version_VERIFICATIONS.payment_method.authentication.three_ds.message_version'
+                    eci:
+                      $ref: '#/components/schemas/eci_VERIFICATIONS.payment_method.authentication.three_ds.eci'
+                    value:
+                      $ref: '#/components/schemas/value_VERIFICATIONS.payment_method.authentication.three_ds.value'
+                    server_trans_ref:
+                      $ref: '#/components/schemas/server_trans_ref_VERIFICATIONS.payment_method.authentication.three_ds.server_trans_ref'
+                    ds_trans_ref:
+                      $ref: '#/components/schemas/ds_trans_ref_VERIFICATIONS.payment_method.authentication.three_ds.ds_trans_ref'
+                    exempt_status:
+                      $ref: '#/components/schemas/exempt_status_VERIFICATIONS.payment_method.authentication.three_ds.exempt_status'
+            card:
+              type: object
+              properties:
+                number:
+                  $ref: '#/components/schemas/number_VERIFICATIONS.payment_method.card.number'
+                expiry_month:
+                  $ref: '#/components/schemas/expiry_month_VERIFICATIONS.payment_method.card.expiry_month'
+                expiry_year:
+                  $ref: '#/components/schemas/expiry_year_VERIFICATIONS.payment_method.card.expiry_year'
+                track:
+                  $ref: '#/components/schemas/track_VERIFICATIONS.payment_method.card.track'
+                cvv:
+                  $ref: '#/components/schemas/cvv_VERIFICATIONS.payment_method.card.cvv'
+                cvv_indicator:
+                  $ref: '#/components/schemas/cvv_indicator_VERIFICATIONS.payment_method.card.cvv_indicator'
+                avs_address:
+                  $ref: '#/components/schemas/avs_address_VERIFICATIONS.payment_method.card.avs_address'
+                avs_postal_code:
+                  $ref: '#/components/schemas/avs_postal_code_VERIFICATIONS.payment_method.card.avs_postal_code'
+      required:
+        - account_name
+        - channel
+        - currency
+        - reference
+        - country
+    account_name_VERIFICATIONS.account_name:
+      type: string
+      description: A meaningful label for the merchant account set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      example: transaction_processing
+    channel_VERIFICATIONS.channel:
+      type: string
+      enum:
+        - CP
+        - CNP
+      description: |
+        Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario.
+
+         * `CP`  - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk.
+         * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+      example: CP
+    currency_VERIFICATIONS.currency:
+      type: string
+      description: The currency of the amount in ISO-4217(alpha-3)
+      minLength: 3
+      maxLength: 3
+      example: USD
+    reference_VERIFICATIONS.reference:
+      type: string
+      description: Merchant defined field to reference the transaction.
+      minLength: 8
+      maxLength: 50
+      example: becf9f3e-4d33-459c-8ed2-0c4affc9555e
+    country_VERIFICATIONS.country:
+      type: string
+      description: The country in ISO-3166-1(alpha-2 code) format.
+      example: US
+    id_VERIFICATIONS.payment_method.id:
+      type: string
+      description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+      minLength: 1
+      maxLength: 50
+      example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+    first_name_VERIFICATIONS.payment_method.first_name:
+      type: string
+      description: Specify the first name of the owner of the payment method.
+      maxLength: 50
+      example: James
+    last_name_VERIFICATIONS.payment_method.last_name:
+      type: string
+      description: Specify the surname of the owner of the payment method.
+      maxLength: 50
+      example: Mason
+    name_VERIFICATIONS.payment_method.name:
+      type: string
+      description: The name of the payment method
+      maxLength: 100
+      example: John's payment method
+    entry_mode_VERIFICATIONS.payment_method.entry_mode:
+      type: string
+      enum:
+        - MOTO
+        - ECOM
+        - IN_APP
+        - CHIP
+        - SWIPE
+        - MANUAL
+        - CONTACTLESS_CHIP
+        - CONTACTLESS_SWIPE
+        - PHONE
+        - MAIL
+      description: |
+        Indicates how the payment method information was obtained by the Merchant for this transaction. 
+                                 * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail. 
+                                 * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser. 
+                                 * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only. 
+                                 * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip. 
+                                 * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information. 
+                                 * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device. 
+                                 * `CONTACTLESS_CHIP` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a card on or near a device to exchange card information. 
+                                 * `CONTACTLESS_SWIPE` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information 
+                                 * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone. 
+                                 * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
+                                 * `PRESENT`- The entry mode cannot be determined but it is a Customer Present transaction.
+                                 * `UNKNOWN` - The entry mode for this transaction cannot be determined.
+      example: MOTO
+    fingerprint_mode_VERIFICATIONS.payment_method.fingerprint_mode:
+      type: string
+      enum:
+        - ALWAYS
+        - ON_SUCCESS
+      description: |
+        Indicates whether to execute the fingerprint signature functionality.
+        * `ALWAYS` - Always check and create the fingerprint value regardless of the result of the card authorization.
+        * `ON_SUCCESS` - Always check and create the fingerprint value when the card authorization is successful.
+      minLength: 1
+      maxLength: 50
+    method_VERIFICATIONS.payment_method.encryption.method:
+      type: string
+      enum:
+        - KTB
+        - KSN
+      description: The encryption method used when sending encrypted card data to Global Payments.
+      minLength: 1
+      maxLength: 50
+      example: KTB
+    version_VERIFICATIONS.payment_method.encryption.version:
+      type: string
+      description: The version of encryption being used.
+      minLength: 1
+      maxLength: 50
+    info_VERIFICATIONS.payment_method.encryption.info:
+      type: string
+      description: The encryption info used when sending encrypted card data to Global Payments.
+      minLength: 1
+      maxLength: 2000
+    id_VERIFICATIONS.payment_method.authentication.id:
+      type: string
+      description: A unique identifier that is used to identify and reference an instance of this resource. It is generated by Global Payments to identify the authentication details (3DS data) used with this transaction.
+      minLength: 1
+      maxLength: 50
+      example: AUT_6a061b51-6e7a-4200-9d8c-01be5e26a5bb
+    message_version_VERIFICATIONS.payment_method.authentication.three_ds.message_version:
+      type: string
+      description: Indicates the version of 3D Secure used.
+      minLength: 1
+      maxLength: 50
+    eci_VERIFICATIONS.payment_method.authentication.three_ds.eci:
+      type: string
+      description: An indication of the degree of the authentication process and importantly the liability shift away from the merchant obtained for this transaction. It is determined during the 3D Secure process.
+      minLength: 1
+      maxLength: 50
+    value_VERIFICATIONS.payment_method.authentication.three_ds.value:
+      type: string
+      description: The authentication value created as part of the 3D Secure process.
+      minLength: 1
+      maxLength: 50
+    server_trans_ref_VERIFICATIONS.payment_method.authentication.three_ds.server_trans_ref:
+      type: string
+      description: The reference created by the 3DSecure provider to identify the specific authentication attempt.
+      minLength: 1
+      maxLength: 50
+    ds_trans_ref_VERIFICATIONS.payment_method.authentication.three_ds.ds_trans_ref:
+      type: string
+      description: The reference created by the 3DSecure Directory Server to identify the specific authentication attempt.
+      minLength: 1
+      maxLength: 50
+    exempt_status_VERIFICATIONS.payment_method.authentication.three_ds.exempt_status:
+      type: string
+      enum:
+        - LOW_VALUE
+        - TRANSACTION_RISK_ANALYSIS
+        - TRUSTED_MERCHANT
+        - SECURE_CORPORATE_PAYMENT
+        - SCA_DELEGATION
+      description: Indicates if any exemptions apply to this transaction.
+      minLength: 1
+      maxLength: 50
+      example: LOW_VALUE
+    number_VERIFICATIONS.payment_method.card.number:
+      type: string
+      description: The card account number used to authorize the transaction. Also known as PAN.
+      minLength: 1
+      maxLength: 50
+      example: 4263970000005262'
+    expiry_month_VERIFICATIONS.payment_method.card.expiry_month:
+      type: string
+      description: The 2 digit expiry date month of the card.
+      minLength: 2
+      maxLength: 2
+      example: '05'
+    expiry_year_VERIFICATIONS.payment_method.card.expiry_year:
+      type: string
+      description: The 2 digit expiry date year of the card.
+      minLength: 2
+      maxLength: 2
+      example: '25'
+    track_VERIFICATIONS.payment_method.card.track:
+      type: string
+      description: Data from magnetic stripe of a card
+      minLength: 1
+      maxLength: 500
+    cvv_VERIFICATIONS.payment_method.card.cvv:
+      type: string
+      description: The numeric value printed on the physical card.
+      maxLength: 4
+      example: '852'
+    cvv_indicator_VERIFICATIONS.payment_method.card.cvv_indicator:
+      type: string
+      enum:
+        - ILLEGIBLE
+        - NOT_PRESENT
+        - PRESENT
+      description: |
+        Card Verification Value Indicator sent by the Merchant indicating the CVV availability.
+
+           * `ILLEGIBLE` - indicates the cvv is present but cannot be read.
+           * `NOT_PRESENT` - indicates the cvv is not present on the card.
+           * `PRESENT` - indicates the cvv is present.
+      maxLength: 50
+      example: PRESENT
+    avs_address_VERIFICATIONS.payment_method.card.avs_address:
+      type: string
+      description: First line of the address associated with the card.
+      maxLength: 50
+      example: Apt 123
+    avs_postal_code_VERIFICATIONS.payment_method.card.avs_postal_code:
+      type: string
+      description: Postal code of the address associated with the card.
+      example: TGX562
+    create_response:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id_VERIFICATIONS.id'
+        time_created:
+          $ref: '#/components/schemas/time_created_VERIFICATIONS.time_created'
+        status:
+          $ref: '#/components/schemas/status_VERIFICATIONS.status'
+        channel:
+          $ref: '#/components/schemas/channel_VERIFICATIONS.channel'
+        currency:
+          $ref: '#/components/schemas/currency_VERIFICATIONS.currency'
+        country:
+          $ref: '#/components/schemas/country_VERIFICATIONS.country'
+        merchant_id:
+          $ref: '#/components/schemas/merchant_id_VERIFICATIONS.merchant_id'
+        merchant_name:
+          $ref: '#/components/schemas/merchant_name_VERIFICATIONS.merchant_name'
+        account_id:
+          $ref: '#/components/schemas/account_id_VERIFICATIONS.account_id'
+        account_name:
+          $ref: '#/components/schemas/account_name_VERIFICATIONS.account_name'
+        reference:
+          $ref: '#/components/schemas/reference_VERIFICATIONS.reference'
+        payment_method:
+          type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/id_VERIFICATIONS.payment_method.id'
+            result:
+              $ref: '#/components/schemas/result_VERIFICATIONS.payment_method.result'
+            message:
+              $ref: '#/components/schemas/message_VERIFICATIONS.payment_method.message'
+            entry_mode:
+              $ref: '#/components/schemas/entry_mode_VERIFICATIONS.payment_method.entry_mode'
+            fingerprint_presence_indicator:
+              $ref: '#/components/schemas/fingerprint_presence_indicator_VERIFICATIONS.payment_method.fingerprint_presence_indicator'
+            fingerprint:
+              $ref: '#/components/schemas/fingerprint_VERIFICATIONS.payment_method.fingerprint'
+            card:
+              type: object
+              properties:
+                masked_number_last4:
+                  $ref: '#/components/schemas/masked_number_last4_VERIFICATIONS.payment_method.card.masked_number_last4'
+                brand:
+                  $ref: '#/components/schemas/brand_VERIFICATIONS.payment_method.card.brand'
+                brand_reference:
+                  $ref: '#/components/schemas/brand_reference_VERIFICATIONS.payment_method.card.brand_reference'
+                cvv_result:
+                  $ref: '#/components/schemas/cvv_result_VERIFICATIONS.payment_method.card.cvv_result'
+                avs_address_result:
+                  $ref: '#/components/schemas/avs_address_result_VERIFICATIONS.payment_method.card.avs_address_result'
+                avs_postal_code_result:
+                  $ref: '#/components/schemas/avs_postal_code_result_VERIFICATIONS.payment_method.card.avs_postal_code_result'
+                avs_action:
+                  $ref: '#/components/schemas/avs_action_VERIFICATIONS.payment_method.card.avs_action'
+        action:
+          type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/id_VERIFICATIONS.action.id'
+            type:
+              $ref: '#/components/schemas/type_VERIFICATIONS.action.type'
+            time_created:
+              $ref: '#/components/schemas/time_created_VERIFICATIONS.action.time_created'
+            result_code:
+              $ref: '#/components/schemas/result_code_VERIFICATIONS.action.result_code'
+            app_id:
+              $ref: '#/components/schemas/app_id_VERIFICATIONS.action.app_id'
+            app_name:
+              $ref: '#/components/schemas/app_name_VERIFICATIONS.action.app_name'
+    id_VERIFICATIONS.id:
+      type: string
+      description: A unique identifier generated by Global Payments to identify a verification
+      minLength: 1
+      maxLength: 50
+      example: VER_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    time_created_VERIFICATIONS.time_created:
+      type: string
+      description: Global Payments time indicating when the object was created in ISO-8601 format.
+      format: date-time
+      example: '2021-05-03T21:23:39.718Z'
+    status_VERIFICATIONS.status:
+      type: string
+      enum:
+        - VERIFIED
+        - NOT_VERIFIED
+      description: Indicates where a resource object is in its life-cycle.
+      example: VERIFIED
+    merchant_id_VERIFICATIONS.merchant_id:
+      type: string
+      description: A unique identifier for the merchant set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      example: MER_c4c0df11039c48a9b63701adeaa296c3
+    merchant_name_VERIFICATIONS.merchant_name:
+      type: string
+      description: A meaningful label for the merchant set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      example: Sandbox_merchant_2
+    account_id_VERIFICATIONS.account_id:
+      type: string
+      description: A unique identifier for the merchant account set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      example: TRA_86920f927028745yt34d077d88beb29b
+    result_VERIFICATIONS.payment_method.result:
+      type: string
+      description: Result code from the payment method provider
+    message_VERIFICATIONS.payment_method.message:
+      type: string
+      description: Result message from the payment method provider corresponding to the result code.
+    fingerprint_presence_indicator_VERIFICATIONS.payment_method.fingerprint_presence_indicator:
+      type: string
+      enum:
+        - EXISTS
+        - NEW
+      description: |
+        If enabled, this field indicates whether the payment method has been seen before or is new.
+
+         *`EXISTS` - Indicates that the payment method was seen on the platform before by this merchant.
+         *`NEW `- Indicates that the payment method was not seen on the platform before by this merchant.
+    fingerprint_VERIFICATIONS.payment_method.fingerprint:
+      type: string
+      description: 'If enabled, this field contains the unique fingerprint signature for that payment method for that merchant. If the payment method is seen again this same value is generated. For cards the primary account number is checked only. The expiry date or the CVV is not used for this check.'
+    masked_number_last4_VERIFICATIONS.payment_method.card.masked_number_last4:
+      type: string
+      description: Masked card number with last 4 digits.
+      minLength: 12
+      maxLength: 50
+      example: XXXXXXXXXXXX7025
+    brand_VERIFICATIONS.payment_method.card.brand:
+      type: string
+      enum:
+        - VISA
+        - MASTERCARD
+        - AMEX
+        - DINERS
+        - DISCOVER
+        - JCB
+        - CUP
+      description: Indicates the card brand that issued the card.
+      example: VISA
+    brand_reference_VERIFICATIONS.payment_method.card.brand_reference:
+      type: string
+      description: The unique reference created by the brands/schemes to uniquely identify the transaction.
+      maxLength: 50
+    cvv_result_VERIFICATIONS.payment_method.card.cvv_result:
+      type: string
+      enum:
+        - MATCHED
+        - NOT_MATCHED
+        - NOT_CHECKED
+      description: The result of the CVV check.
+      example: MATCHED
+    avs_address_result_VERIFICATIONS.payment_method.card.avs_address_result:
+      type: string
+      enum:
+        - MATCHED
+        - NOT_MATCHED
+        - NOT_CHECKED
+      description: The result of the AVS address check.
+      example: MATCHED
+    avs_postal_code_result_VERIFICATIONS.payment_method.card.avs_postal_code_result:
+      type: string
+      enum:
+        - MATCHED
+        - NOT_MATCHED
+        - NOT_CHECKED
+      description: The result of the AVS postal code check.
+      example: MATCHED
+    avs_action_VERIFICATIONS.payment_method.card.avs_action:
+      type: string
+      enum:
+        - PROMPT
+        - DECLINE
+        - ACCEPT
+      description: The recommended AVS action to be taken by the agent processing the card transaction.
+      maxLength: 50
+      example: PROMPT
+    id_VERIFICATIONS.action.id:
+      type: string
+      description: A unique identifier generated by Global Payments to identify an action.
+      example: ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    type_VERIFICATIONS.action.type:
+      type: string
+      enum:
+        - VERIFY
+      description: Indicates the specific action taken.
+      example: VERIFY
+    time_created_VERIFICATIONS.action.time_created:
+      type: string
+      description: Global Payments time indicating when the object was created in ISO-8601 format.
+      example: '2021-05-03T21:23:39.718Z'
+    result_code_VERIFICATIONS.action.result_code:
+      type: string
+      enum:
+        - SUCCESS
+        - NOT_VERIFIED
+      description: The result of the action executed.
+      example: SUCCESS
+    app_id_VERIFICATIONS.action.app_id:
+      type: string
+      description: The id of the app that was used to create the token.
+      example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    app_name_VERIFICATIONS.action.app_name:
+      type: string
+      description: The name of the app the user gave to the application.
+      example: my_lovely_app
+    objRequestInvalid_400:
+      type: object
+      description: Bad Request
+      properties:
+        error_code:
+          type: string
+          enum:
+            - DUPLICATE_TRANSACTION
+            - INVALID_BATCH_ACTION
+            - INVALID_REQUEST_DATA
+            - INVALID_TRANSACTION_ACTION
+            - MANDATORY_DATA_MISSING
+            - TRANSACTION_NOT_FOUND
+          description: This indicates an issue with the API request.
+          example: MANDATORY_DATA_MISSING
+        detailed_error_code:
+          type: string
+          enum:
+            - '40016'
+          description: Unique reference to identify the error.
+          example: '40016'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Bad track data
+    AuthenticationInvalid_401:
+      type: object
+      description: Not Authenticated
+      properties:
+        error_code:
+          type: string
+          enum:
+            - NOT_AUTHENTICATED
+          description: This action failed as token in the request is not valid.
+          example: NOT_AUTHENTICATED
+        detailed_error_code:
+          type: string
+          enum:
+            - '40001'
+            - '40002'
+          description: Unique reference to identify the error.
+          example: '40001'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Invalid Access Token
+    NotAuthorized_403:
+      type: object
+      description: Forbidden
+      properties:
+        error_code:
+          type: string
+          enum:
+            - ACTION_NOT_AUTHORIZED
+          description: This action is not authorized with the credentials being used.
+          example: ACTION_NOT_AUTHORIZED
+        detailed_error_code:
+          type: string
+          enum:
+            - '40003'
+            - '40004'
+          description: Unique reference to identify the error.
+          example: '40003'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Permission not enabled to execute action
+    ServerError_500:
+      type: object
+      description: Internal Server Error
+      properties:
+        error_code:
+          type: string
+          enum:
+            - SYSTEM_ERROR_DOWNSTREAM
+          description: This indicates an unexpected issue occurred on the Global Payments system.
+          example: SYSTEM_ERROR_DOWNSTREAM
+        detailed_error_code:
+          type: string
+          enum:
+            - '50011'
+          description: Unique reference to identify the error.
+          example: '50011'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Processor Configuration error
+    UnknownServerError_501:
+      type: object
+      description: Not implemented
+      properties:
+        error_code:
+          type: string
+          enum:
+            - UNKNOWN_RESPONSE
+          description: This is an error not yet handled or mapped properly.
+          example: UNKNOWN_RESPONSE
+        detailed_error_code:
+          type: string
+          enum:
+            - '50012'
+          description: Unique reference to identify the error.
+          example: '50012'
+        detailed_error_description:
+          type: string
+          description: 'Unique Text describing the specific error not yet handled.      '
+    UnknownPlatformError_502:
+      type: object
+      description: Bad Gateway
+      properties:
+        error_code:
+          type: string
+          enum:
+            - UNAUTHORIZED_DOWNSTREAM
+          description: This is an error indicating there was an issue connecting to a partner system..
+          example: UNAUTHORIZED_DOWNSTREAM
+        detailed_error_code:
+          type: string
+          enum:
+            - '50002'
+          description: Unique reference to identify the error.
+          example: '50002'
+        detailed_error_description:
+          type: string
+          description: Authentication error—Verify and correct credentials.
+    ServerTimeout_504:
+      type: object
+      description: Timeout
+      properties:
+        error_code:
+          type: string
+          enum:
+            - TIMEOUT_DOWNSTREAM
+          description: This is an error indicating there was a timeout issue to another  system.
+          example: TIMEOUT_DOWNSTREAM
+        detailed_error_code:
+          type: string
+          enum:
+            - '50008'
+          description: Unique reference to identify the error.
+          example: '50008'
+        detailed_error_description:
+          type: string
+          description: No response from payment method provider.
 security:
   - bearerAuth: []

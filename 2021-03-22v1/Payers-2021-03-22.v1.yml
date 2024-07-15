@@ -1,0 +1,741 @@
+openapi: 3.0.3
+info:
+  version: 2021 03 22
+  title: Payers
+  description: 'Payers represents entities on the Global Payments system that pay for a Merchants goods and services. Merchants can store data against a Payer and their associated Stored Payment Methods which can be used to make a sale. '
+  contact:
+    name: API Integrations
+    url: 'https://developer.globalpay.com/?gp-api=true'
+    email: api.integrations@globalpay.com
+servers:
+  - url: 'https://apis.sandbox.globalpay.com/ucp'
+    description: Sandbox Environment
+  - url: 'https://apis.globalpay.com/ucp'
+    description: Production Environment
+paths:
+  /payers:
+    post:
+      tags:
+        - Create a Payer
+      summary: Create a Payer
+      description: 'Create a Payer on the Global Payments system that can be used when creating a sale. '
+      operationId: post-payer
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/Content-type'
+        - $ref: '#/components/parameters/X-GP-Version'
+        - $ref: '#/components/parameters/X-GP-Idempotency'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRequest'
+            examples:
+              Create a Payer:
+                value:
+                  first_name: John
+                  last_name: James
+                  reference: payer-123
+                  payment_methods:
+                    - id: PMT_oOAH6BClraQWS3Qy07dh7tZAN3X2nW
+                      default: 'YES'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResponse'
+        '400':
+          $ref: '#/components/responses/RequestInvalid_400'
+        '401':
+          $ref: '#/components/responses/AuthenticationInvalid_401'
+        '403':
+          $ref: '#/components/responses/NotAuthorized_403'
+        '404':
+          description: Resource Not Found
+        '500':
+          $ref: '#/components/responses/ServerError_500'
+        '501':
+          $ref: '#/components/responses/UnknownServerError_501'
+        '502':
+          $ref: '#/components/responses/UnknownPlatformError_502'
+        '504':
+          $ref: '#/components/responses/ServerTimeout_504'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: 'https://apis.sandbox.globalpay.com/ucp'
+          description: Sandbox Environment
+        - url: 'https://apis.globalpay.com/ucp'
+          description: Production Environment
+  '/payers/{id}':
+    patch:
+      tags:
+        - Edit a Payer
+      summary: Edit a Payer
+      description: Update the information associated with a Payer.
+      operationId: patch-payer-id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/id_PAYERS.id'
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/Content-type'
+        - $ref: '#/components/parameters/X-GP-Version'
+        - $ref: '#/components/parameters/X-GP-Idempotency'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditRequest'
+            examples:
+              'Edit Payer name ':
+                value:
+                  first_name: John
+                  last_name: James
+              Remove Payer Payment Methods:
+                value:
+                  payment_methods: []
+              Add a new default Payment Payment Method to Payer:
+                value:
+                  first_name: John
+                  last_name: James
+                  reference: payer-123
+                  payment_methods:
+                    - id: PMT_oOAH6BClraQWS3Qy07dh7tZAN3X2nW
+                    - id: PMT_oOAH6BClraQWS3Qy07dh7tZAhhjkkX2nW
+                      default: 'YES'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResponse'
+        '400':
+          $ref: '#/components/responses/RequestInvalid_400'
+        '401':
+          $ref: '#/components/responses/AuthenticationInvalid_401'
+        '403':
+          $ref: '#/components/responses/NotAuthorized_403'
+        '404':
+          description: Resource Not Found
+        '500':
+          $ref: '#/components/responses/ServerError_500'
+        '501':
+          $ref: '#/components/responses/UnknownServerError_501'
+        '502':
+          $ref: '#/components/responses/UnknownPlatformError_502'
+        '504':
+          $ref: '#/components/responses/ServerTimeout_504'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: 'https://apis.sandbox.globalpay.com/ucp'
+          description: Sandbox Environment
+        - url: 'https://apis.globalpay.com/ucp'
+          description: Production Environment
+    get:
+      tags:
+        - Get a Payer
+      summary: Get a Payer
+      description: Get Details about a single Payer
+      operationId: get-payers-id
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier for the Payer on the Global Payments system.
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/Content-type'
+        - $ref: '#/components/parameters/X-GP-Version'
+        - $ref: '#/components/parameters/X-GP-Idempotency'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResponse'
+        '400':
+          $ref: '#/components/responses/RequestInvalid_400'
+        '401':
+          $ref: '#/components/responses/AuthenticationInvalid_401'
+        '403':
+          $ref: '#/components/responses/NotAuthorized_403'
+        '404':
+          description: Resource Not Found
+        '500':
+          $ref: '#/components/responses/ServerError_500'
+        '501':
+          $ref: '#/components/responses/UnknownServerError_501'
+        '502':
+          $ref: '#/components/responses/UnknownPlatformError_502'
+        '504':
+          $ref: '#/components/responses/ServerTimeout_504'
+      security:
+        - bearerAuth: []
+      servers:
+        - url: 'https://apis.sandbox.globalpay.com/ucp'
+          description: Sandbox Environment
+        - url: 'https://apis.globalpay.com/ucp'
+          description: Production Environment
+components:
+  parameters:
+    page:
+      name: page
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/page.paging.page'
+    page_size:
+      name: page_size
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/page_size.paging.page_size'
+    order:
+      name: order
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/order.paging.order'
+    order_by:
+      name: order_by
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/order_by.paging.order_by'
+    reference:
+      name: reference
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/reference_PAYMENT_METHODS.reference'
+    status:
+      name: status
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/status_PAYMENT_METHODS.status'
+    from_time_created:
+      name: from_time_created
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/from_time_created'
+    to_time_created:
+      name: to_time_created
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/to_time_created'
+    from_time_last_updated:
+      name: from_time_last_updated
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/from_time_last_updated'
+    to_time_last_updated:
+      name: to_time_last_updated
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/to_time_last_updated'
+    id:
+      name: id
+      in: path
+      description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+      required: true
+      schema:
+        type: string
+    Authorization:
+      name: Authorization
+      in: header
+      description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
+      required: true
+      schema:
+        type: string
+        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+    Content-type:
+      name: Content-type
+      in: header
+      description: Format of the message body.
+      required: true
+      schema:
+        type: string
+        default: application/json
+        example: application/json
+    X-GP-Version:
+      name: X-GP-Version
+      in: header
+      description: The version of the API to execute the request.
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 50
+        default: '2021-03-22'
+        example: '2021-03-22'
+    X-GP-Idempotency:
+      name: X-GP-Idempotency
+      in: header
+      description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+      required: false
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 50
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  responses:
+    RequestInvalid_400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/objRequestInvalid_400'
+    AuthenticationInvalid_401:
+      description: Not Authenticated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthenticationInvalid_401'
+    NotAuthorized_403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotAuthorized_403'
+    ServerError_500:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServerError_500'
+    UnknownServerError_501:
+      description: Not implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnknownServerError_501'
+    UnknownPlatformError_502:
+      description: Bad Gateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnknownPlatformError_502'
+    ServerTimeout_504:
+      description: Timeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServerTimeout_504'
+  schemas:
+    CreateRequest:
+      type: object
+      title: CreateRequest
+      properties:
+        first_name:
+          $ref: '#/components/schemas/first_name_PAYERS.first_name'
+        last_name:
+          $ref: '#/components/schemas/last_name_PAYERS.last_name'
+        reference:
+          $ref: '#/components/schemas/reference_PAYERS.reference'
+        payment_methods:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/id_PAYERS.payment_methods.id'
+              default:
+                $ref: '#/components/schemas/default_PAYERS.payment_methods.default'
+      required:
+        - first_name
+        - last_name
+    first_name_PAYERS.first_name:
+      type: string
+      description: The first name of the Payer
+      minLength: 1
+      maxLength: 50
+      example: John
+    last_name_PAYERS.last_name:
+      type: string
+      description: The last name of the Payer
+      minLength: 1
+      maxLength: 50
+      example: James
+    reference_PAYERS.reference:
+      type: string
+      title: reference_PAYERS.reference
+      description: This is a label set by the integrator to identify the Payer
+      example: payer-123
+    id_PAYERS.payment_methods.id:
+      type: string
+      description: Unique identifier for the Payment method on the Global Payments system.
+      minLength: 1
+      maxLength: 50
+      example: PMT_oOAH6BClraQWS3Qy07dh7tZAN3X2nW
+    default_PAYERS.payment_methods.default:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      description: A flag used to identify whether the Payment method should be used as the default Payment Method for the Payer
+      default: 'NO'
+      example: 'YES'
+    CreateResponse:
+      type: object
+      title: CreateResponse
+      properties:
+        id:
+          $ref: '#/components/schemas/id_PAYERS.id'
+        time_created:
+          $ref: '#/components/schemas/time_created_PAYERS.time_created'
+        time_last_updated:
+          $ref: '#/components/schemas/time_last_updated_PAYERS.time_last_updated'
+        merchant_id:
+          $ref: '#/components/schemas/merchant_id_PAYERS.merchant_id'
+        merchant_name:
+          $ref: '#/components/schemas/merchant_name_PAYERS.merchant_name'
+        account_id:
+          $ref: '#/components/schemas/account_id_PAYERS.account_id'
+        account_name:
+          $ref: '#/components/schemas/account_name_PAYERS.account_name'
+        first_name:
+          $ref: '#/components/schemas/first_name_PAYERS.first_name'
+        last_name:
+          $ref: '#/components/schemas/last_name_PAYERS.last_name'
+        reference:
+          $ref: '#/components/schemas/reference_PAYERS.reference'
+        payment_methods:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/id_PAYERS.payment_methods.id'
+              default:
+                $ref: '#/components/schemas/default_PAYERS.payment_methods.default'
+        action:
+          $ref: '#/components/schemas/action'
+    id_PAYERS.id:
+      type: string
+      description: Unique identifier for the Payer on the Global Payments system.
+      minLength: 1
+      maxLength: 50
+      example: PYR_oOAH6BClraQWS3Qy07dh7tZAN3X2nW
+    time_created_PAYERS.time_created:
+      type: string
+      description: Global Payments time indicating when the object was created in ISO-8601 format.
+      format: date-time
+      example: '2021-05-03T21:23:39.718Z'
+    time_last_updated_PAYERS.time_last_updated:
+      type: string
+      description: Global Payments time indicating when the object was last updated in ISO-8601 format.
+      format: date-time
+      example: '2021-05-03T21:23:39.718Z'
+    merchant_id_PAYERS.merchant_id:
+      type: string
+      description: A unique identifier for the merchant account set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      example: MER_oOAH6BClraQWS3Qy07dh7tZAN3X2nW
+    merchant_name_PAYERS.merchant_name:
+      type: string
+      description: A meaningful label for the merchant set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      example: merchant_1
+    account_id_PAYERS.account_id:
+      type: string
+      description: A unique identifier for the merchant set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      example: TKA_oOAH6BClraQWS3Qy07dh7tZAN3X2nW
+    account_name_PAYERS.account_name:
+      type: string
+      description: A meaningful label for the merchant  account set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      example: Tokenization
+    action:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id_PAYMENT_METHODS.action.id'
+        type:
+          $ref: '#/components/schemas/type_PAYMENT_METHODS.action.type'
+        time_created:
+          $ref: '#/components/schemas/time_created_PAYMENT_METHODS.action.time_created'
+        result_code:
+          $ref: '#/components/schemas/result_code_PAYMENT_METHODS.action.result_code'
+        app_id:
+          $ref: '#/components/schemas/app_id_PAYMENT_METHODS.action.app_id'
+        app_name:
+          $ref: '#/components/schemas/app_name_PAYMENT_METHODS.action.app_name'
+    id_PAYMENT_METHODS.action.id:
+      type: string
+      description: A unique identifier generated by Global Payments to identify an action.
+      example: ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    type_PAYMENT_METHODS.action.type:
+      type: string
+      enum:
+        - PAYMENT_METHOD_CREATE
+        - PAYMENT_METHOD_SINGLE
+        - PAYMENT_METHOD_EDIT
+        - PAYMENT_METHOD_LIST
+        - PAYMENT_METHOD_DELETE
+      description: Indicates the specific action taken.
+      example: PAYMENT_METHOD_CREATE
+    time_created_PAYMENT_METHODS.action.time_created:
+      type: string
+      description: Global Payments time indicating when the object was created in ISO-8601 format.
+      example: '2021-05-03T21:23:39.718Z'
+    result_code_PAYMENT_METHODS.action.result_code:
+      type: string
+      enum:
+        - SUCCESS
+      description: The result of the action executed.
+      example: SUCCESS
+    app_id_PAYMENT_METHODS.action.app_id:
+      type: string
+      description: The id of the app that was used to create the token.
+      example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    app_name_PAYMENT_METHODS.action.app_name:
+      type: string
+      description: The name of the app the user gave to the application.
+      example: my_lovely_app
+    EditRequest:
+      type: object
+      title: CreateRequest
+      properties:
+        first_name:
+          $ref: '#/components/schemas/first_name_PAYERS.first_name'
+        last_name:
+          $ref: '#/components/schemas/last_name_PAYERS.last_name'
+        reference:
+          $ref: '#/components/schemas/reference_PAYERS.reference'
+        payment_methods:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/id_PAYERS.payment_methods.id'
+              default:
+                $ref: '#/components/schemas/default_PAYERS.payment_methods.default'
+    page.paging.page:
+      type: number
+      description: 'Indicates the page sequence to return in the response. The number of records presented on each page is determined by page_size field.1 means the first page, 2 the second and so on.'
+      default: 1
+      example: 1
+    page_size.paging.page_size:
+      type: number
+      description: The total number of records to return in a single page for a list.
+      default: 5
+      example: 5
+    order.paging.order:
+      type: string
+      enum:
+        - ASC
+        - DESC
+      description: 'The direction of the ordering of the entire list, ASC or DESC'
+      example: ASC
+    order_by.paging.order_by:
+      type: string
+      description: The field to order the list by.
+      default: TIME_CREATED
+      example: TIME_CREATED
+    reference_PAYMENT_METHODS.reference:
+      type: string
+      description: Merchant defined field to uniquely reference the stored payment method.
+      minLength: 1
+      maxLength: 50
+      example: CustABC_Card_1
+    status_PAYMENT_METHODS.status:
+      type: string
+      description: |
+        The overall status of the payment method.
+          * `ACTIVE` - The entity is ACTIVE and can be used.
+          * `INACTIVE` - The entity is INACTIVE and cannot be used."
+          * `DELETE` - The status is DELETED. Once returned in an action response for a resource. The resource has been removed from the platform.
+      example: ACTIVE
+    from_time_created:
+      type: string
+      description: |
+        The start time to search for in a range, using the resource time_created value.
+      format: date
+      example: '2022-05-01'
+    to_time_created:
+      type: string
+      description: |
+        The end time to search for in a range, using the resource time_created value.
+      format: date
+      example: '2023-05-01'
+    from_time_last_updated:
+      type: string
+      description: |
+        The start time to search for in a range, using time_last_updated value.
+      format: date-time
+    to_time_last_updated:
+      type: string
+      description: |
+        The end time to search for in a range, using time_last_updated value
+      format: date-time
+    objRequestInvalid_400:
+      type: object
+      description: Bad Request
+      properties:
+        error_code:
+          type: string
+          enum:
+            - DUPLICATE_TRANSACTION
+            - INVALID_BATCH_ACTION
+            - INVALID_REQUEST_DATA
+            - INVALID_TRANSACTION_ACTION
+            - MANDATORY_DATA_MISSING
+            - TRANSACTION_NOT_FOUND
+          description: This indicates an issue with the API request.
+          example: MANDATORY_DATA_MISSING
+        detailed_error_code:
+          type: string
+          enum:
+            - '40016'
+          description: Unique reference to identify the error.
+          example: '40016'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Bad track data
+    AuthenticationInvalid_401:
+      type: object
+      description: Not Authenticated
+      properties:
+        error_code:
+          type: string
+          enum:
+            - NOT_AUTHENTICATED
+          description: This action failed as token in the request is not valid.
+          example: NOT_AUTHENTICATED
+        detailed_error_code:
+          type: string
+          enum:
+            - '40001'
+            - '40002'
+          description: Unique reference to identify the error.
+          example: '40001'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Invalid Access Token
+    NotAuthorized_403:
+      type: object
+      description: Forbidden
+      properties:
+        error_code:
+          type: string
+          enum:
+            - ACTION_NOT_AUTHORIZED
+          description: This action is not authorized with the credentials being used.
+          example: ACTION_NOT_AUTHORIZED
+        detailed_error_code:
+          type: string
+          enum:
+            - '40003'
+            - '40004'
+          description: Unique reference to identify the error.
+          example: '40003'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Permission not enabled to execute action
+    ServerError_500:
+      type: object
+      description: Internal Server Error
+      properties:
+        error_code:
+          type: string
+          enum:
+            - SYSTEM_ERROR_DOWNSTREAM
+          description: This indicates an unexpected issue occurred on the Global Payments system.
+          example: SYSTEM_ERROR_DOWNSTREAM
+        detailed_error_code:
+          type: string
+          enum:
+            - '50011'
+          description: Unique reference to identify the error.
+          example: '50011'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Processor Configuration error
+    UnknownServerError_501:
+      type: object
+      description: Not implemented
+      properties:
+        error_code:
+          type: string
+          enum:
+            - UNKNOWN_RESPONSE
+          description: This is an error not yet handled or mapped properly.
+          example: UNKNOWN_RESPONSE
+        detailed_error_code:
+          type: string
+          enum:
+            - '50012'
+          description: Unique reference to identify the error.
+          example: '50012'
+        detailed_error_description:
+          type: string
+          description: 'Unique Text describing the specific error not yet handled.      '
+    UnknownPlatformError_502:
+      type: object
+      description: Bad Gateway
+      properties:
+        error_code:
+          type: string
+          enum:
+            - UNAUTHORIZED_DOWNSTREAM
+          description: This is an error indicating there was an issue connecting to a partner system..
+          example: UNAUTHORIZED_DOWNSTREAM
+        detailed_error_code:
+          type: string
+          enum:
+            - '50002'
+          description: Unique reference to identify the error.
+          example: '50002'
+        detailed_error_description:
+          type: string
+          description: Authentication error—Verify and correct credentials.
+    ServerTimeout_504:
+      type: object
+      description: Timeout
+      properties:
+        error_code:
+          type: string
+          enum:
+            - TIMEOUT_DOWNSTREAM
+          description: This is an error indicating there was a timeout issue to another  system.
+          example: TIMEOUT_DOWNSTREAM
+        detailed_error_code:
+          type: string
+          enum:
+            - '50008'
+          description: Unique reference to identify the error.
+          example: '50008'
+        detailed_error_description:
+          type: string
+          description: No response from payment method provider.
+security:
+  - bearerAuth: []
