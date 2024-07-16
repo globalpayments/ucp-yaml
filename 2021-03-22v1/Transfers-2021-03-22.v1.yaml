@@ -1,1013 +1,695 @@
 openapi: 3.0.3
 info:
+  version: 2021 03 22
   title: Transfers
-  description: Transfers represent the movement of funds from a Merchant Global Payments account to a merchant owned payment method like a bank account or debit card.
+  description: Transfers represent the movement of funds from one Global Merchant Account to another.
   contact:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
-  version: 2021 03 22
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
   - url: 'https://apis.globalpay.com/ucp'
     description: Production Environment
-tags:
-  - name: Transfer funds
-    description: Move funds from a Merchant's account and the merchant's bank account or debit card.
-  - name: Reverse a Transfer
-    description: Reverse a transfer of funds.
 paths:
-  /transfers:
+  '/merchants/{id}/transfers':
     post:
+      tags:
+        - Transfer Funds
+      summary: Move funds from one merchant's fund management account to another merchant's fund management account.
+      description: Move funds from one merchant's fund management account to another merchant's fund management account.
       operationId: post-transfers-pushfund
-      tags:
-        - Transfer funds
-      summary: Move funds from a Merchant's account and the merchant's bank account or debit card.
-      description: Move funds from a Merchant's account and the merchant's bank account or debit card.
       parameters:
-        - name: Authorization
-          in: header
-          required: true
-          description: Bearer access token value used to access the API.
-          schema:
-            description: Bearer access token value used to access the API.
-            type: string
-            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
-            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
-        - in: header
-          name: X-GP-Idempotency
-          description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
-          schema:
-            description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
-            type: string
-            minLength: 1
-            maxLength: 50
-        - in: header
-          name: X-GP-Version
-          required: true
-          schema:
-            description: Indicates the version of the GP-API for this message.
-            type: string
-            default: '2021-03-22'
-            minLength: 1
-            maxLength: 50
-        - in: header
-          name: Content-type
-          description: Format of the message.
-          required: true
-          schema:
-            description: Indicates the format of the message.
-            type: string
-            default: application/json
-      requestBody:
-        content:
-          application/json:
-            schema:
-              required:
-                - amount
-                - funding_type
-                - fund_transfer
-              type: object
-              properties:
-                account_id:
-                  type: string
-                  description: Global Payments ID that uniquely identifies the funds management account set up for a merchant.
-                account_name:
-                  type: string
-                  description: The funds management account name set up for that merchant.
-                amount:
-                  type: string
-                  description: The amount to transfer from the Merchant's account.
-                funding_type:
-                  type: string
-                  enum:
-                    - DEBIT
-                  description: Defines the direction of the funds being transferred. Must be set to DEBIT which indicates funds are moving from the merchant account to the merchant's payment method.
-                fund_transfer:
-                  type: string
-                  minLength: 1
-                  enum:
-                    - BANK_TRANSFER
-                    - CARD
-                  description: 'Indicates what payment method, set up under the Merchant''s profile, to transfer funds to.'
-        required: true
-      responses:
-        '200':
-          description: OK
-          headers:
-            Content-Type:
-              schema:
-                description: Indicates the format of the message.
-                type: string
-                default: application/json
-            Content-Encoding:
-              schema:
-                description: Indicates if the message is compressed and using what compression mechanism.
-                type: string
-                default: gzip
-            X-GP-Idempotency:
-              schema:
-                description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
-                type: string
-                minLength: 1
-                maxLength: 50
-            X-GP-Version:
-              schema:
-                description: Indicates the version of the GP-API for this message.
-                type: string
-                default: '2021-03-22'
-                minLength: 1
-                maxLength: 50
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: A unique identifier generated by Global Payments to identify a transfer
-                    example: TRF_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
-                    minLength: 1
-                    maxLength: 50
-                  time_created:
-                    type: string
-                    format: date-time
-                    description: Global Payments time indicating when the object was created in ISO-8601 format.
-                    example: '2021-05-03T21:23:39.718Z'
-                  status:
-                    type: string
-                    description: Indicates where a Transfer is in its lifecycle. * `CAPTURED` - A Teansfer has been successfully captured and will move between merchant account and their preferred payment method.
-                    enum:
-                      - CAPTURED
-                    minLength: 0
-                    maxLength: 50
-                  merchant_id:
-                    type: string
-                    description: A unique identifier for the merchant set by Global Payments.
-                    example: MER_c4c0df11039c48a9b63701adeaa296c3
-                    minLength: 1
-                    maxLength: 50
-                  merchant_name:
-                    type: string
-                    description: A meaningful label for the merchant set by Global Payments.
-                    example: Sandbox_merchant_2
-                    minLength: 1
-                    maxLength: 50
-                  account_id:
-                    type: string
-                    description: A unique identifier for the merchant account set by Global Payments.
-                    example: TRA_6716058969854a48b33347043ff8225f
-                    minLength: 1
-                    maxLength: 50
-                  account_name:
-                    type: string
-                    description: A meaningful label for the merchant account set by Global Payments.
-                    example: Transaction_Processing
-                    minLength: 1
-                    maxLength: 50
-                  result:
-                    type: string
-                    description: The result of the transfer.
-                  message:
-                    type: string
-                    description: The result message that describes the result given for that transfer.
-                  action:
-                    type: object
-                    description: Information about the Action executed.
-                    properties:
-                      id:
-                        type: string
-                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
-                        minLength: 1
-                        maxLength: 50
-                      type:
-                        type: string
-                        description: Indicates the action taken.
-                      time_created:
-                        type: string
-                        format: date-time
-                        description: Global Payments time indicating when the object was created in ISO-8601 format.
-                        example: '2021-05-03T21:23:39.718Z'
-                      result_code:
-                        type: string
-                        description: The result of the action executed.
-                        enum:
-                          - SUCCESS
-                          - DECLINE
-                        minLength: 1
-                        maxLength: 50
-                      app_id:
-                        type: string
-                        description: The id of the app that was used to create the token.
-                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
-                        minLength: 1
-                        maxLength: 50
-                      app_name:
-                        type: string
-                        description: The name of the app the user gave to the application.
-                        example: demo_app
-                        minLength: 1
-                        maxLength: 50
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                description: Bad Request
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This indicates an issue with the API request.
-                    example: MANDATORY_DATA_MISSING
-                    enum:
-                      - DUPLICATE_TRANSACTION
-                      - INVALID_BATCH_ACTION
-                      - INVALID_REQUEST_DATA
-                      - INVALID_TRANSACTION_ACTION
-                      - MANDATORY_DATA_MISSING
-                      - TRANSACTION_NOT_FOUND
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '40016'
-                    enum:
-                      - '40016'
-                  detailed_error_description:
-                    type: string
-                    description: Unique Text describing the specific error.
-                    example: Bad track data
-        '401':
-          description: Not Authenticated
-          content:
-            application/json:
-              schema:
-                description: Not Authenticated
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This action failed as token in the request is not valid.
-                    example: NOT_AUTHENTICATED
-                    enum:
-                      - NOT_AUTHENTICATED
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '40001'
-                    enum:
-                      - '40001'
-                      - '40002'
-                  detailed_error_description:
-                    type: string
-                    description: Unique Text describing the specific error.
-                    example: Invalid Access Token
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                description: Forbidden
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This action is not authorized with the credentials being used.
-                    example: ACTION_NOT_AUTHORIZED
-                    enum:
-                      - ACTION_NOT_AUTHORIZED
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '40003'
-                    enum:
-                      - '40003'
-                      - '40004'
-                  detailed_error_description:
-                    type: string
-                    description: Unique Text describing the specific error.
-                    example: Permission not enabled to execute action
-        '404':
-          description: Resource Not Found
-          content: {}
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                description: Internal Server Error
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This indicates an unexpected issue occurred on the Global Payments system.
-                    example: SYSTEM_ERROR_DOWNSTREAM
-                    enum:
-                      - SYSTEM_ERROR_DOWNSTREAM
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '50011'
-                    enum:
-                      - '50011'
-                  detailed_error_description:
-                    type: string
-                    description: Unique Text describing the specific error.
-                    example: Processor Configuration error
-        '501':
-          description: Not implemented
-          content:
-            application/json:
-              schema:
-                description: Not implemented
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This is an error not yet handled or mapped properly.
-                    example: UNKNOWN_RESPONSE
-                    enum:
-                      - UNKNOWN_RESPONSE
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '50012'
-                    enum:
-                      - '50012'
-                  detailed_error_description:
-                    type: string
-                    description: 'Unique Text describing the specific error not yet handled.      '
-        '502':
-          description: Bad Gateway
-          content:
-            application/json:
-              schema:
-                description: Bad Gateway
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This is an error indicating there was an issue connecting to a partner system..
-                    example: UNAUTHORIZED_DOWNSTREAM
-                    enum:
-                      - UNAUTHORIZED_DOWNSTREAM
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '50002'
-                    enum:
-                      - '50002'
-                  detailed_error_description:
-                    type: string
-                    description: Authentication error—Verify and correct credentials.
-        '504':
-          description: Timeout
-          content:
-            application/json:
-              schema:
-                description: Timeout
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This is an error indicating there was a timeout issue to another  system.
-                    example: TIMEOUT_DOWNSTREAM
-                    enum:
-                      - TIMEOUT_DOWNSTREAM
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '50008'
-                    enum:
-                      - '50008'
-                  detailed_error_description:
-                    type: string
-                    description: No response from payment method provider.
-  '/transfers/{id}/reversal':
-    post:
-      operationId: reverseExistingTransfer
-      tags:
-        - Reverse a Transfer
-      summary: Reverse a transfer of funds.
-      description: Reverse a transfer of funds.
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-          description: Bearer access token value used to access the API.
-          schema:
-            description: Bearer access token value used to access the API.
-            type: string
-            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
-            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
-        - in: header
-          name: X-GP-Idempotency
-          description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
-          schema:
-            description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
-            type: string
-            minLength: 1
-            maxLength: 50
-        - in: header
-          name: X-GP-Version
-          required: true
-          schema:
-            description: Indicates the version of the GP-API for this message.
-            type: string
-            default: '2021-03-22'
-            minLength: 1
-            maxLength: 50
-        - in: header
-          name: Accept
-          description: Expected format of the response message.
-          schema:
-            description: Expected format of the response message.
-            type: string
-            default: application/json
-            example: application/json
-        - in: header
-          name: Content-type
-          description: Format of the message.
-          required: true
-          schema:
-            description: Indicates the format of the message.
-            type: string
-            default: application/json
         - name: id
           in: path
           required: true
           schema:
-            type: string
-            description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
-            minLength: 1
-            maxLength: 50
+            $ref: '#/components/schemas/merchant_id_TRANSFERS.merchant_id'
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/X-GP-Idempotency'
+        - $ref: '#/components/parameters/X-GP-Version'
+        - $ref: '#/components/parameters/Content-type'
       requestBody:
+        description: ''
+        required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                partner_amount:
-                  type: string
-                  description: The amount of a transaction that is funded to the partner.
-                  example: '11099'
-        required: false
+              $ref: '#/components/schemas/create_request'
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create_response_updated'
           headers:
             Content-Type:
               schema:
-                description: Indicates the format of the message.
-                type: string
-                default: application/json
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
             Content-Encoding:
               schema:
-                description: Indicates if the message is compressed and using what compression mechanism.
-                type: string
-                default: gzip
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
             X-GP-Idempotency:
               schema:
-                description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
-                type: string
-                minLength: 1
-                maxLength: 50
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
             X-GP-Version:
               schema:
-                description: Indicates the version of the GP-API for this message.
-                type: string
-                default: '2021-03-22'
-                minLength: 1
-                maxLength: 50
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: A unique identifier generated by Global Payments to identify a transfer
-                    example: TRF_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
-                    minLength: 1
-                    maxLength: 50
-                  time_created:
-                    type: string
-                    format: date-time
-                    description: Global Payments time indicating when the object was created in ISO-8601 format.
-                    example: '2021-05-03T21:23:39.718Z'
-                  status:
-                    type: string
-                    description: Indicates where a Transfer is in its lifecycle. * `CAPTURED` - A Teansfer has been successfully captured and will move between merchant account and their preferred payment method.
-                    enum:
-                      - CAPTURED
-                    minLength: 0
-                    maxLength: 50
-                  currency:
-                    type: string
-                    description: The currency of the amount in ISO-4217(alpha-3)
-                    example: USD
-                  country:
-                    type: string
-                    description: The country in ISO-3166-1(alpha-2 code) format.
-                    example: US
-                    enum:
-                      - ISO-3166-1(alpha-2 code)
-                      - US
-                  merchant_amount:
-                    type: string
-                    description: The amount of the transfer in the merchant's currency that is funded to the merchant.
-                    example: '11099'
-                  partner_amount:
-                    type: string
-                    description: The amount of a transaction that is funded to the partner.
-                    example: '11099'
-                  merchant_id:
-                    type: string
-                    description: A unique identifier for the merchant set by Global Payments.
-                    example: MER_c4c0df11039c48a9b63701adeaa296c3
-                    minLength: 1
-                    maxLength: 50
-                  merchant_name:
-                    type: string
-                    description: A meaningful label for the merchant set by Global Payments.
-                    example: Sandbox_merchant_2
-                    minLength: 1
-                    maxLength: 50
-                  account_id:
-                    type: string
-                    description: A unique identifier for the merchant account set by Global Payments.
-                    example: TRA_6716058969854a48b33347043ff8225f
-                    minLength: 1
-                    maxLength: 50
-                  account_name:
-                    type: string
-                    description: A meaningful label for the merchant account set by Global Payments.
-                    example: Transaction_Processing
-                    minLength: 1
-                    maxLength: 50
-                  payment_method:
-                    type: object
-                    properties:
-                      result:
-                        type: string
-                        description: Result code from the payment method provider.
-                      message:
-                        type: string
-                        description: Result message from the payment method provider corresponding to the result code.
-                  action:
-                    type: object
-                    description: Information about the Action executed.
-                    properties:
-                      id:
-                        type: string
-                        description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
-                        minLength: 1
-                        maxLength: 50
-                      type:
-                        type: string
-                        description: Indicates the action taken.
-                      time_created:
-                        type: string
-                        format: date-time
-                        description: Global Payments time indicating when the object was created in ISO-8601 format.
-                        example: '2021-05-03T21:23:39.718Z'
-                      result_code:
-                        type: string
-                        description: The result of the action executed.
-                        enum:
-                          - SUCCESS
-                          - DECLINE
-                        minLength: 1
-                        maxLength: 50
-                      app_id:
-                        type: string
-                        description: The id of the app that was used to create the token.
-                        example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
-                        minLength: 1
-                        maxLength: 50
-                      app_name:
-                        type: string
-                        description: The name of the app the user gave to the application.
-                        example: demo_app
-                        minLength: 1
-                        maxLength: 50
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                description: Bad Request
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This indicates an issue with the API request.
-                    example: MANDATORY_DATA_MISSING
-                    enum:
-                      - DUPLICATE_TRANSACTION
-                      - INVALID_BATCH_ACTION
-                      - INVALID_REQUEST_DATA
-                      - INVALID_TRANSACTION_ACTION
-                      - MANDATORY_DATA_MISSING
-                      - TRANSACTION_NOT_FOUND
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '40016'
-                    enum:
-                      - '40016'
-                  detailed_error_description:
-                    type: string
-                    description: Unique Text describing the specific error.
-                    example: Bad track data
+          $ref: '#/components/responses/RequestInvalid_400'
         '401':
-          description: Not Authenticated
-          content:
-            application/json:
-              schema:
-                description: Not Authenticated
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This action failed as token in the request is not valid.
-                    example: NOT_AUTHENTICATED
-                    enum:
-                      - NOT_AUTHENTICATED
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '40001'
-                    enum:
-                      - '40001'
-                      - '40002'
-                  detailed_error_description:
-                    type: string
-                    description: Unique Text describing the specific error.
-                    example: Invalid Access Token
+          $ref: '#/components/responses/AuthenticationInvalid_401'
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                description: Forbidden
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This action is not authorized with the credentials being used.
-                    example: ACTION_NOT_AUTHORIZED
-                    enum:
-                      - ACTION_NOT_AUTHORIZED
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '40003'
-                    enum:
-                      - '40003'
-                      - '40004'
-                  detailed_error_description:
-                    type: string
-                    description: Unique Text describing the specific error.
-                    example: Permission not enabled to execute action
+          $ref: '#/components/responses/NotAuthorized_403'
         '404':
           description: Resource Not Found
-          content: {}
         '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                description: Internal Server Error
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This indicates an unexpected issue occurred on the Global Payments system.
-                    example: SYSTEM_ERROR_DOWNSTREAM
-                    enum:
-                      - SYSTEM_ERROR_DOWNSTREAM
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '50011'
-                    enum:
-                      - '50011'
-                  detailed_error_description:
-                    type: string
-                    description: Unique Text describing the specific error.
-                    example: Processor Configuration error
+          $ref: '#/components/responses/ServerError_500'
         '501':
-          description: Not implemented
-          content:
-            application/json:
-              schema:
-                description: Not implemented
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This is an error not yet handled or mapped properly.
-                    example: UNKNOWN_RESPONSE
-                    enum:
-                      - UNKNOWN_RESPONSE
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '50012'
-                    enum:
-                      - '50012'
-                  detailed_error_description:
-                    type: string
-                    description: 'Unique Text describing the specific error not yet handled.      '
+          $ref: '#/components/responses/UnknownServerError_501'
         '502':
-          description: Bad Gateway
-          content:
-            application/json:
-              schema:
-                description: Bad Gateway
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This is an error indicating there was an issue connecting to a partner system..
-                    example: UNAUTHORIZED_DOWNSTREAM
-                    enum:
-                      - UNAUTHORIZED_DOWNSTREAM
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '50002'
-                    enum:
-                      - '50002'
-                  detailed_error_description:
-                    type: string
-                    description: Authentication error—Verify and correct credentials.
+          $ref: '#/components/responses/UnknownPlatformError_502'
         '504':
-          description: Timeout
+          $ref: '#/components/responses/ServerTimeout_504'
+      servers:
+        - url: 'https://apis.sandbox.globalpay.com/ucp'
+          description: Sandbox Environment
+        - url: 'https://apis.globalpay.com/ucp'
+          description: Production Environment
+  '/transfers/{id}/reversal':
+    post:
+      tags:
+        - Reverse A Transfer
+      summary: Reverse a Transfer
+      description: This will reverse a Transfer. The funds from the transfer will be returned to the initiating merchant.
+      operationId: reverseExistingSplit
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/merchant_id_TRANSFERS.merchant_id'
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/X-GP-Idempotency'
+        - $ref: '#/components/parameters/X-GP-Version'
+        - $ref: '#/components/parameters/Accept'
+        - $ref: '#/components/parameters/Content-type'
+      requestBody:
+        description: ''
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/split_amount_request'
+      responses:
+        '200':
+          description: OK
           content:
             application/json:
               schema:
-                description: Timeout
-                type: object
-                properties:
-                  error_code:
-                    type: string
-                    description: This is an error indicating there was a timeout issue to another  system.
-                    example: TIMEOUT_DOWNSTREAM
-                    enum:
-                      - TIMEOUT_DOWNSTREAM
-                  detailed_error_code:
-                    type: string
-                    description: Unique reference to identify the error.
-                    example: '50008'
-                    enum:
-                      - '50008'
-                  detailed_error_description:
-                    type: string
-                    description: No response from payment method provider.
+                $ref: '#/components/schemas/split_amount_response'
+          headers:
+            Content-Type:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            Content-Encoding:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Idempotency:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Version:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+        '400':
+          $ref: '#/components/responses/RequestInvalid_400'
+        '401':
+          $ref: '#/components/responses/AuthenticationInvalid_401'
+        '403':
+          $ref: '#/components/responses/NotAuthorized_403'
+        '404':
+          description: Resource Not Found
+        '500':
+          $ref: '#/components/responses/ServerError_500'
+        '501':
+          $ref: '#/components/responses/UnknownServerError_501'
+        '502':
+          $ref: '#/components/responses/UnknownPlatformError_502'
+        '504':
+          $ref: '#/components/responses/ServerTimeout_504'
+      servers:
+        - url: 'https://apis.sandbox.globalpay.com/ucp'
+          description: Sandbox Environment
+        - url: 'https://apis.globalpay.com/ucp'
+          description: Production Environment
+tags:
+  - name: Transfer Funds
+    description: Move funds from one merchant's account to another.
+  - name: Reverse a Split
+    description: Reverse a split transaction.
 components:
+  parameters:
+    Authorization:
+      name: Authorization
+      in: header
+      description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
+      required: true
+      schema:
+        type: string
+        default: Bearer 0RLg8ukYnucjHgHcKRDxvlq6uUEx
+        example: Bearer 0RLg8ukYnucjHgHcKRDxvlq6uUEx
+    X-GP-Idempotency:
+      name: X-GP-Idempotency
+      in: header
+      description: Integrator generated value submitted in the request header that is checked to ensure the same value has not been seen in the last 24 hours. It is used to ensure idempotency is maintained with this action.
+      required: false
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 50
+    X-GP-Version:
+      name: X-GP-Version
+      in: header
+      description: The version of the API to execute the request.
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 50
+        default: '2021-03-22'
+        example: '2021-03-22'
+    Content-type:
+      name: Content-type
+      in: header
+      description: Format of the message body.
+      required: true
+      schema:
+        type: string
+        default: application/json
+        example: application/json
+    Accept:
+      name: Accept
+      in: header
+      description: Indicates the expected format of the message response.
+      required: false
+      schema:
+        type: string
+        default: application/json
+  responses:
+    RequestInvalid_400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/objRequestInvalid_400'
+    AuthenticationInvalid_401:
+      description: Not Authenticated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthenticationInvalid_401'
+    NotAuthorized_403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotAuthorized_403'
+    ServerError_500:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServerError_500'
+    UnknownServerError_501:
+      description: Not implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnknownServerError_501'
+    UnknownPlatformError_502:
+      description: Bad Gateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnknownPlatformError_502'
+    ServerTimeout_504:
+      description: Timeout
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServerTimeout_504'
   schemas:
+    merchant_id_TRANSFERS.merchant_id:
+      type: string
+      description: A unique identifier for the merchant set by Global Payments.
+      example: MER_880c34767b184d5e82b10e767201e648
     create_request:
-      required:
-        - amount
-        - funding_type
-        - fund_transfer
       type: object
+      title: create_request
       properties:
         account_id:
-          type: string
-          description: Global Payments ID that uniquely identifies the funds management account set up for a merchant.
+          $ref: '#/components/schemas/account_id_TRANSFERS.account_id'
         account_name:
-          type: string
-          description: The funds management account name set up for that merchant.
+          $ref: '#/components/schemas/account_name_TRANSFERS.account_name'
+        recipient_account_id:
+          $ref: '#/components/schemas/recipient_account_id_TRANSFERS.recipient_account_id'
+        recipient_account_name:
+          $ref: '#/components/schemas/recipient_account_name_TRANSFERS.recipient_account_name'
+        reference:
+          $ref: '#/components/schemas/reference_TRANSFERS.reference'
         amount:
-          type: string
-          description: The amount to transfer from the Merchant's account.
-        funding_type:
-          type: string
-          enum:
-            - DEBIT
-          description: Defines the direction of the funds being transferred. Must be set to DEBIT which indicates funds are moving from the merchant account to the merchant's payment method.
-        fund_transfer:
-          type: string
-          minLength: 1
-          enum:
-            - BANK_TRANSFER
-            - CARD
-          description: 'Indicates what payment method, set up under the Merchant''s profile, to transfer funds to.'
-    create_response:
+          $ref: '#/components/schemas/amount_TRANSFERS.amount'
+        description:
+          $ref: '#/components/schemas/description_TRANSFERS.description'
+        usable_balance_mode:
+          $ref: '#/components/schemas/usable_balance_mode_TRANSFERS.usable_balance_mode'
+      required:
+        - recipient_account_id
+        - reference
+        - amount
+        - description
+        - usable_balance_mode
+    account_id_TRANSFERS.account_id:
+      type: string
+      description: The account identifier for the account that sent a transfer.
+      maxLength: 50
+      example: FMA_bde109d70fb24d78b25fd364317dd9dc
+    account_name_TRANSFERS.account_name:
+      type: string
+      description: The account name for the account that sent a transfer.
+      maxLength: 50
+      example: '718556837_989567'
+    recipient_account_id_TRANSFERS.recipient_account_id:
+      type: string
+      description: The account identifier for the account that recieved a transfer.
+      maxLength: 50
+      example: FMA_b29c209e25db47ea8d9ef9f24ef29254
+    recipient_account_name_TRANSFERS.recipient_account_name:
+      type: string
+      description: The account identifier for the account that recieved a transfer.
+      example: '718556837_989567'
+    reference_TRANSFERS.reference:
+      type: string
+      description: A label on the GP API platform that further identifies the instance fo the resource. This is intended to be unique but GP API does not polic its uniqueness.
+      maxLength: 50
+      example: '1234'
+    amount_TRANSFERS.amount:
+      type: string
+      description: The amount that is being transferred.  Represented in the lowest denomination of the currency (i.e. $100.00 = 10000
+      maxLength: 50
+      example: '10000'
+    description_TRANSFERS.description:
+      type: string
+      description: The description of the transfer
+      maxLength: 50
+      example: Transfer 1
+    usable_balance_mode_TRANSFERS.usable_balance_mode:
+      type: string
+      enum:
+        - AVAILABLE_BALANCE
+        - AVAILABLE_AND_PENDING_BALANCE
+      description: |
+        The balance from which the transfer should pull.  The transfer will always use avaialble funds first, and may, as directed by this field, pull from the pending balance.  
+                          * `AVAILABLE_BALANCE` - indicates that a transfer will pull only from available funds in the funds management account.  
+                          * `AVAILABLE_AND_PENDING_BALANCE` - indicates the transfer will pull first from the available balance, and then from the pending balance of the funds management account, if needed. 
+                         
+      maxLength: 50
+      default: AVAILABLE_BALANCE
+      example: AVAILABLE_BALANCE
+    create_response_updated:
       type: object
+      title: create_response_updated
       properties:
         id:
-          type: string
-          description: A unique identifier generated by Global Payments to identify a transfer
-          example: TRF_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
-          minLength: 1
-          maxLength: 50
+          $ref: '#/components/schemas/id_TRANSFERS.id'
         time_created:
-          type: string
-          format: date-time
-          description: Global Payments time indicating when the object was created in ISO-8601 format.
-          example: '2021-05-03T21:23:39.718Z'
+          $ref: '#/components/schemas/time_created_TRANSFERS.time_created'
+        time_last_updated:
+          $ref: '#/components/schemas/time_last_updated_TRANSFERS.time_last_updated'
+        type:
+          $ref: '#/components/schemas/type_TRANSFERS.type'
         status:
-          type: string
-          description: Indicates where a Transfer is in its lifecycle. * `CAPTURED` - A Teansfer has been successfully captured and will move between merchant account and their preferred payment method.
-          enum:
-            - CAPTURED
-          minLength: 0
-          maxLength: 50
+          $ref: '#/components/schemas/status_TRANSFERS.status'
+        amount:
+          $ref: '#/components/schemas/amount_TRANSFERS.amount'
+        usable_balance_mode:
+          $ref: '#/components/schemas/usable_balance_mode_TRANSFERS.usable_balance_mode'
         merchant_id:
-          type: string
-          description: A unique identifier for the merchant set by Global Payments.
-          example: MER_c4c0df11039c48a9b63701adeaa296c3
-          minLength: 1
-          maxLength: 50
+          $ref: '#/components/schemas/merchant_id_TRANSFERS.merchant_id'
         merchant_name:
-          type: string
-          description: A meaningful label for the merchant set by Global Payments.
-          example: Sandbox_merchant_2
-          minLength: 1
-          maxLength: 50
+          $ref: '#/components/schemas/merchant_name_TRANSFERS.merchant_name'
         account_id:
-          type: string
-          description: A unique identifier for the merchant account set by Global Payments.
-          example: TRA_6716058969854a48b33347043ff8225f
-          minLength: 1
-          maxLength: 50
+          $ref: '#/components/schemas/account_id_TRANSFERS.account_id'
         account_name:
-          type: string
-          description: A meaningful label for the merchant account set by Global Payments.
-          example: Transaction_Processing
-          minLength: 1
-          maxLength: 50
-        result:
-          type: string
-          description: The result of the transfer.
-        message:
-          type: string
-          description: The result message that describes the result given for that transfer.
+          $ref: '#/components/schemas/account_name_TRANSFERS.account_name'
+        recipient_merchant_id:
+          $ref: '#/components/schemas/recipient_merchant_id_TRANSFERS.recipient_merchant_id'
+        recipient_merchant_name:
+          $ref: '#/components/schemas/recipient_merchant_name_TRANSFERS.recipient_merchant_name'
+        recipient_account_id:
+          $ref: '#/components/schemas/recipient_account_id_TRANSFERS.recipient_account_id'
+        reecipient_account_name:
+          $ref: '#/components/schemas/recipient_account_name_TRANSFERS.recipient_account_name'
+        reference:
+          $ref: '#/components/schemas/reference_TRANSFERS.reference'
+        description:
+          $ref: '#/components/schemas/description_TRANSFERS.description'
+        provider:
+          type: object
+          properties:
+            result:
+              $ref: '#/components/schemas/result_TRANSFERS.provider.result'
+            message:
+              $ref: '#/components/schemas/message_TRANSFERS.provider.message'
         action:
           type: object
-          description: Information about the Action executed.
           properties:
             id:
-              type: string
-              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
-              minLength: 1
-              maxLength: 50
+              $ref: '#/components/schemas/id_TRANSFERS.action.id'
             type:
-              type: string
-              description: Indicates the action taken.
+              $ref: '#/components/schemas/type_TRANSFERS.action.type'
             time_created:
-              type: string
-              format: date-time
-              description: Global Payments time indicating when the object was created in ISO-8601 format.
-              example: '2021-05-03T21:23:39.718Z'
+              $ref: '#/components/schemas/time_created_TRANSFERS.action.time_created'
             result_code:
-              type: string
-              description: The result of the action executed.
-              enum:
-                - SUCCESS
-                - DECLINE
-              minLength: 1
-              maxLength: 50
+              $ref: '#/components/schemas/result_code_TRANSFERS.action.result_code'
             app_id:
-              type: string
-              description: The id of the app that was used to create the token.
-              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
-              minLength: 1
-              maxLength: 50
+              $ref: '#/components/schemas/app_id_TRANSFERS.action.app_id'
             app_name:
-              type: string
-              description: The name of the app the user gave to the application.
-              example: demo_app
-              minLength: 1
-              maxLength: 50
+              $ref: '#/components/schemas/app_name_TRANSFERS.action.app_name'
+    id_TRANSFERS.id:
+      type: string
+      description: A unique identifier that is used to identify and reference an instance of this resource. It is generated by Global Payments to identify the transaction and must be used to action that transaction in future.
+      example: TRF_U3bZFd2jL98L0XacplaUvPSSDhFI2J
+    time_created_TRANSFERS.time_created:
+      type: string
+      description: GP API specific created time indicating when the instance of the resource was created.
+      example: '2023-03-10T13:14:48.386Z'
+    time_last_updated_TRANSFERS.time_last_updated:
+      type: string
+      description: GP API specific last updated time when the instance of the resource was last updated.
+      example: '2023-03-10T13:14:48.386Z'
+    type_TRANSFERS.type:
+      type: string
+      enum:
+        - TRANSFER
+        - REVERSAL
+      description: GP API specific label that indicates the type resource an instance is.
+      example: TRANSFER
+    status_TRANSFERS.status:
+      type: string
+      enum:
+        - SUCCESS
+        - FAILED
+      description: |
+        The overall status of the resource.  
+                          * `SUCCESS` - indicates the instant success of of a standalone transfer. 
+                          * `FAILED` - indicates the failure of an instant standalone transfer.
+                         
+      example: SUCCESS
+    merchant_name_TRANSFERS.merchant_name:
+      type: string
+      description: The merchant name of the account that sent the transfer.
+      example: Curtis_Douglas49
+    recipient_merchant_id_TRANSFERS.recipient_merchant_id:
+      type: string
+      description: The merchant identifier of the account that received the transfer.
+      example: MER_880c34767b184d5e82b10e767201e648
+    recipient_merchant_name_TRANSFERS.recipient_merchant_name:
+      type: string
+      description: The merchant name of the account that received the transfer.
+      example: Curtis_Douglas49
+    result_TRANSFERS.provider.result:
+      type: string
+      description: The gateway provider response code for the requested transfer
+      example: '0'
+    message_TRANSFERS.provider.message:
+      type: string
+      description: The gateway provider textual response for the requested transfer
+      example: SUCCESS
+    id_TRANSFERS.action.id:
+      type: string
+      description: A unique identifier generated by Global Payments to identify an action.
+      example: ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    type_TRANSFERS.action.type:
+      type: string
+      enum:
+        - TRANSFER
+      description: |
+        Indicates the specific action taken.
+          * `TRANSFER` - indicates the action perfomred was a transfer. 
+      example: TRANSFER
+    time_created_TRANSFERS.action.time_created:
+      type: string
+      description: Global Payments time indicating when the object was created in ISO-8601 format.
+      example: '2021-05-03T21:23:39.718Z'
+    result_code_TRANSFERS.action.result_code:
+      type: string
+      enum:
+        - SUCCESS
+        - DECLINED
+      description: The result of the action executed.
+      example: SUCCESS
+    app_id_TRANSFERS.action.app_id:
+      type: string
+      description: The id of the app that was used to create the token.
+      example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    app_name_TRANSFERS.action.app_name:
+      type: string
+      description: The name of the app the user gave to the application.
+      example: my_lovely_app
     split_amount_request:
       type: object
       properties:
-        partner_amount:
-          type: string
-          description: The amount of a transaction that is funded to the partner.
-          example: '11099'
+        amount:
+          $ref: '#/components/schemas/amount_TRANSFERS.amount'
     split_amount_response:
       type: object
       properties:
         id:
-          type: string
-          description: A unique identifier generated by Global Payments to identify a transfer
-          example: TRF_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
-          minLength: 1
-          maxLength: 50
+          $ref: '#/components/schemas/id_TRANSFERS.id'
         time_created:
-          type: string
-          format: date-time
-          description: Global Payments time indicating when the object was created in ISO-8601 format.
-          example: '2021-05-03T21:23:39.718Z'
+          $ref: '#/components/schemas/time_created_TRANSFERS.time_created'
+        time_last_updated:
+          $ref: '#/components/schemas/time_last_updated_TRANSFERS.time_last_updated'
+        type:
+          $ref: '#/components/schemas/type_TRANSFERS.type'
         status:
-          type: string
-          description: Indicates where a Transfer is in its lifecycle. * `CAPTURED` - A Teansfer has been successfully captured and will move between merchant account and their preferred payment method.
-          enum:
-            - CAPTURED
-          minLength: 0
-          maxLength: 50
-        currency:
-          type: string
-          description: The currency of the amount in ISO-4217(alpha-3)
-          example: USD
+          $ref: '#/components/schemas/status_TRANSFERS.status'
+        amount:
+          $ref: '#/components/schemas/amount_TRANSFERS.amount'
+        usable_balance_mode:
+          $ref: '#/components/schemas/usable_balance_mode_TRANSFERS.usable_balance_mode'
         country:
-          type: string
-          description: The country in ISO-3166-1(alpha-2 code) format.
-          example: US
-          enum:
-            - ISO-3166-1(alpha-2 code)
-            - US
-        merchant_amount:
-          type: string
-          description: The amount of the transfer in the merchant's currency that is funded to the merchant.
-          example: '11099'
-        partner_amount:
-          type: string
-          description: The amount of a transaction that is funded to the partner.
-          example: '11099'
+          $ref: '#/components/schemas/country_TRANSFERS.country'
+        currency:
+          $ref: '#/components/schemas/currency_TRANSFERS.currency'
         merchant_id:
-          type: string
-          description: A unique identifier for the merchant set by Global Payments.
-          example: MER_c4c0df11039c48a9b63701adeaa296c3
-          minLength: 1
-          maxLength: 50
+          $ref: '#/components/schemas/merchant_id_TRANSFERS.merchant_id'
         merchant_name:
-          type: string
-          description: A meaningful label for the merchant set by Global Payments.
-          example: Sandbox_merchant_2
-          minLength: 1
-          maxLength: 50
-        account_id:
-          type: string
-          description: A unique identifier for the merchant account set by Global Payments.
-          example: TRA_6716058969854a48b33347043ff8225f
-          minLength: 1
-          maxLength: 50
+          $ref: '#/components/schemas/merchant_name_TRANSFERS.merchant_name'
         account_name:
-          type: string
-          description: A meaningful label for the merchant account set by Global Payments.
-          example: Transaction_Processing
-          minLength: 1
-          maxLength: 50
+          $ref: '#/components/schemas/account_name_TRANSFERS.account_name'
+        account_id:
+          $ref: '#/components/schemas/account_id_TRANSFERS.account_id'
+        recipient_merchant_id:
+          $ref: '#/components/schemas/recipient_merchant_id_TRANSFERS.recipient_merchant_id'
+        recipient_merchant_name:
+          $ref: '#/components/schemas/recipient_merchant_name_TRANSFERS.recipient_merchant_name'
+        recipient_account_id:
+          $ref: '#/components/schemas/recipient_account_id_TRANSFERS.recipient_account_id'
+        recipient_account_name:
+          $ref: '#/components/schemas/recipient_account_name_TRANSFERS.recipient_account_name'
+        reference:
+          $ref: '#/components/schemas/reference_TRANSFERS.reference'
         payment_method:
           type: object
           properties:
             result:
-              type: string
-              description: Result code from the payment method provider.
+              $ref: '#/components/schemas/result_TRANSFERS.payment_method.result'
             message:
-              type: string
-              description: Result message from the payment method provider corresponding to the result code.
+              $ref: '#/components/schemas/message_TRANSFERS.payment_method.message'
         action:
           type: object
-          description: Information about the Action executed.
           properties:
             id:
-              type: string
-              description: A unique identifier for the object created by Global Payments. The first 3 characters identifies the resource an id relates to.
-              minLength: 1
-              maxLength: 50
+              $ref: '#/components/schemas/id_TRANSFERS.action.id'
             type:
-              type: string
-              description: Indicates the action taken.
+              $ref: '#/components/schemas/type_TRANSFERS.action.type'
             time_created:
-              type: string
-              format: date-time
-              description: Global Payments time indicating when the object was created in ISO-8601 format.
-              example: '2021-05-03T21:23:39.718Z'
+              $ref: '#/components/schemas/time_created_TRANSFERS.action.time_created'
             result_code:
-              type: string
-              description: The result of the action executed.
-              enum:
-                - SUCCESS
-                - DECLINE
-              minLength: 1
-              maxLength: 50
+              $ref: '#/components/schemas/result_code_TRANSFERS.action.result_code'
             app_id:
-              type: string
-              description: The id of the app that was used to create the token.
-              example: U1lRHKomEn7DN907RCDPxVhyMfiMLcfy
-              minLength: 1
-              maxLength: 50
+              $ref: '#/components/schemas/app_id_TRANSFERS.action.app_id'
             app_name:
-              type: string
-              description: The name of the app the user gave to the application.
-              example: demo_app
-              minLength: 1
-              maxLength: 50
-    payment_method_response:
+              $ref: '#/components/schemas/app_name_TRANSFERS.action.app_name'
+    country_TRANSFERS.country:
+      type: string
+      title: country_TRANSFERS.country
+      description: The country in ISO-3166-1(alpha-2 code) format.
+      minLength: 1
+      maxLength: 255
+      example: US
+    currency_TRANSFERS.currency:
+      type: string
+      title: currency_TRANSFERS.currency
+      description: The currency of the amount in ISO-4217(alpha-3)
+      minLength: 3
+      maxLength: 3
+      example: USD
+    result_TRANSFERS.payment_method.result:
+      type: string
+      title: result_TRANSFERS.payment_method.result
+      description: Result code from the payment method provider.
+      example: '0'
+    message_TRANSFERS.payment_method.message:
+      type: string
+      title: message_TRANSFERS.payment_method.message
+      description: Result message from the payment method provider corresponding to the result code.
+      example: Succesful
+    objRequestInvalid_400:
       type: object
+      description: Bad Request
       properties:
-        result:
+        error_code:
           type: string
-          description: Result code from the payment method provider.
-        message:
+          enum:
+            - DUPLICATE_TRANSACTION
+            - INVALID_BATCH_ACTION
+            - INVALID_REQUEST_DATA
+            - INVALID_TRANSACTION_ACTION
+            - MANDATORY_DATA_MISSING
+            - TRANSACTION_NOT_FOUND
+          description: This indicates an issue with the API request.
+          example: MANDATORY_DATA_MISSING
+        detailed_error_code:
           type: string
-          description: Result message from the payment method provider corresponding to the result code.
+          enum:
+            - '40016'
+          description: Unique reference to identify the error.
+          example: '40016'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Bad track data
+    AuthenticationInvalid_401:
+      type: object
+      description: Not Authenticated
+      properties:
+        error_code:
+          type: string
+          enum:
+            - NOT_AUTHENTICATED
+          description: This action failed as token in the request is not valid.
+          example: NOT_AUTHENTICATED
+        detailed_error_code:
+          type: string
+          enum:
+            - '40001'
+            - '40002'
+          description: Unique reference to identify the error.
+          example: '40001'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Invalid Access Token
+    NotAuthorized_403:
+      type: object
+      description: Forbidden
+      properties:
+        error_code:
+          type: string
+          enum:
+            - ACTION_NOT_AUTHORIZED
+          description: This action is not authorized with the credentials being used.
+          example: ACTION_NOT_AUTHORIZED
+        detailed_error_code:
+          type: string
+          enum:
+            - '40003'
+            - '40004'
+          description: Unique reference to identify the error.
+          example: '40003'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Permission not enabled to execute action
+    ServerError_500:
+      type: object
+      description: Internal Server Error
+      properties:
+        error_code:
+          type: string
+          enum:
+            - SYSTEM_ERROR_DOWNSTREAM
+          description: This indicates an unexpected issue occurred on the Global Payments system.
+          example: SYSTEM_ERROR_DOWNSTREAM
+        detailed_error_code:
+          type: string
+          enum:
+            - '50011'
+          description: Unique reference to identify the error.
+          example: '50011'
+        detailed_error_description:
+          type: string
+          description: Unique Text describing the specific error.
+          example: Processor Configuration error
+    UnknownServerError_501:
+      type: object
+      description: Not implemented
+      properties:
+        error_code:
+          type: string
+          enum:
+            - UNKNOWN_RESPONSE
+          description: This is an error not yet handled or mapped properly.
+          example: UNKNOWN_RESPONSE
+        detailed_error_code:
+          type: string
+          enum:
+            - '50012'
+          description: Unique reference to identify the error.
+          example: '50012'
+        detailed_error_description:
+          type: string
+          description: 'Unique Text describing the specific error not yet handled.      '
+    UnknownPlatformError_502:
+      type: object
+      description: Bad Gateway
+      properties:
+        error_code:
+          type: string
+          enum:
+            - UNAUTHORIZED_DOWNSTREAM
+          description: This is an error indicating there was an issue connecting to a partner system..
+          example: UNAUTHORIZED_DOWNSTREAM
+        detailed_error_code:
+          type: string
+          enum:
+            - '50002'
+          description: Unique reference to identify the error.
+          example: '50002'
+        detailed_error_description:
+          type: string
+          description: Authentication error—Verify and correct credentials.
+    ServerTimeout_504:
+      type: object
+      description: Timeout
+      properties:
+        error_code:
+          type: string
+          enum:
+            - TIMEOUT_DOWNSTREAM
+          description: This is an error indicating there was a timeout issue to another  system.
+          example: TIMEOUT_DOWNSTREAM
+        detailed_error_code:
+          type: string
+          enum:
+            - '50008'
+          description: Unique reference to identify the error.
+          example: '50008'
+        detailed_error_description:
+          type: string
+          description: No response from payment method provider.
