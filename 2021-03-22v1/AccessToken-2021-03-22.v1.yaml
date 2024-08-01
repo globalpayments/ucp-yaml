@@ -52,16 +52,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/response'
-          headers:
-            Content-Type:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
-            Content-Encoding:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
-            X-GP-Version:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
