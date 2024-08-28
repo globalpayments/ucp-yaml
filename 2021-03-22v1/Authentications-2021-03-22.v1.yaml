@@ -567,40 +567,27 @@ paths:
                         example: my_lovely_app
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+           
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+        
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+           
                 schema:
                   type: string
                   default: application/json
@@ -3161,40 +3148,28 @@ paths:
                         example: my_lovely_app
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+
                 schema:
                   type: string
                   default: application/json
@@ -3621,28 +3596,6 @@ paths:
             type: string
             default: application/json
             example: application/json
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                three_ds:
-                  type: object
-                  properties:
-                    challenge_result_value:
-                      type: string
-                      title: challenge_result_value_AUTHENTICATIONS.challenge_result_value
-                      description: The value retrieved from the ACS once 3DS authentication stpe completed and is needed to obtain the result of the authentication.
-                      maxLength: 10000
-            examples:
-              Obtain Result - 3DS 1:
-                value:
-                  three_ds:
-                    challenge_result_value: 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
-              Obtain Result - 3DS 2:
-                value: {}
       responses:
         '200':
           description: OK
@@ -4002,40 +3955,28 @@ paths:
                         example: my_lovely_app
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+
                 schema:
                   type: string
                   default: application/json
@@ -5097,7 +5038,7 @@ components:
                 type: string
                 description: No response from payment method provider.
   callbacks:
-    Challenge Return Notification:
+    ChallengeReturnNotification:
       '{$request.body#/notifications.challenge_return_url}':
         post:
           description: The endpoint which will receive 3DS challenge return notification messages. These notifications indicate that the payer has completed the 3DS authentication challenge and the result of the challenge can be obtained.
