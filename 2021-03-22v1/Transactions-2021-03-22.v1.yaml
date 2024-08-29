@@ -2446,40 +2446,28 @@ paths:
                         example: my_lovely_app
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+             
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+           
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+          
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+           
                 schema:
                   type: string
                   default: application/json
@@ -3446,30 +3434,21 @@ paths:
                     x-examples: {}
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+          
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+           
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+          
                 schema:
                   type: string
                   default: application/json
@@ -4149,30 +4128,21 @@ paths:
                         example: my_lovely_app
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+        
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+          
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+          
                 schema:
                   type: string
                   default: application/json
@@ -4637,40 +4607,28 @@ paths:
                     x-examples: {}
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+     
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+     
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+      
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+         
                 schema:
                   type: string
                   default: application/json
@@ -5145,40 +5103,28 @@ paths:
                     x-examples: {}
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+         
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+        
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+          
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+           
                 schema:
                   type: string
                   default: application/json
@@ -5717,40 +5663,28 @@ paths:
                     x-examples: {}
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+        
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+          
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+             
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+           
                 schema:
                   type: string
                   default: application/json
@@ -6259,40 +6193,28 @@ paths:
                     x-examples: {}
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+       
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+         
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+         
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+          
                 schema:
                   type: string
                   default: application/json
@@ -6761,40 +6683,28 @@ paths:
                     x-examples: {}
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+       
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+            
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+             
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+            
                 schema:
                   type: string
                   default: application/json
@@ -7256,40 +7166,28 @@ paths:
                     x-examples: {}
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+          
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+           
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+            
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+            
                 schema:
                   type: string
                   default: application/json
@@ -7620,40 +7518,28 @@ paths:
                             maxLength: 50
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+       
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+             
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+            
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+           
                 schema:
                   type: string
                   default: application/json
@@ -8240,40 +8126,28 @@ paths:
                         example: my_lovely_app
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+             
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+             
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+           
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+            
                 schema:
                   type: string
                   default: application/json
@@ -8754,40 +8628,28 @@ paths:
                     x-examples: {}
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+          
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+            
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+           
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+             
                 schema:
                   type: string
                   default: application/json
@@ -9909,30 +9771,21 @@ paths:
                     x-examples: {}
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+            
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+            
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+             
                 schema:
                   type: string
                   default: application/json
@@ -10313,40 +10166,28 @@ paths:
                     x-examples: {}
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+             
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+             
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+             
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
+            
                 schema:
                   type: string
                   default: application/json
