@@ -1231,8 +1231,6 @@ paths:
                             A unique identifier that is used to identify and reference an instance of this resource. It can begin with one of the following the three letters combinations. Each one representing a different account type and capability.
                             TRA - Transaction Processing TKA - Tokenization DIA - Dispute Management DAA - Data Services MMA - Merchant Management FPA - File Processing FMA - Funds Management RAA - Risk Assessment
                           example: FMA_02ca6d0284b743449a28aadfb702c71c
-                          examples:
-                            - FMA_02ca6d0284b743449a28aadfb702c71c
                         name:
                           type: string
                           x-stoplight:
@@ -1246,9 +1244,9 @@ paths:
                           description: |
                             The overall status of the account.
 
-                             *`ACTIVE` - The entity is ACTIVE and can be used.
+                             * `ACTIVE` - The entity is ACTIVE and can be used.
 
-                             *`INACTIVE` - The entity is INACTIVE and cannot be used.
+                             * `INACTIVE` - The entity is INACTIVE and cannot be used.
                           example: ACTIVE
                           enum:
                             - ACTIVE
@@ -2382,8 +2380,6 @@ paths:
                       A unique identifier that is used to identify and reference an instance of this resource. It can begin with one of the following the three letters combinations. Each one representing a different account type and capability.
                       TRA - Transaction Processing TKA - Tokenization DIA - Dispute Management DAA - Data Services MMA - Merchant Management FPA - File Processing FMA - Funds Management RAA - Risk Assessment
                     example: FMA_02ca6d0284b743449a28aadfb702c71c
-                    examples:
-                      - FMA_02ca6d0284b743449a28aadfb702c71c
                   type:
                     type: string
                     x-stoplight:
@@ -2431,7 +2427,7 @@ paths:
                     x-stoplight:
                       id: 3jksunf1n0lj4
                     description: All of the permissions or activites that may be performed by the account.
-                    example: APP_GET_Single_Key
+              
                     items:
                       type: string
                       enum:
@@ -2443,7 +2439,7 @@ paths:
                     x-stoplight:
                       id: kj3o1j062117b
                     description: The capabilities of a Funds Management account.
-                    example: PAY_OUT_ENABLE
+                    example: [PAY_OUT_ENABLE]
                     items:
                       type: string
                       enum:
@@ -2832,8 +2828,7 @@ paths:
               A unique identifier that is used to identify and reference an instance of this resource. It can begin with one of the following the three letters combinations. Each one representing a different account type and capability.
               TRA - Transaction Processing TKA - Tokenization DIA - Dispute Management DAA - Data Services MMA - Merchant Management FPA - File Processing FMA - Funds Management RAA - Risk Assessment
             example: FMA_02ca6d0284b743449a28aadfb702c71c
-            examples:
-              - FMA_02ca6d0284b743449a28aadfb702c71c
+
         - name: MER_id
           in: path
           required: true
@@ -4585,8 +4580,7 @@ components:
             A unique identifier that is used to identify and reference an instance of this resource. It can begin with one of the following the three letters combinations. Each one representing a different account type and capability.
             TRA - Transaction Processing TKA - Tokenization DIA - Dispute Management DAA - Data Services MMA - Merchant Management FPA - File Processing FMA - Funds Management RAA - Risk Assessment
           example: FMA_02ca6d0284b743449a28aadfb702c71c
-          examples:
-            - FMA_02ca6d0284b743449a28aadfb702c71c
+
         type:
           type: string
           x-stoplight:
@@ -4634,7 +4628,7 @@ components:
           x-stoplight:
             id: 3jksunf1n0lj4
           description: All of the permissions or activites that may be performed by the account.
-          example: APP_GET_Single_Key
+
           items:
             type: string
             enum:
@@ -4646,7 +4640,6 @@ components:
           x-stoplight:
             id: kj3o1j062117b
           description: The capabilities of a Funds Management account.
-          example: PAY_OUT_ENABLE
           items:
             type: string
             enum:
@@ -4814,8 +4807,6 @@ components:
             A unique identifier that is used to identify and reference an instance of this resource. It can begin with one of the following the three letters combinations. Each one representing a different account type and capability.
             TRA - Transaction Processing TKA - Tokenization DIA - Dispute Management DAA - Data Services MMA - Merchant Management FPA - File Processing FMA - Funds Management RAA - Risk Assessment
           example: FMA_02ca6d0284b743449a28aadfb702c71c
-          examples:
-            - FMA_02ca6d0284b743449a28aadfb702c71c
         name:
           type: string
           x-stoplight:
@@ -4984,7 +4975,6 @@ components:
       x-stoplight:
         id: kj3o1j062117b
       description: The capabilities of a Funds Management account.
-      example: PAY_OUT_ENABLE
       items:
         type: string
         enum:
@@ -5043,8 +5033,6 @@ components:
         A unique identifier that is used to identify and reference an instance of this resource. It can begin with one of the following the three letters combinations. Each one representing a different account type and capability.
         TRA - Transaction Processing TKA - Tokenization DIA - Dispute Management DAA - Data Services MMA - Merchant Management FPA - File Processing FMA - Funds Management RAA - Risk Assessment
       example: FMA_02ca6d0284b743449a28aadfb702c71c
-      examples:
-        - FMA_02ca6d0284b743449a28aadfb702c71c
     Name_ACCOUNTS_Name:
       type: string
       x-stoplight:
@@ -5062,7 +5050,6 @@ components:
       x-stoplight:
         id: 3jksunf1n0lj4
       description: All of the permissions or activites that may be performed by the account.
-      example: APP_GET_Single_Key
       items:
         type: string
         enum:
