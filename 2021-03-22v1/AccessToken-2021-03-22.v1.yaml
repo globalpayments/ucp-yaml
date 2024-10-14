@@ -30,7 +30,7 @@ paths:
             schema:
               $ref: '#/components/schemas/request'
             examples:
-              'Get Access Token ':
+              Get Access Token:
                 value:
                   app_id: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
                   nonce: random_string
@@ -166,6 +166,7 @@ components:
         - nonce
         - secret
         - grant_type
+      x-examples: {}
     app_id_ACCESS_TOKENS.app_id:
       type: string
       description: The id of the app that was used to create the token.
@@ -182,9 +183,10 @@ components:
       type: string
       description: A unique string created using the nonce and app-key. This value is used to further authenticate the request. Created as follows - SHA512(NONCEAPP-KEY
       minLength: 1
-      maxLength: 50
-      example: e776ce1d9e94d5072ee132258e446cd92668d7c28b2e475a345319b475ba601956c16e3983926ce279db6301d78b7f47cfb729e41b4169814e373f0a0bf38716
+      maxLength: 200
+      example: e776ce1d9e94d5072ee13225
     grant_type_ACCESS_TOKENS.grant_type:
+      type: string
       enum:
         - client_credentials
       description: |
@@ -197,6 +199,7 @@ components:
       type: number
       description: The time in seconds that the access token will expire and can no longer be used.
     interval_to_expire_ACCESS_TOKENS.interval_to_expire:
+      type: string
       enum:
         - WEEK
         - DAY
@@ -225,8 +228,18 @@ components:
       items:
         type: string
         enum:
-          - null
-      example: AUTHORIZE
+          - TRN_POST_Authorize
+          - TRN_POST_Refund
+          - TRN_POST_Capture
+          - TRN_POST_Reverse
+          - VER_POST_Verify
+          - TRN_GET_Single
+          - TRN_GET_List
+          - AUT_POST_Initiate
+          - AUT_POST_Results
+          - AUT_POST_Check_Availability
+      example:
+        - TRN_POST_Authorize
     response:
       type: object
       properties:
@@ -271,6 +284,7 @@ components:
       maxLength: 50
       example: AEI2ptJfKM1Wb5TFZxBDWFZA7Se7
     type_ACCESS_TOKENS.type:
+      type: string
       enum:
         - Bearer
       description: |
@@ -334,6 +348,7 @@ components:
       description: Bad Request
       properties:
         error_code:
+          type: string
           enum:
             - DUPLICATE_TRANSACTION
             - INVALID_BATCH_ACTION
@@ -344,6 +359,7 @@ components:
           description: This indicates an issue with the API request.
           example: MANDATORY_DATA_MISSING
         detailed_error_code:
+          type: string
           enum:
             - '40016'
           description: Unique reference to identify the error.
@@ -357,11 +373,13 @@ components:
       description: Not Authenticated
       properties:
         error_code:
+          type: string
           enum:
             - NOT_AUTHENTICATED
           description: This action failed as token in the request is not valid.
           example: NOT_AUTHENTICATED
         detailed_error_code:
+          type: string
           enum:
             - '40001'
             - '40002'
@@ -376,11 +394,13 @@ components:
       description: Forbidden
       properties:
         error_code:
+          type: string
           enum:
             - ACTION_NOT_AUTHORIZED
           description: This action is not authorized with the credentials being used.
           example: ACTION_NOT_AUTHORIZED
         detailed_error_code:
+          type: string
           enum:
             - '40003'
             - '40004'
@@ -395,11 +415,13 @@ components:
       description: Internal Server Error
       properties:
         error_code:
+          type: string
           enum:
             - SYSTEM_ERROR_DOWNSTREAM
           description: This indicates an unexpected issue occurred on the Global Payments system.
           example: SYSTEM_ERROR_DOWNSTREAM
         detailed_error_code:
+          type: string
           enum:
             - '50011'
           description: Unique reference to identify the error.
@@ -413,11 +435,13 @@ components:
       description: Not implemented
       properties:
         error_code:
+          type: string
           enum:
             - UNKNOWN_RESPONSE
           description: This is an error not yet handled or mapped properly.
           example: UNKNOWN_RESPONSE
         detailed_error_code:
+          type: string
           enum:
             - '50012'
           description: Unique reference to identify the error.
@@ -430,11 +454,13 @@ components:
       description: Bad Gateway
       properties:
         error_code:
+          type: string
           enum:
             - UNAUTHORIZED_DOWNSTREAM
           description: This is an error indicating there was an issue connecting to a partner system..
           example: UNAUTHORIZED_DOWNSTREAM
         detailed_error_code:
+          type: string
           enum:
             - '50002'
           description: Unique reference to identify the error.
@@ -447,11 +473,13 @@ components:
       description: Timeout
       properties:
         error_code:
+          type: string
           enum:
             - TIMEOUT_DOWNSTREAM
           description: This is an error indicating there was a timeout issue to another  system.
           example: TIMEOUT_DOWNSTREAM
         detailed_error_code:
+          type: string
           enum:
             - '50008'
           description: Unique reference to identify the error.

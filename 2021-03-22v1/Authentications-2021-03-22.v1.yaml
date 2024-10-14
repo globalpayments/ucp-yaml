@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   version: 2021 03 22
   title: Authentications
-  description: Authentications represent the attempt to validate the payer to reduce the risk of fraud when transaction processing.
+  description: Authentications represent the attempt to validate the payer and reduce the risk of fraud when transaction is in processing.
   contact:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
@@ -102,7 +102,7 @@ paths:
                     - USD
                     - EUR
                     - CAD
-                  description: The currency of the amount in ISO-4217(alpha-3).
+                  description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
                   minLength: 3
                   maxLength: 3
                   example: USD
@@ -319,7 +319,7 @@ paths:
                       - USD
                       - EUR
                       - CAD
-                    description: The currency of the amount in ISO-4217(alpha-3).
+                    description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
                     minLength: 3
                     maxLength: 3
                     example: USD
@@ -495,10 +495,10 @@ paths:
                         maxLength: 50
                       redirect_url:
                         type: string
-                        description: URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
+                        description: acs_challenge_request_url should be used instead of the redirect_url -URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
                         minLength: 1
                         maxLength: 50
-                      acs_challenge_redirect_url:
+                      acs_challenge_request_url:
                         type: string
                         description: The ACS URL that the payer is redirect to execute a challenge to the payer.
                       method_url:
@@ -573,21 +573,18 @@ paths:
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-           
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-        
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-           
                 schema:
                   type: string
                   default: application/json
@@ -768,7 +765,7 @@ paths:
                     type: string
                     description: No response from payment method provider.
       callbacks:
-        Challenge Return Notification:
+        ChallengeReturnNotification:
           '{$request.body#/notifications.challenge_return_url}':
             post:
               description: The endpoint which will receive 3DS challenge return notification messages. These notifications indicate that the payer has completed the 3DS authentication challenge and the result of the challenge can be obtained.
@@ -838,7 +835,7 @@ paths:
                             - USD
                             - EUR
                             - CAD
-                          description: The currency of the amount in ISO-4217(alpha-3).
+                          description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
                           minLength: 3
                           maxLength: 3
                           example: USD
@@ -1022,7 +1019,7 @@ paths:
               - USD
               - EUR
               - CAD
-            description: The currency of the amount in ISO-4217(alpha-3).
+            description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
             minLength: 3
             maxLength: 3
             example: USD
@@ -1286,7 +1283,7 @@ paths:
                           - USD
                           - EUR
                           - CAD
-                        description: The currency of the amount in ISO-4217(alpha-3).
+                        description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
                         minLength: 3
                         maxLength: 3
                         example: USD
@@ -1973,7 +1970,7 @@ paths:
                         - USD
                         - EUR
                         - CAD
-                      description: The currency of the amount in ISO-4217(alpha-3)
+                      description: 'The currency of the amount in ISO-4217(alpha-3).Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
                       minLength: 3
                       maxLength: 3
                       example: USD
@@ -2843,7 +2840,7 @@ paths:
                       - USD
                       - EUR
                       - CAD
-                    description: The currency of the amount in ISO-4217(alpha-3).
+                    description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
                     minLength: 3
                     maxLength: 3
                     example: USD
@@ -3034,10 +3031,10 @@ paths:
                         example: PAYMENT_AUTHENTICATION
                       redirect_url:
                         type: string
-                        description: URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
+                        description: acs_challenge_request_url should be used instead of the redirect_url -URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
                         minLength: 1
                         maxLength: 50
-                      acs_challenge_redirect_url:
+                      acs_challenge_request_url:
                         type: string
                         description: The ACS URL that the payer is redirect to execute a challenge to the payer.
                       challenge_status:
@@ -3148,28 +3145,24 @@ paths:
                         example: my_lovely_app
           headers:
             Content-Type:
-
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-
                 schema:
                   type: string
                   default: application/json
@@ -3350,7 +3343,7 @@ paths:
                     type: string
                     description: No response from payment method provider.
       callbacks:
-        Challenge Return Notification:
+        ChallengeReturnNotification:
           '{$request.body#/notifications.challenge_return_url}':
             post:
               description: The endpoint which will receive 3DS challenge return notification messages. These notifications indicate that the payer has completed the 3DS authentication challenge and the result of the challenge can be obtained.
@@ -3420,7 +3413,7 @@ paths:
                             - USD
                             - EUR
                             - CAD
-                          description: The currency of the amount in ISO-4217(alpha-3).
+                          description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
                           minLength: 3
                           maxLength: 3
                           example: USD
@@ -3663,7 +3656,7 @@ paths:
                       - USD
                       - EUR
                       - CAD
-                    description: The currency of the amount in ISO-4217(alpha-3).
+                    description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
                     minLength: 3
                     maxLength: 3
                     example: USD
@@ -3842,10 +3835,10 @@ paths:
                         example: HIGH_CONFIDENCE
                       redirect_url:
                         type: string
-                        description: URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
+                        description: acs_challenge_request_url should be used instead of the redirect_url -URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
                         minLength: 1
                         maxLength: 50
-                      acs_challenge_redirect_url:
+                      acs_challenge_request_url:
                         type: string
                         description: The ACS URL that the payer is redirect to execute a challenge to the payer.
                       authentication_request_type:
@@ -3955,28 +3948,24 @@ paths:
                         example: my_lovely_app
           headers:
             Content-Type:
-
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Idempotency:
-
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-
                 schema:
                   type: string
                   default: application/json
@@ -4297,7 +4286,7 @@ paths:
                       - USD
                       - EUR
                       - CAD
-                    description: The currency of the amount in ISO-4217(alpha-3).
+                    description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
                     minLength: 3
                     maxLength: 3
                     example: USD
@@ -5108,7 +5097,7 @@ components:
                         - USD
                         - EUR
                         - CAD
-                      description: The currency of the amount in ISO-4217(alpha-3).
+                      description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
                       minLength: 3
                       maxLength: 3
                       example: USD
@@ -5270,7 +5259,7 @@ components:
             - USD
             - EUR
             - CAD
-          description: The currency of the amount in ISO-4217(alpha-3).
+          description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
           minLength: 3
           maxLength: 3
           example: USD
@@ -5415,7 +5404,7 @@ components:
         - USD
         - EUR
         - CAD
-      description: The currency of the amount in ISO-4217(alpha-3).
+      description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
       minLength: 3
       maxLength: 3
       example: USD
@@ -5577,7 +5566,7 @@ components:
             - USD
             - EUR
             - CAD
-          description: The currency of the amount in ISO-4217(alpha-3).
+          description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
           minLength: 3
           maxLength: 3
           example: USD
@@ -5753,10 +5742,10 @@ components:
               maxLength: 50
             redirect_url:
               type: string
-              description: URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
+              description: acs_challenge_request_url should be used instead of the redirect_url -URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
               minLength: 1
               maxLength: 50
-            acs_challenge_redirect_url:
+            acs_challenge_request_url:
               type: string
               description: The ACS URL that the payer is redirect to execute a challenge to the payer.
             method_url:
@@ -6007,10 +5996,10 @@ components:
       maxLength: 50
     redirect_url_AUTHENTICATIONS.three_ds.redirect_url:
       type: string
-      description: URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
+      description: acs_challenge_request_url should be used instead of the redirect_url -URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
       minLength: 1
       maxLength: 50
-    acs_challenge_redirect_url_AUTHENTICATIONS.three_ds.acs_challenge_redirect_url:
+    acs_challenge_request_url_AUTHENTICATIONS.three_ds.acs_challenge_request_url:
       type: string
       description: The ACS URL that the payer is redirect to execute a challenge to the payer.
     method_url_AUTHENTICATIONS.three_ds.method_url:
@@ -6125,7 +6114,7 @@ components:
             - USD
             - EUR
             - CAD
-          description: The currency of the amount in ISO-4217(alpha-3).
+          description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
           minLength: 3
           maxLength: 3
           example: USD
@@ -6417,7 +6406,7 @@ components:
                 - USD
                 - EUR
                 - CAD
-              description: The currency of the amount in ISO-4217(alpha-3).
+              description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
               minLength: 3
               maxLength: 3
               example: USD
@@ -7294,7 +7283,7 @@ components:
                 - USD
                 - EUR
                 - CAD
-              description: The currency of the amount in ISO-4217(alpha-3)
+              description: 'The currency of the amount in ISO-4217(alpha-3).Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
               minLength: 3
               maxLength: 3
               example: USD
@@ -7976,7 +7965,7 @@ components:
         - USD
         - EUR
         - CAD
-      description: The currency of the amount in ISO-4217(alpha-3)
+      description: 'The currency of the amount in ISO-4217(alpha-3).Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
       minLength: 3
       maxLength: 3
       example: USD
@@ -8554,7 +8543,7 @@ components:
             - USD
             - EUR
             - CAD
-          description: The currency of the amount in ISO-4217(alpha-3).
+          description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
           minLength: 3
           maxLength: 3
           example: USD
@@ -8745,10 +8734,10 @@ components:
               example: PAYMENT_AUTHENTICATION
             redirect_url:
               type: string
-              description: URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
+              description: acs_challenge_request_url should be used instead of the redirect_url -URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
               minLength: 1
               maxLength: 50
-            acs_challenge_redirect_url:
+            acs_challenge_request_url:
               type: string
               description: The ACS URL that the payer is redirect to execute a challenge to the payer.
             challenge_status:
@@ -8957,7 +8946,7 @@ components:
             - USD
             - EUR
             - CAD
-          description: The currency of the amount in ISO-4217(alpha-3).
+          description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
           minLength: 3
           maxLength: 3
           example: USD
@@ -9136,10 +9125,10 @@ components:
               example: HIGH_CONFIDENCE
             redirect_url:
               type: string
-              description: URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
+              description: acs_challenge_request_url should be used instead of the redirect_url -URL to redirect the payer from the merchant's system to the payment method system. This is used to determine or execute a challenge to the payer.
               minLength: 1
               maxLength: 50
-            acs_challenge_redirect_url:
+            acs_challenge_request_url:
               type: string
               description: The ACS URL that the payer is redirect to execute a challenge to the payer.
             authentication_request_type:
@@ -9402,7 +9391,7 @@ components:
             - USD
             - EUR
             - CAD
-          description: The currency of the amount in ISO-4217(alpha-3).
+          description: 'The currency of the amount in ISO-4217(alpha-3). Please click on <a href="https://developer.globalpay.com/resources/codes/currency-codes" target="_blank">Currency Codes</a> to access the full list of currencies'
           minLength: 3
           maxLength: 3
           example: USD
