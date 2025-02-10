@@ -420,7 +420,7 @@ paths:
           $ref: '#/components/responses/ServerTimeout_504'
       callbacks:
         Challenge Return Notification:
-          $ref: '#/components/callbacks/Challenge_Return_Notification'
+          $ref: '#/components/callbacks/ChallengeReturnNotification'
       security:
         - bearerAuth: []
       servers:
@@ -651,7 +651,7 @@ components:
           schema:
             $ref: '#/components/schemas/ServerTimeout_504'
   callbacks:
-    Challenge_Return_Notification:
+    ChallengeReturnNotification:
       '{$request.body#/notifications.challenge_return_url}':
         post:
           description: The endpoint which will receive 3DS challenge return notification messages. These notifications indicate that the payer has completed the 3DS authentication challenge and the result of the challenge can be obtained.
