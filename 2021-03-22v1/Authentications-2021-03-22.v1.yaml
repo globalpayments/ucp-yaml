@@ -18,7 +18,7 @@ paths:
       tags:
         - Check Availability
       summary: Start the authentication process by confirming the available mechanisms to authenticate the payer based on a payment method.
-      description: Start the authentication process by confirming the available mechanisms to authenticate the payer based on a payment method.
+      description: "Start the authentication process by confirming the available mechanisms to authenticate the payer based on a payment method.\r\nAvailability of this feature in production depends on your allowed live configuration. \r\nPlease contact Global Payments before coding this feature to confirm it will be available to you when you go live."
       operationId: check3DSAvailability
       parameters:
         - $ref: '#/components/parameters/Authorization'
@@ -71,7 +71,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/create_response'
-        
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -112,7 +111,7 @@ paths:
       tags:
         - Get List of Authentications
       summary: Get List of Authentications
-      description: Return a list of Authentication Responses.
+      description: "Return a list of Authentication Responses.\r\nAvailability of this feature in production depends on your allowed live configuration. \r\nPlease contact Global Payments before coding this feature to confirm it will be available to you when you go live."
       operationId: get-authentications
       parameters:
         - name: to_time_created
@@ -209,7 +208,7 @@ paths:
       tags:
         - Initiate
       summary: 'For 3DS 2, submit data including the billing and shipping details of the payer, at least one phone number, the device data, transaction details, outcome from the ACS Method URL if it took place and a link to the merchant''s About or Contact page.'
-      description: 'For 3DS 2, submit data including the billing and shipping details of the payer, at least one phone number, the device data, transaction details, outcome from the ACS Method URL if it took place and a link to the merchant''s About or Contact page.'
+      description: "For 3DS 2, submit data including the billing and shipping details of the payer, at least one phone number, the device data, transaction details, outcome from the ACS Method URL if it took place and a link to the merchant's About or Contact page.\r\nAvailability of this feature in production depends on your allowed live configuration. \r\nPlease contact Global Payments before coding this feature to confirm it will be available to you when you go live."
       operationId: initiate3DS
       parameters:
         - name: id
@@ -403,7 +402,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/initiate_response'
-        
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -435,7 +433,7 @@ paths:
       tags:
         - Obtain Result
       summary: Obtain the authentication information that must be submitted when creating a transaction to achieve the fraud liability shift from the merchant.
-      description: Obtain the authentication information that must be submitted when creating a transaction to achieve the fraud liability shift from the merchant.
+      description: "Obtain the authentication information that must be submitted when creating a transaction to achieve the fraud liability shift from the merchant.\r\nAvailability of this feature in production depends on your allowed live configuration. \r\nPlease contact Global Payments before coding this feature to confirm it will be available to you when you go live."
       operationId: get3DSResult
       parameters:
         - name: id
@@ -454,8 +452,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/result_response'
-       
-          
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -484,7 +480,7 @@ paths:
       tags:
         - Get Single Authentication
       summary: Get Single Authentication
-      description: Return a single Authentication Response.
+      description: "Return a single Authentication Response.\r\nAvailability of this feature in production depends on your allowed live configuration. \r\nPlease contact Global Payments before coding this feature to confirm it will be available to you when you go live."
       operationId: get-authentications-id
       parameters:
         - name: id
@@ -576,8 +572,8 @@ components:
       required: true
       schema:
         type: string
-        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
-        example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
+        example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
     X-GP-Idempotency:
       name: X-GP-Idempotency
       in: header
@@ -1104,7 +1100,7 @@ components:
       description: A unique identifier that is used to identify and reference an instance of this resource. It is generated by Global Payments to identify the authentication and must be used to action or reference that authentication.
       minLength: 1
       maxLength: 50
-      example: AUT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+      example: AUT_cd1f16d0-b7ee-4a4c-8097-5579d61e721f
     time_created_AUTHENTICATIONS.time_created:
       type: string
       description: Global Payments generated time indicating when the object was created in ISO-8601 format.
@@ -1648,7 +1644,7 @@ components:
       example: 564
     page_size.paging.page_size:
       type: number
-      description: The total number of records to return in a single page for a list.
+      description: 'The total number of records to return in a single page for a list. The maximum this value can be is 1000, meaning that the maximum number of records to return in a single request is 1000.'
       default: 5
       example: 5
     page.paging.page:
@@ -2593,6 +2589,12 @@ components:
       maxLength: 50
     challenge_window_size_AUTHENTICATIONS.browser_date.challenge_window_size:
       type: string
+      enum:
+        - WINDOWED_250X400
+        - WINDOWED_390X400
+        - WINDOWED_500X600
+        - WINDOWED_600X400
+        - FULL_SCREEN
       description: |
         Dimensions of the challenge window that has been displayed to the customer. The ACS shall reply with content that is formatted to appropriately.        
            * `WINDOWED_250X400`
@@ -2600,8 +2602,6 @@ components:
            * `WINDOWED_500X600`
            * `WINDOWED_600X400`
            * `FULL_SCREEN`
-      minLength: 1
-      maxLength: 50
       example: WINDOWED_250X400
     timezone_AUTHENTICATIONS.browser_date.timezone:
       type: string
