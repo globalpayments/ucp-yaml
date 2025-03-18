@@ -2494,8 +2494,14 @@ components:
       description: In the case of a pre order; the expected date when the merchandise will be available.
     category_AUTHENTICATIONS.order.category:
       type: string
+      enum:
+        - GOODS_SERVICE_PURCHASE
+        - CHECK_ACCEPTANCE
+        - ACCOUNT_FUNDING
+        - QUASI_CASH_TRANSACTION
+        - PREPAID_ACTIVATION_AND_LOAD
       description: The type of order being authenticated.
-      example: GOODS_SERVICE_PURCHASE|CHECK_ACCEPTANCE|ACCOUNT_FUNDING|QUASI_CASH_TRANSACTION|PREPAID_ACTIVATION_AND_LOAD
+      example: GOODS_SERVICE_PURCHASE
     reorder_indicator_AUTHENTICATIONS.order.reorder_indicator:
       type: string
       enum:
