@@ -39,7 +39,7 @@ paths:
           schema:
             description: Bearer access token value used to access the API.
             type: string
-            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
             x-stoplight:
               id: stor96sg67n8f
@@ -772,7 +772,7 @@ paths:
           schema:
             description: Bearer access token value used to access the API.
             type: string
-            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
             x-stoplight:
               id: stor96sg67n8f
@@ -1184,7 +1184,7 @@ paths:
                   in: header
                   schema:
                     type: string
-                    example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+                    example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
                     default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
                   description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
                   required: true
@@ -1576,7 +1576,7 @@ paths:
           schema:
             description: Bearer access token value used to access the API.
             type: string
-            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
             x-stoplight:
               id: stor96sg67n8f
@@ -2801,7 +2801,7 @@ paths:
           schema:
             description: Bearer access token value used to access the API.
             type: string
-            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
             x-stoplight:
               id: stor96sg67n8f
@@ -5202,7 +5202,7 @@ components:
     Data_dictionary.v1_Authorization:
       description: Bearer access token value used to access the API.
       type: string
-      default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+      default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
       example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
       x-stoplight:
         id: stor96sg67n8f
@@ -6424,7 +6424,7 @@ components:
       schema:
         description: Bearer access token value used to access the API.
         type: string
-        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
         example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
         x-stoplight:
           id: stor96sg67n8f
