@@ -95,7 +95,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ  #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
         - name: page
           in: query
@@ -657,7 +657,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
         - name: X-GP-Version
           in: header
@@ -989,7 +989,7 @@ components:
       required: true
       schema:
         type: string
-        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
         example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
     Accept:
       name: Accept

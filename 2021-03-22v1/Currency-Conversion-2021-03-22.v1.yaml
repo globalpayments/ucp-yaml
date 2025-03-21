@@ -33,7 +33,7 @@ paths:
           schema:
             description: Bearer access token value used to access the API.
             type: string
-            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
         - in: header
           name: X-GP-Idempotency
@@ -1151,7 +1151,7 @@ paths:
           schema:
             description: Bearer access token value used to access the API.
             type: string
-            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
         - in: header
           name: X-GP-Version
