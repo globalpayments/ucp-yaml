@@ -29,6 +29,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/request'
+           #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             examples:
               Get Access Token:
                 value:
@@ -157,6 +158,8 @@ components:
           $ref: '#/components/schemas/grant_type_ACCESS_TOKENS.grant_type'
         seconds_to_expire:
           $ref: '#/components/schemas/seconds_to_expire_ACCESS_TOKENS.seconds_to_expire'
+        restricted_token:
+          $ref: '#/components/schemas/restricted_token_ACCESS_TOKEN.restricted_token'
         interval_to_expire:
           $ref: '#/components/schemas/interval_to_expire_ACCESS_TOKENS.interval_to_expire'
         permissions:
@@ -198,6 +201,16 @@ components:
     seconds_to_expire_ACCESS_TOKENS.seconds_to_expire:
       type: number
       description: The time in seconds that the access token will expire and can no longer be used.
+    restricted_token_ACCESS_TOKEN.restricted_token:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      title: restricted_token_ACCESS_TOKEN.restricted_token
+      description: |
+        Masks the account, merchant and app details that is returned in the response to a tokenisation request.
+          * `YES` - A restricted access token will be created. Restricted access token is used when integrating with Drop-in UI or Hosted Fields to create a single-use payment token.
+          * `NO` - A restricted access token will not be created.
     interval_to_expire_ACCESS_TOKENS.interval_to_expire:
       type: string
       enum:
@@ -240,6 +253,56 @@ components:
           - AUT_POST_Check_Availability
       example:
         - TRN_POST_Authorize
+      x-gp-partner-permissions-enum:
+        - MER_TRN
+        - MER_TRN_POST_Refund_Standalone
+        - MER_TRN_POST_Force
+        - MER_VER
+        - MER_BAT
+        - MER_INS
+        - MER_PMT
+        - MER_PMT_POST_Detokenize
+        - MER_ACT
+        - MER_ACT_GET_Single_Logs
+        - MER_ACT_POST_Multiple
+        - MER_DEV
+        - MER_GET_Single
+        - MER_GET_List
+        - MER_ACC
+        - MER_CCS
+        - MER_ACC_GET_Single_Platform
+        - MER_AUT
+        - ACC_GET_Single
+        - ACC_GET_List
+        - GET_Single
+        - ACC_GET_Single_Platform
+        - ACT_GET_Single
+        - ACT_GET_List
+        - ACT_GET_Single_Logs
+        - ACT_POST_Multiple
+        - MER_APP
+        - APP_GET_Single
+        - APP_GET_List
+        - MER_PFC
+        - MER_POST_Create
+        - PFC_PATCH_Edit
+        - MER_PATCH_Edit
+        - PFC_GET_Single
+        - PFC_GET_List
+        - APP_GET_Single_Key
+        - MER_APP_GET_Single_Key
+        - MER_ACC_POST_Create
+        - MER_ACC_PATCH_Edit
+        - MER_RAS
+        - ACT_POST_Auto_Action
+        - MER_TRF
+        - MER_LNK
+        - MER_FND
+        - MER_TRN_GET_Platform_References
+        - MER_BIN
+        - MER_HLD
+        - MER_REL
+        - MER_DOC
     response:
       type: object
       properties:
@@ -288,7 +351,7 @@ components:
       enum:
         - Bearer
       description: |
-        The type of token created. minLength:
+        The type of token created. 
           * `Bearer` - Indicates that the holder or bearer of this access token can access the API.
       minLength: 1
       maxLength: 50
@@ -301,7 +364,7 @@ components:
       example: MER_A6A1EC44522F96630ABEA17A
     merchant_name_ACCESS_TOKENS.scope.merchant_name:
       type: string
-      description: A meaningful label that better identifes the merchant.
+      description: A meaningful label that better identifies the merchant.
       minLength: 1
       maxLength: 50
       example: ABC INDUSTRIES
@@ -323,23 +386,23 @@ components:
       example: TRA_be83259a-455e-4ce6-a53a-6d5d31c79d41
     name_ACCESS_TOKENS.scope.accounts.name:
       type: string
-      description: A understandable name associated with an account.
+      description: A meaningful label that better identifies the account.
       minLength: 1
       maxLength: 50
       example: North American Website
     app_name_ACCESS_TOKENS.app_name:
       type: string
-      description: The name of the app the user gave to the application.
+      description: A meaningful label that better identifies the app.
       minLength: 1
       maxLength: 50
       example: my_lovely_app
     time_created_ACCESS_TOKENS.time_created:
       type: string
-      description: Global Payments time indicating when the object was created in ISO-8601 format.
+      description: Time indicating when the object was created in ISO-8601 format. Provided in UTC.
       example: '2021-05-03T21:23:39.718Z'
     email_ACCESS_TOKENS.email:
       type: string
-      description: Email registered with the application that was used to access this token
+      description: Email registered with the app that was used to create the access token
       minLength: 1
       maxLength: 50
       example: james.mason@example.com

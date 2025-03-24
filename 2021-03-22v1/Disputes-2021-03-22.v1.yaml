@@ -40,7 +40,7 @@ paths:
           in: header
           schema:
             type: string
-            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
           description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
           required: true
@@ -1020,7 +1020,7 @@ paths:
           in: header
           schema:
             type: string
-            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
           description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
           required: true
@@ -1799,7 +1799,7 @@ paths:
           in: header
           schema:
             type: string
-            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
           description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
           required: true
@@ -2248,7 +2248,7 @@ paths:
           in: header
           schema:
             type: string
-            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
           description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
           required: true
@@ -2728,7 +2728,7 @@ paths:
           in: header
           schema:
             type: string
-            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
           description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
           required: true
@@ -3057,7 +3057,7 @@ paths:
           in: header
           schema:
             type: string
-            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+            example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
           description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
           required: true
