@@ -158,7 +158,7 @@ components:
       required: true
       schema:
         type: string
-        default: Bearer 0RLg8ukYnucjHgHcKRDxvlq6uUEx
+        default: Bearer 0RLg8ukYnucjHgHcKRDxvlq6uUEx  #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
         example: Bearer 0RLg8ukYnucjHgHcKRDxvlq6uUEx
     X-GP-Idempotency:
       name: X-GP-Idempotency
