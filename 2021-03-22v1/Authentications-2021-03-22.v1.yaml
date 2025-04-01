@@ -930,7 +930,7 @@ components:
       example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
     name_AUTHENTICATIONS.payment_method.name:
       type: string
-      description: The name of the Payment Method
+      description: 'The name of the Payment Method. Note for European merchants, This field is mandatory for SCA.'
       minLength: 1
       maxLength: 100
       example: John's payment Method
@@ -993,7 +993,7 @@ components:
       description: Indicates to Global Payments where the merchant wants to receive notifications of certain status events that occur on the Global Payments system.
     challenge_return_url_AUTHENTICATIONS.notifications.challenge_return_url:
       type: string
-      description: The merchant URL that will receive the notification when the customer has completed the authentication challenge process.
+      description: The merchant URL that will receive the notification when the customer has completed the authentication challenge process. Please note that local URLs are not allowed. The URL provided has to be valid
     three_ds_method_return_url_AUTHENTICATIONS.notifications.three_ds_method_return_url:
       type: string
       description: The merchant URL that will receive the notification when the 3DS ACS successfully gathers device information.
@@ -1121,6 +1121,7 @@ components:
       type: string
       enum:
         - AVAILABLE
+        - NOT_AVAILABLE
         - NOT_ENROLLED
         - CHALLENGE_REQUIRED
         - SUCCESS_AUTHENTICATED
@@ -1645,6 +1646,8 @@ components:
     page_size.paging.page_size:
       type: number
       description: 'The total number of records to return in a single page for a list. The maximum this value can be is 1000, meaning that the maximum number of records to return in a single request is 1000.'
+      minimum: 1
+      maximum: 1000
       default: 5
       example: 5
     page.paging.page:
@@ -1958,7 +1961,7 @@ components:
                   $ref: '#/components/schemas/line_2_AUTHENTICATIONS.order.shipping_address.line_2'
                 line_3:
                   $ref: '#/components/schemas/line_3_AUTHENTICATIONS.order.shipping_address.line_3'
-                ctiy:
+                city:
                   $ref: '#/components/schemas/city_AUTHENTICATIONS.order.shipping_address.city'
                 state:
                   $ref: '#/components/schemas/state_AUTHENTICATIONS.order.shipping_address.state'
@@ -2169,7 +2172,7 @@ components:
       example: NO_PREFERENCE
     merchant_contact_url_AUTHENTICATIONS.merchant_contact_url:
       type: string
-      description: The url of the website that shows the merchant's contact details.
+      description: The url of the website that shows the merchant's contact details.Please note that local URLs are not allowed. The URL provided has to be valid
     reference_AUTHENTICATIONS.order.reference:
       type: string
       description: The merchant's reference for the order the transaction is associated with..
@@ -2415,9 +2418,162 @@ components:
     gift_card_currency_AUTHENTICATIONS.order.gift_card_currency:
       type: string
       enum:
-        - EUR
         - USD
+        - EUR
         - CAD
+        - AFN
+        - DZD
+        - ARS
+        - AMD
+        - AWG
+        - AUD
+        - AZN
+        - BSD
+        - BHD
+        - THB
+        - PAB
+        - BBD
+        - BYN
+        - BZD
+        - BMD
+        - VEF
+        - BOB
+        - BRL
+        - BND
+        - BGN
+        - BIF
+        - CVE
+        - CLP
+        - COP
+        - KMF
+        - CDF
+        - NIO
+        - CRC
+        - CUP
+        - CZK
+        - GMD
+        - DKK
+        - MKD
+        - DJF
+        - STD
+        - DOP
+        - VND
+        - XCD
+        - EGP
+        - SVC
+        - ETB
+        - FKP
+        - FJD
+        - HUF
+        - GHS
+        - GIP
+        - HTG
+        - PYG
+        - GNF
+        - GYD
+        - HKD
+        - UAH
+        - ISK
+        - INR
+        - IRR
+        - IQD
+        - JMD
+        - JOD
+        - KES
+        - PGK
+        - HRK
+        - KWD
+        - AOA
+        - MMK
+        - LAK
+        - GEL
+        - LBP
+        - ALL
+        - HNL
+        - SLL
+        - LRD
+        - LYD
+        - SZL
+        - LSL
+        - MGA
+        - MWK
+        - MYR
+        - MUR
+        - MXN
+        - MDL
+        - MAD
+        - MZN
+        - BOV
+        - NGN
+        - ERN
+        - NAD
+        - NPR
+        - ANG
+        - ILS
+        - TWD
+        - NZD
+        - BTN
+        - KPW
+        - NOK
+        - MRO
+        - TOP
+        - PKR
+        - MOP
+        - CUC
+        - UYU
+        - PHP
+        - GBP
+        - BWP
+        - QAR
+        - GTQ
+        - ZAR
+        - OMR
+        - KHR
+        - RON
+        - MVR
+        - IDR
+        - RUB
+        - RWF
+        - SHP
+        - SAR
+        - RSD
+        - SCR
+        - SGD
+        - PEN
+        - SBD
+        - KGS
+        - SOS
+        - TJS
+        - SSP
+        - LKR
+        - XSU
+        - SDG
+        - SRD
+        - SEK
+        - CHF
+        - SYP
+        - BDT
+        - WST
+        - TZS
+        - KZT
+        - TTD
+        - MNT
+        - TND
+        - TRY
+        - TMT
+        - AED
+        - UGX
+        - CLF
+        - COU
+        - UZS
+        - VUV
+        - KRW
+        - YER
+        - JPY
+        - CNY
+        - ZMW
+        - ZWL
+        - PLN
       description: The currency of the gift card amount in ISO-4217(alpha-3)
       minLength: 3
       maxLength: 3
