@@ -57,18 +57,18 @@ paths:
                   last_name: Doe
                   usage_mode: USE_NETWORK_TOKEN
                   card:
-                    number: '5186151950000055'
+                    number: '4622943123052988'
                     expiry_month: '12'
                     expiry_year: '25'
+                    cvv: '291'
               Create a Token Associated With a Payer:
                 value:
                   account_name: Tokenization
-                  reference: CustABC_Card_1
-                  usage_mode: SINGLE
+                  reference: CustABC_Card_10
                   fingerprint_mode: ALWAYS
                   name: John's payment method
                   payer:
-                    id: PYR_oOAH6BClraQWS3Qy07dh7tZAN3X2nW
+                    id: PYR_84fd9c9c07c442339cee215d974819b5
                   card:
                     number: '4263970000005262'
                     expiry_month: '05'
@@ -220,7 +220,6 @@ paths:
             examples:
               Edit a Stored Card:
                 value:
-                  usage_mode: SINGLE
                   name: John's payment method
                   card:
                     number: '4263970000005262'
@@ -317,7 +316,7 @@ paths:
           description: Sandbox Environment
         - url: 'https://apis.globalpay.com/ucp'
           description: Production Environment
-  '/payment-methods{id}/detokenize':
+  '/payment-methods/{id}/detokenize':
     post:
       tags:
         - Detokenize a Payment Method
@@ -489,6 +488,10 @@ components:
       required: true
       schema:
         type: string
+        example: PMT_f5bbdfde-3010-4802-8f5d-1cdb2a2381c2
+      examples:
+        default:
+          value: PMT_f5bbdfde-3010-4802-8f5d-1cdb2a2381c2
     Authorization:
       name: Authorization
       in: header
@@ -496,8 +499,8 @@ components:
       required: true
       schema:
         type: string
-        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
-        example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+        example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
     Content-type:
       name: Content-type
       in: header
@@ -641,6 +644,7 @@ components:
         * `USE_NETWORK_TOKEN` - When using the payment method token to transaction process, this indicates to use the network token instead of the card number if both are available.
       minLength: 1
       maxLength: 50
+      default: MULTIPLE
       example: SINGLE
     fingerprint_mode_PAYMENT_METHODS.fingerprint_mode:
       type: string
@@ -766,7 +770,7 @@ components:
       type: string
       description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
       maxLength: 50
-      example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+      example: PMT_f5bbdfde-3010-4802-8f5d-1cdb2a2381c2
     time_created_PAYMENT_METHODS.time_created:
       type: string
       description: Global Payments time indicating when the object was created in ISO-8601 format
@@ -896,11 +900,44 @@ components:
         account_name:
           $ref: '#/components/schemas/account_name_PAYMENT_METHODS.account_name'
         filter:
-          $ref: '#/components/schemas/filter'
+          type: object
+          properties:
+            from_time_created:
+              $ref: '#/components/schemas/from_time_created'
+            to_time_created:
+              $ref: '#/components/schemas/to_time_created'
         paging:
           $ref: '#/components/schemas/Paging'
         payment_methods:
-          $ref: '#/components/schemas/payment_methods'
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/id_PAYMENT_METHODS.id'
+              time_created:
+                $ref: '#/components/schemas/time_created_PAYMENT_METHODS.time_created'
+              status:
+                $ref: '#/components/schemas/status_PAYMENT_METHODS.status'
+              reference:
+                $ref: '#/components/schemas/reference_PAYMENT_METHODS.reference'
+              card:
+                type: object
+                properties:
+                  number_last4:
+                    $ref: '#/components/schemas/number_last4_PAYMENT_METHODS.card.number_last4'
+                  brand:
+                    $ref: '#/components/schemas/brand_PAYMENT_METHODS.card.brand'
+                  expiry_month:
+                    $ref: '#/components/schemas/expiry_month_PAYMENT_METHODS.card.expiry_month'
+                  expiry_year:
+                    $ref: '#/components/schemas/expiry_year_PAYMENT_METHODS.card.expiry_year'
+                  masked_network_token_last4:
+                    $ref: '#/components/schemas/masked_network_token_last4_PAYMENT_METHODS.card.masked_network_token_last4'
+                  network_token_expiry_month:
+                    $ref: '#/components/schemas/network_token_expiry_month_PAYMENT_METHODS.card.network_token_expiry_month'
+                  network_token_expiry_year:
+                    $ref: '#/components/schemas/network_token_expiry_year_PAYMENT_METHODS.card.network_token_expiry_year'
         action:
           type: object
           properties:
@@ -925,17 +962,18 @@ components:
       type: number
       description: The total number of records returned on the current page. If current_page_size is less than the page_size using in the querystring then this is the final page for that search.
       example: 564
-    filter:
-      type: object
-      properties:
-        account_name:
-          $ref: '#/components/schemas/account_name_PAYMENT_METHODS.account_name'
-        number:
-          $ref: '#/components/schemas/number_PAYMENT_METHODS.card.number'
-        expiry_month:
-          $ref: '#/components/schemas/expiry_month_PAYMENT_METHODS.card.expiry_month'
-        expiry_year:
-          $ref: '#/components/schemas/expiry_year_PAYMENT_METHODS.card.expiry_year'
+    from_time_created:
+      type: string
+      description: |
+        The start time to search for in a range, using the resource time_created value.
+      format: date
+      example: '2022-05-01'
+    to_time_created:
+      type: string
+      description: |
+        The end time to search for in a range, using the resource time_created value.
+      format: date
+      example: '2023-05-01'
     Paging:
       type: object
       title: Paging
@@ -955,7 +993,9 @@ components:
       example: 1
     page_size.paging.page_size:
       type: number
-      description: The total number of records to return in a single page for a list.
+      description: 'The total number of records to return in a single page for a list. The maximum this value can be is 1000, meaning that the maximum number of records to return in a single request is 1000.'
+      minimum: 1
+      maximum: 1000
       default: 5
       example: 5
     order_by.paging.order_by:
@@ -970,30 +1010,6 @@ components:
         - DESC
       description: 'The direction of the ordering of the entire list, ASC or DESC'
       example: ASC
-    payment_methods:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            $ref: '#/components/schemas/id_PAYMENT_METHODS.id'
-          time_created:
-            $ref: '#/components/schemas/time_created_PAYMENT_METHODS.time_created'
-          status:
-            $ref: '#/components/schemas/status_PAYMENT_METHODS.status'
-          reference:
-            $ref: '#/components/schemas/reference_PAYMENT_METHODS.reference'
-          card:
-            type: object
-            properties:
-              number_last4:
-                $ref: '#/components/schemas/number_last4_PAYMENT_METHODS.card.number_last4'
-              brand:
-                $ref: '#/components/schemas/brand_PAYMENT_METHODS.card.brand'
-              expiry_month:
-                $ref: '#/components/schemas/expiry_month_PAYMENT_METHODS.card.expiry_month'
-              expiry_year:
-                $ref: '#/components/schemas/expiry_year_PAYMENT_METHODS.card.expiry_year'
     number_last4_PAYMENT_METHODS.card.number_last4:
       type: string
       description: Last 4 digits of card number
@@ -1022,7 +1038,24 @@ components:
         name:
           $ref: '#/components/schemas/name_PAYMENT_METHODS.name'
         card:
-          $ref: '#/components/schemas/card'
+          type: object
+          properties:
+            number_last4:
+              $ref: '#/components/schemas/number_last4_PAYMENT_METHODS.card.number_last4'
+            expiry_month:
+              $ref: '#/components/schemas/expiry_month_PAYMENT_METHODS.card.expiry_month'
+            expiry_year:
+              $ref: '#/components/schemas/expiry_year_PAYMENT_METHODS.card.expiry_year'
+            brand:
+              $ref: '#/components/schemas/brand_PAYMENT_METHODS.card.brand'
+            brand_reference:
+              $ref: '#/components/schemas/brand_reference_PAYMENT_METHODS.card.brand_reference'
+            network_token:
+              $ref: '#/components/schemas/network_token_PAYMENT_METHODS.card.network_token'
+            network_token_expiry_month:
+              $ref: '#/components/schemas/network_token_expiry_month_INSTALLMENTS.payment_method.card.network_token_expiry_month'
+            network_token_expiry_year:
+              $ref: '#/components/schemas/network_token_expiry_year_PAYMENT_METHODS.card.network_token_expiry_year'
         action:
           type: object
           properties:
@@ -1039,27 +1072,10 @@ components:
             app_name:
               $ref: '#/components/schemas/app_name_PAYMENT_METHODS.action.app_name'
       x-examples: {}
-    card:
-      type: object
-      properties:
-        masked_number_last4:
-          $ref: '#/components/schemas/masked_number_last4_PAYMENT_METHODS.card.masked_number_last4'
-        expiry_month:
-          $ref: '#/components/schemas/expiry_month_PAYMENT_METHODS.card.expiry_month'
-        expiry_year:
-          $ref: '#/components/schemas/expiry_year_PAYMENT_METHODS.card.expiry_year'
-        brand:
-          $ref: '#/components/schemas/brand_PAYMENT_METHODS.card.brand'
-        network_token:
-          $ref: '#/components/schemas/network_token_PAYMENT_METHODS.card.network_token'
-        masked_network_token_last4:
-          $ref: '#/components/schemas/masked_network_token_last4_PAYMENT_METHODS.card.masked_network_token_last4'
-        network_token_expiry_month:
-          $ref: '#/components/schemas/network_token_expiry_month_PAYMENT_METHODS.card.network_token_expiry_month'
-        network_token_expiry_year:
-          $ref: '#/components/schemas/network_token_expiry_year_PAYMENT_METHODS.card.network_token_expiry_year'
-        brand_reference:
-          $ref: '#/components/schemas/brand_reference_PAYMENT_METHODS.card.brand_reference'
+    network_token_expiry_month_INSTALLMENTS.payment_method.card.network_token_expiry_month:
+      type: string
+      description: The 2 digit expiry date month of the network token.
+      example: '12'
     PatchRequest:
       type: object
       title: PatchRequest
@@ -1071,7 +1087,18 @@ components:
         name:
           $ref: '#/components/schemas/name_PAYMENT_METHODS.name'
         card:
-          $ref: '#/components/schemas/card'
+          type: object
+          properties:
+            number:
+              $ref: '#/components/schemas/number_PAYMENT_METHODS.card.number'
+            expiry_month:
+              $ref: '#/components/schemas/expiry_month_PAYMENT_METHODS.card.expiry_month'
+            expiry_year:
+              $ref: '#/components/schemas/expiry_year_PAYMENT_METHODS.card.expiry_year'
+            cvv:
+              $ref: '#/components/schemas/cvv_PAYMENT_METHODS.card.cvv'
+            brand_reference:
+              $ref: '#/components/schemas/brand_reference_PAYMENT_METHODS.card.brand_reference'
     PatchResponse:
       type: object
       title: PatchResponse
@@ -1089,7 +1116,18 @@ components:
         name:
           $ref: '#/components/schemas/name_PAYMENT_METHODS.name'
         card:
-          $ref: '#/components/schemas/card'
+          type: object
+          properties:
+            masked_number_last4:
+              $ref: '#/components/schemas/masked_number_last4_PAYMENT_METHODS.card.masked_number_last4'
+            expiry_month:
+              $ref: '#/components/schemas/expiry_month_PAYMENT_METHODS.card.expiry_month'
+            expiry_year:
+              $ref: '#/components/schemas/expiry_year_PAYMENT_METHODS.card.expiry_year'
+            brand:
+              $ref: '#/components/schemas/brand_PAYMENT_METHODS.card.brand'
+            brand_reference:
+              $ref: '#/components/schemas/brand_reference_PAYMENT_METHODS.card.brand_reference'
         action:
           type: object
           properties:
@@ -1122,7 +1160,16 @@ components:
         name:
           $ref: '#/components/schemas/name_PAYMENT_METHODS.name'
         card:
-          $ref: '#/components/schemas/card'
+          type: object
+          properties:
+            number:
+              $ref: '#/components/schemas/number_PAYMENT_METHODS.card.number'
+            expiry_month:
+              $ref: '#/components/schemas/expiry_month_PAYMENT_METHODS.card.expiry_month'
+            expiry_year:
+              $ref: '#/components/schemas/expiry_year_PAYMENT_METHODS.card.expiry_year'
+            brand:
+              $ref: '#/components/schemas/brand_PAYMENT_METHODS.card.brand'
         action:
           type: object
           properties:
@@ -1145,7 +1192,14 @@ components:
         account_name:
           $ref: '#/components/schemas/account_name_PAYMENT_METHODS.account_name'
         card:
-          $ref: '#/components/schemas/card'
+          type: object
+          properties:
+            number:
+              $ref: '#/components/schemas/number_PAYMENT_METHODS.card.number'
+            expiry_month:
+              $ref: '#/components/schemas/expiry_month_PAYMENT_METHODS.card.expiry_month'
+            expiry_year:
+              $ref: '#/components/schemas/expiry_year_PAYMENT_METHODS.card.expiry_year'
     SearchResponse:
       type: object
       title: SearchResponse
@@ -1199,6 +1253,12 @@ components:
                     $ref: '#/components/schemas/expiry_month_PAYMENT_METHODS.card.expiry_month'
                   expiry_year:
                     $ref: '#/components/schemas/expiry_year_PAYMENT_METHODS.card.expiry_year'
+                  masked_network_token_last4:
+                    $ref: '#/components/schemas/masked_network_token_last4_PAYMENT_METHODS.card.masked_network_token_last4'
+                  network_token_expiry_month:
+                    $ref: '#/components/schemas/network_token_expiry_month_PAYMENT_METHODS.card.network_token_expiry_month'
+                  network_token_expiry_year:
+                    $ref: '#/components/schemas/network_token_expiry_year_PAYMENT_METHODS.card.network_token_expiry_year'
         action:
           type: object
           properties:
@@ -1215,18 +1275,6 @@ components:
             app_name:
               $ref: '#/components/schemas/app_name_PAYMENT_METHODS.action.app_name'
       x-examples: {}
-    from_time_created:
-      type: string
-      description: |
-        The start time to search for in a range, using the resource time_created value.
-      format: date
-      example: '2022-05-01'
-    to_time_created:
-      type: string
-      description: |
-        The end time to search for in a range, using the resource time_created value.
-      format: date
-      example: '2023-05-01'
     from_time_last_updated:
       type: string
       description: |
