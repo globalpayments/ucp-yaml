@@ -30,7 +30,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Updateedcreaterequest'
+              $ref: '#/components/schemas/Updatedcreaterequest'
             examples:
               Store a Card:
                 value:
@@ -578,7 +578,7 @@ components:
           schema:
             $ref: '#/components/schemas/ServerTimeout_504'
   schemas:
-    Updateedcreaterequest:
+    Updatedcreaterequest:
       type: object
       title: CreateRequest
       properties:
@@ -778,6 +778,10 @@ components:
       example: '2021-05-03T21:23:39.718Z'
     status_PAYMENT_METHODS.status:
       type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - DELETED
       description: |
         The overall status of the payment method.
           * `ACTIVE` - The entity is ACTIVE and can be used.

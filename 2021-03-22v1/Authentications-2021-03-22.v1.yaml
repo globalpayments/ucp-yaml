@@ -1399,8 +1399,10 @@ components:
       minLength: 1
       maxLength: 50
     message_extension_AUTHENTICATIONS.three_ds.message_extension:
-      type: string
+      type: array
       description: Scheme specific data elements used to to carry additional data. Message extension is sent based on rules set by each scheme and may not always be present in the response.
+      items:
+        type: string
     to_time_created:
       type: string
       description: |
