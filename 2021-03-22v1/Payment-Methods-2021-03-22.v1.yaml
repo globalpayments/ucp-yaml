@@ -877,6 +877,7 @@ components:
       type: string
       enum:
         - SUCCESS
+        - DECLINED
       description: The result of the action executed.
       example: SUCCESS
     app_id_PAYMENT_METHODS.action.app_id:
