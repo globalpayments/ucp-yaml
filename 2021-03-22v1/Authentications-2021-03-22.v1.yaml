@@ -1319,6 +1319,7 @@ components:
       type: string
       enum:
         - SUCCESS
+        - DECLINED
       description: The result of the action executed.
       minLength: 1
       maxLength: 50
