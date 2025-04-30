@@ -3410,7 +3410,7 @@ components:
             time_created:
               $ref: '#/components/schemas/time_created_AUTHENTICATIONS.action.time_created'
             result_code:
-              $ref: '#/components/schemas/result_code_ACTIONS.result_code'
+              $ref: '#/components/schemas/result_code_AUTHENTICATIONS.action.result_code'
             app_id:
               $ref: '#/components/schemas/app_id_AUTHENTICATIONS.action.app_id'
             app_name:
@@ -3470,14 +3470,9 @@ components:
             result_code: ''
             app_id: ''
             app_name: ''
-    result_code_ACTIONS.result_code:
+    result_code_AUTHENTICATIONS.action.result_code:
       type: string
-      description: |
-        The result code of the action.
-          * `SUCCESS` - Indicates the action was executed as expected and the action successful.
-          * `DECLINED ` - Indicates the action was executed as expected  but the action was unsuccessful.
-          * `PENDING ` - Indicates the action was executed as expected and the final result is not yet known.
-          * `ERROR` -  Indicates the action was not executed as there is an error.
+      description: The result of the action executed.
       example: SUCCESS
     objRequestInvalid_400:
       type: object
