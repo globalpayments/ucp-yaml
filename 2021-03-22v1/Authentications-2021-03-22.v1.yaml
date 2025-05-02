@@ -3470,10 +3470,6 @@ components:
             result_code: ''
             app_id: ''
             app_name: ''
-    result_code_AUTHENTICATIONS.action.result_code:
-      type: string
-      description: The result of the action executed.
-      example: SUCCESS
     objRequestInvalid_400:
       type: object
       description: Bad Request
