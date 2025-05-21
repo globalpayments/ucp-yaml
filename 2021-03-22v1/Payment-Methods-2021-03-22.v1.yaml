@@ -1087,7 +1087,7 @@ components:
         usage_mode:
           $ref: '#/components/schemas/usage_mode_PAYMENT_METHODS.usage_mode'
         fingerprint_mode:
-          $ref: '#/components/schemas/fingerprint_PAYMENT_METHODS.fingerprint'
+          $ref: '#/components/schemas/fingerprint_mode_PAYMENT_METHODS.fingerprint_mode'
         name:
           $ref: '#/components/schemas/name_PAYMENT_METHODS.name'
         card:

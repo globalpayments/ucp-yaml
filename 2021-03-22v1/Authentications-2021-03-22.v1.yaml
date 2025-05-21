@@ -475,7 +475,7 @@ paths:
           description: Sandbox Environment
         - url: 'https://apis.globalpay.com/ucp'
           description: Production Environment
-  '/authentication/{id}':
+  '/authentications/{id}':
     get:
       tags:
         - Get Single Authentication
