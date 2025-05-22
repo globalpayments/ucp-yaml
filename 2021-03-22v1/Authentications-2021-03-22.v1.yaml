@@ -2155,7 +2155,6 @@ components:
         - CHALLENGE_PREFERRED
         - CHALLENGE_MANDATED
         - NO_CHALLENGE_REQUESTED_TRANSACTION_RISK_ANALYSIS_PERFORMED
-        - NO_CHALLENGE_REQUESTED_DATA_SHARE_ONLY
         - NO_CHALLENGE_REQUESTED_SCA_ALREADY_PERFORMED
         - NO_CHALLENGE_REQUESTED_WHITELIST
         - CHALLENGE_REQUESTED_PROMPT_FOR_WHITELIST
@@ -2165,10 +2164,9 @@ components:
                          * `NO_CHALLENGE_REQUESTED` - Preference is for the customer not be challenged 
                          * `CHALLENGE_PREFERRED` - Preference is for the customer to be challenged. 
                          * `CHALLENGE_MANDATED` - A challenge is required for the transaction to be authorized due to local/regional mandates or other variables. NO_CHALLENGE_REQUESTED_TRANSACTION_RISK_ANALYSIS_PERFORMED
-                         * `NO_CHALLENGE_REQUESTED_DATA_SHARE_ONLY`
-                         * `NO_CHALLENGE_REQUESTED_SCA_ALREADY_PERFORMED`
-                         * `NO_CHALLENGE_REQUESTED_WHITELIST`
-                         * `CHALLENGE_REQUESTED_PROMPT_FOR_WHITELIST`
+                         * `NO_CHALLENGE_REQUESTED_SCA_ALREADY_PERFORMED` - Used in case of trusted beneficiaries, when SCA is already performed. This is not recommended to use.
+                         * `NO_CHALLENGE_REQUESTED_WHITELIST`- Used in case of trusted beneficiaries for requests involving a beneficiary that has already been whitelisted.
+                         * `CHALLENGE_REQUESTED_PROMPT_FOR_WHITELIST` - Used in case of trusted beneficiaries for an initial request with a new beneficiary who is not yet whitelisted
       minLength: 1
       maxLength: 50
       example: NO_PREFERENCE
@@ -2405,10 +2403,10 @@ components:
       example: 90210'
     country_AUTHENTICATIONS.order.shipping_address.country:
       type: string
-      description: This is the country of the address represented as in ISO-3166-1(alpha-2 code) format.
-      minLength: 2
-      maxLength: 2
-      example: US
+      description: 'This is the country of the address represented as in ISO 3166-1 format. Please click on <a href="https://developer.globalpay.com/resources/codes/country-codes" target="_blank">Country Codes</a> to access the full list of countries'
+      minLength: 3
+      maxLength: 3
+      example: '840'
     gift_card_count_AUTHENTICATIONS.order.gift_card_count:
       type: number
       description: The total number of prepaid or gift cards purchased.
@@ -3410,7 +3408,7 @@ components:
             time_created:
               $ref: '#/components/schemas/time_created_AUTHENTICATIONS.action.time_created'
             result_code:
-              $ref: '#/components/schemas/result_code_ACTIONS.result_code'
+              $ref: '#/components/schemas/result_code_AUTHENTICATIONS.action.result_code'
             app_id:
               $ref: '#/components/schemas/app_id_AUTHENTICATIONS.action.app_id'
             app_name:
@@ -3470,15 +3468,6 @@ components:
             result_code: ''
             app_id: ''
             app_name: ''
-    result_code_ACTIONS.result_code:
-      type: string
-      description: |
-        The result code of the action.
-          * `SUCCESS` - Indicates the action was executed as expected and the action successful.
-          * `DECLINED ` - Indicates the action was executed as expected  but the action was unsuccessful.
-          * `PENDING ` - Indicates the action was executed as expected and the final result is not yet known.
-          * `ERROR` -  Indicates the action was not executed as there is an error.
-      example: SUCCESS
     objRequestInvalid_400:
       type: object
       description: Bad Request
