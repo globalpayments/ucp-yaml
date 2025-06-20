@@ -482,6 +482,7 @@ paths:
                       description: The total shipping amount incurred for the order.
                       minLength: 1
                       maxLength: 50
+                      example: '100'
                     shipping_discount:
                       type: string
                       description: The total shipping discount amount incurred for the order.
@@ -509,7 +510,7 @@ paths:
                             maxLength: 50
                           category:
                             type: string
-                            description: Indicates the category if item being purchased
+                            description: Indicates the category if item being purchased.
                             minLength: 1
                             maxLength: 50
                           amount:
@@ -824,6 +825,7 @@ paths:
                         * `USE_NETWORK_TOKEN` - When using the payment method token to transaction process, this indicates to use the network token instead of the card number.
                       minLength: 1
                       maxLength: 50
+                      default: USE_NETWORK_TOKEN
                       example: SINGLE
                     encryption:
                       type: object
@@ -1145,6 +1147,8 @@ paths:
                             - OPEN_BANKING
                             - ALIPAY
                             - WECHAT
+                            - BLIK
+                            - BANK_PAYMENT
                           description: A string used to identify the payment method provider being used to execute this transaction.
                           minLength: 1
                           maxLength: 50
@@ -3184,6 +3188,11 @@ paths:
                                 description: Result code from the card provider (issuer) .
                                 minLength: 1
                                 maxLength: 50
+                              message:
+                                type: string
+                                description: Message from the card provider (issuer).
+                                minLength: 1
+                                maxLength: 50
                               cvv_result:
                                 type: string
                                 description: CVV result code from the card provider (issuer) .
@@ -3600,7 +3609,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -4314,7 +4327,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb  #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
         - name: X-GP-Version
           in: header
@@ -4411,15 +4424,13 @@ paths:
                       from_time_created:
                         type: string
                         description: |
-                          The start time to search for in a range, using the resource time_created value.
-                        format: date
-                        example: '2022-05-01'
+                          The start time to search for in a range, using time_last_updated value.
+                        format: date-time
                       to_time_created:
                         type: string
                         description: |
-                          The end time to search for in a range, using the resource time_created value.
-                        format: date
-                        example: '2023-05-01'
+                          The end time to search for in a range, using time_last_updated value
+                        format: date-time
                   paging:
                     type: object
                     properties:
@@ -5246,7 +5257,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -5488,7 +5503,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb  #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
         - name: X-GP-Version
           in: header
@@ -6500,7 +6515,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -6782,6 +6801,7 @@ paths:
           application/json:
             schema:
               type: object
+              title: refund_request
               properties:
                 amount:
                   type: string
@@ -6789,6 +6809,86 @@ paths:
                   minLength: 1
                   maxLength: 50
                   example: '11099'
+                gratuity_amount:
+                  type: string
+                  description: The amount of the gratuity for a transaction.
+                  minLength: 1
+                  maxLength: 50
+                  example: '11099'
+                surcharge_amount:
+                  type: string
+                  description: The amount that reflects the additional charge the merchant applied to the transaction for using a specific payment method.
+                  minLength: 1
+                  maxLength: 50
+                  example: '11099'
+                tax_amount:
+                  type: string
+                  description: The total amount of tax charges associated with this transaction.
+                  minLength: 1
+                  maxLength: 50
+                  example: '100'
+                reference:
+                  type: string
+                  description: Merchant defined field to reference the transaction.
+                  minLength: 8
+                  maxLength: 50
+                  example: becf9f3e-4d33-459c-8ed2-0c4affc9555e
+                order:
+                  type: object
+                  properties:
+                    shipping_amount:
+                      type: string
+                      description: The total shipping amount incurred for the order.
+                      minLength: 1
+                      maxLength: 50
+                      example: '100'
+                    duty_amount:
+                      type: string
+                      title: duty_amount_TRANSACTIONS.order.duty_amount
+                      description: The total import or export duties amount included in the order.
+                      minLength: 1
+                      maxLength: 50
+                      example: '1000'
+                    taxes:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - VAT
+                            - NATIONAL
+                            - SERVICE
+                            - DUTY
+                            - ALTERNATE
+                            - STATE
+                            - HST
+                            - GST
+                            - QST
+                            - SHIPPING
+                          title: type_TRANSACTIONS.order.taxes.type
+                          description: |-
+                            The type of tax being charged.
+                              * `VAT` -  Value-added tax
+                              * `NATIONAL` -  National tax.
+                              * `SERVICE` - Service tax.
+                              * `DUTY` -  Duty tax or sometimes referred to as a tariff.
+                              * `STATE` -  State or provinical tax.
+                              * `HST` -  Harmonized sales tax. 
+                              * `GST` -  Goods and services tax.
+                              * `QST` -  Quebec Sales tax.
+                              * `SHIPPING` -  Shippig tax.
+                              * `ALTERNATE` - Use if tax does not apply to other types listed.
+                              
+                        amount:
+                          type: string
+                          title: amount_TRANSACTIONS.order.taxes.amount
+                          description: Tax amount.
+                          example: '1000'
+                        percentage:
+                          type: integer
+                          title: percentage_TRANSACTIONS.order.taxes.percentage
+                          description: Tax rate. Must be between 0.1 and 22%
+                          example: 1
                 currency_conversion:
                   type: object
                   properties:
@@ -7145,7 +7245,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -7406,7 +7510,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb  #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
         - name: X-GP-Idempotency
           in: header
@@ -7805,7 +7909,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -8053,7 +8161,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb  #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
         - name: X-GP-Idempotency
           in: header
@@ -8547,7 +8655,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -9259,7 +9371,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -9507,7 +9623,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb  #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
         - name: X-GP-Idempotency
           in: header
@@ -9915,7 +10031,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -10162,7 +10282,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb  #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
         - name: X-GP-Idempotency
           in: header
@@ -10203,6 +10323,7 @@ paths:
           application/json:
             schema:
               type: object
+              title: refund_request
               properties:
                 amount:
                   type: string
@@ -10210,6 +10331,86 @@ paths:
                   minLength: 1
                   maxLength: 50
                   example: '11099'
+                gratuity_amount:
+                  type: string
+                  description: The amount of the gratuity for a transaction.
+                  minLength: 1
+                  maxLength: 50
+                  example: '11099'
+                surcharge_amount:
+                  type: string
+                  description: The amount that reflects the additional charge the merchant applied to the transaction for using a specific payment method.
+                  minLength: 1
+                  maxLength: 50
+                  example: '11099'
+                tax_amount:
+                  type: string
+                  description: The total amount of tax charges associated with this transaction.
+                  minLength: 1
+                  maxLength: 50
+                  example: '100'
+                reference:
+                  type: string
+                  description: Merchant defined field to reference the transaction.
+                  minLength: 8
+                  maxLength: 50
+                  example: becf9f3e-4d33-459c-8ed2-0c4affc9555e
+                order:
+                  type: object
+                  properties:
+                    shipping_amount:
+                      type: string
+                      description: The total shipping amount incurred for the order.
+                      minLength: 1
+                      maxLength: 50
+                      example: '100'
+                    duty_amount:
+                      type: string
+                      title: duty_amount_TRANSACTIONS.order.duty_amount
+                      description: The total import or export duties amount included in the order.
+                      minLength: 1
+                      maxLength: 50
+                      example: '1000'
+                    taxes:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - VAT
+                            - NATIONAL
+                            - SERVICE
+                            - DUTY
+                            - ALTERNATE
+                            - STATE
+                            - HST
+                            - GST
+                            - QST
+                            - SHIPPING
+                          title: type_TRANSACTIONS.order.taxes.type
+                          description: |-
+                            The type of tax being charged.
+                              * `VAT` -  Value-added tax
+                              * `NATIONAL` -  National tax.
+                              * `SERVICE` - Service tax.
+                              * `DUTY` -  Duty tax or sometimes referred to as a tariff.
+                              * `STATE` -  State or provinical tax.
+                              * `HST` -  Harmonized sales tax. 
+                              * `GST` -  Goods and services tax.
+                              * `QST` -  Quebec Sales tax.
+                              * `SHIPPING` -  Shippig tax.
+                              * `ALTERNATE` - Use if tax does not apply to other types listed.
+                              
+                        amount:
+                          type: string
+                          title: amount_TRANSACTIONS.order.taxes.amount
+                          description: Tax amount.
+                          example: '1000'
+                        percentage:
+                          type: integer
+                          title: percentage_TRANSACTIONS.order.taxes.percentage
+                          description: Tax rate. Must be between 0.1 and 22%
+                          example: 1
                 currency_conversion:
                   type: object
                   properties:
@@ -10562,7 +10763,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -10810,7 +11015,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb  #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
         - name: X-GP-Idempotency
           in: header
@@ -10870,6 +11075,8 @@ paths:
                             - OPEN_BANKING
                             - ALIPAY
                             - WECHAT
+                            - BLIK
+                            - BANK_PAYMENT
                           description: A string used to identify the payment method provider being used to execute this transaction.
                           minLength: 1
                           maxLength: 50
@@ -10905,6 +11112,8 @@ paths:
                               - OPEN_BANKING
                               - ALIPAY
                               - WECHAT
+                              - BLIK
+                              - BANK_PAYMENT
                             description: A string used to identify the payment method provider being used to execute this transaction.
                             minLength: 1
                             maxLength: 50
@@ -11160,7 +11369,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb  #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
         - name: X-GP-Idempotency
           in: header
@@ -11669,7 +11878,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -12314,7 +12527,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -12650,6 +12867,7 @@ paths:
                       - UNDER_REVIEW
                       - WITH_MERCHANT
                       - CLOSED
+                      - FUNDED
                     description: Indicated where the dispute is in the life-cycle.
                     minLength: 1
                     maxLength: 50
@@ -12713,7 +12931,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -12956,7 +13178,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb  #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
         - name: X-GP-Idempotency
           in: header
@@ -13332,7 +13554,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -13755,7 +13981,11 @@ paths:
                           - DECLINED
                           - PENDING
                           - ERROR
-                        description: The result of the action executed.
+                        description: |-
+                          The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                          * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                          * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                          * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
                         minLength: 1
                         maxLength: 50
                         example: SUCCESS
@@ -14496,6 +14726,7 @@ components:
               description: The total shipping amount incurred for the order.
               minLength: 1
               maxLength: 50
+              example: '100'
             shipping_discount:
               type: string
               description: The total shipping discount amount incurred for the order.
@@ -14523,7 +14754,7 @@ components:
                     maxLength: 50
                   category:
                     type: string
-                    description: Indicates the category if item being purchased
+                    description: Indicates the category if item being purchased.
                     minLength: 1
                     maxLength: 50
                   amount:
@@ -14838,6 +15069,7 @@ components:
                 * `USE_NETWORK_TOKEN` - When using the payment method token to transaction process, this indicates to use the network token instead of the card number.
               minLength: 1
               maxLength: 50
+              default: USE_NETWORK_TOKEN
               example: SINGLE
             encryption:
               type: object
@@ -15159,6 +15391,8 @@ components:
                     - OPEN_BANKING
                     - ALIPAY
                     - WECHAT
+                    - BLIK
+                    - BANK_PAYMENT
                   description: A string used to identify the payment method provider being used to execute this transaction.
                   minLength: 1
                   maxLength: 50
@@ -16096,6 +16330,7 @@ components:
       description: The total shipping amount incurred for the order.
       minLength: 1
       maxLength: 50
+      example: '100'
     shipping_discount_TRANSACTIONS.order.shipping_discount:
       type: string
       description: The total shipping discount amount incurred for the order.
@@ -16118,7 +16353,7 @@ components:
       maxLength: 50
     category_TRANSACTIONS.order.items.category:
       type: string
-      description: Indicates the category if item being purchased
+      description: Indicates the category if item being purchased.
       minLength: 1
       maxLength: 50
     description_TRANSACTIONS.order.items.description:
@@ -16413,6 +16648,7 @@ components:
             * `USE_NETWORK_TOKEN` - When using the payment method token to transaction process, this indicates to use the network token instead of the card number.
           minLength: 1
           maxLength: 50
+          default: USE_NETWORK_TOKEN
           example: SINGLE
         encryption:
           type: object
@@ -16734,6 +16970,8 @@ components:
                 - OPEN_BANKING
                 - ALIPAY
                 - WECHAT
+                - BLIK
+                - BANK_PAYMENT
               description: A string used to identify the payment method provider being used to execute this transaction.
               minLength: 1
               maxLength: 50
@@ -17007,6 +17245,7 @@ components:
         * `USE_NETWORK_TOKEN` - When using the payment method token to transaction process, this indicates to use the network token instead of the card number.
       minLength: 1
       maxLength: 50
+      default: USE_NETWORK_TOKEN
       example: SINGLE
     method_TRANSACTIONS.payment_method.encryption.method:
       type: string
@@ -17506,6 +17745,8 @@ components:
             - OPEN_BANKING
             - ALIPAY
             - WECHAT
+            - BLIK
+            - BANK_PAYMENT
           description: A string used to identify the payment method provider being used to execute this transaction.
           minLength: 1
           maxLength: 50
@@ -17563,6 +17804,8 @@ components:
         - OPEN_BANKING
         - ALIPAY
         - WECHAT
+        - BLIK
+        - BANK_PAYMENT
       description: A string used to identify the payment method provider being used to execute this transaction.
       minLength: 1
       maxLength: 50
@@ -19165,6 +19408,11 @@ components:
                       description: Result code from the card provider (issuer) .
                       minLength: 1
                       maxLength: 50
+                    message:
+                      type: string
+                      description: Message from the card provider (issuer).
+                      minLength: 1
+                      maxLength: 50
                     cvv_result:
                       type: string
                       description: CVV result code from the card provider (issuer) .
@@ -19581,7 +19829,11 @@ components:
                 - DECLINED
                 - PENDING
                 - ERROR
-              description: The result of the action executed.
+              description: |-
+                The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
               minLength: 1
               maxLength: 50
               example: SUCCESS
@@ -20311,6 +20563,11 @@ components:
                 result:
                   type: string
                   description: Result code from the card provider (issuer) .
+                  minLength: 1
+                  maxLength: 50
+                message:
+                  type: string
+                  description: Message from the card provider (issuer).
                   minLength: 1
                   maxLength: 50
                 cvv_result:
@@ -21159,6 +21416,11 @@ components:
               description: Result code from the card provider (issuer) .
               minLength: 1
               maxLength: 50
+            message:
+              type: string
+              description: Message from the card provider (issuer).
+              minLength: 1
+              maxLength: 50
             cvv_result:
               type: string
               description: CVV result code from the card provider (issuer) .
@@ -21440,6 +21702,11 @@ components:
           description: Result code from the card provider (issuer) .
           minLength: 1
           maxLength: 50
+        message:
+          type: string
+          description: Message from the card provider (issuer).
+          minLength: 1
+          maxLength: 50
         cvv_result:
           type: string
           description: CVV result code from the card provider (issuer) .
@@ -21463,6 +21730,11 @@ components:
     result_TRANSACTIONS.payment_method.card.provider.result:
       type: string
       description: Result code from the card provider (issuer) .
+      minLength: 1
+      maxLength: 50
+    message_TRANSACTIONS.payment_method.card.provider.message:
+      type: string
+      description: Message from the card provider (issuer).
       minLength: 1
       maxLength: 50
     cvv_result_TRANSACTIONS.payment_method.card.provider.cvv_result:
@@ -21789,7 +22061,11 @@ components:
         - DECLINED
         - PENDING
         - ERROR
-      description: The result of the action executed.
+      description: |-
+        The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+        * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+        * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+        * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
       minLength: 1
       maxLength: 50
       example: SUCCESS
@@ -21893,15 +22169,13 @@ components:
             from_time_created:
               type: string
               description: |
-                The start time to search for in a range, using the resource time_created value.
-              format: date
-              example: '2022-05-01'
+                The start time to search for in a range, using time_last_updated value.
+              format: date-time
             to_time_created:
               type: string
               description: |
-                The end time to search for in a range, using the resource time_created value.
-              format: date
-              example: '2023-05-01'
+                The end time to search for in a range, using time_last_updated value
+              format: date-time
         paging:
           type: object
           properties:
@@ -22728,7 +23002,11 @@ components:
                 - DECLINED
                 - PENDING
                 - ERROR
-              description: The result of the action executed.
+              description: |-
+                The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
               minLength: 1
               maxLength: 50
               example: SUCCESS
@@ -22760,15 +23038,23 @@ components:
         from_time_created:
           type: string
           description: |
-            The start time to search for in a range, using the resource time_created value.
-          format: date
-          example: '2022-05-01'
+            The start time to search for in a range, using time_last_updated value.
+          format: date-time
         to_time_created:
           type: string
           description: |
-            The end time to search for in a range, using the resource time_created value.
-          format: date
-          example: '2023-05-01'
+            The end time to search for in a range, using time_last_updated value
+          format: date-time
+    from_time_last_updated:
+      type: string
+      description: |
+        The start time to search for in a range, using time_last_updated value.
+      format: date-time
+    to_time_last_updated:
+      type: string
+      description: |
+        The end time to search for in a range, using time_last_updated value
+      format: date-time
     paging:
       type: object
       properties:
@@ -24467,7 +24753,11 @@ components:
             - DECLINED
             - PENDING
             - ERROR
-          description: The result of the action executed.
+          description: |-
+            The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+            * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+            * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+            * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
           minLength: 1
           maxLength: 50
           example: SUCCESS
@@ -25472,7 +25762,11 @@ components:
                 - DECLINED
                 - PENDING
                 - ERROR
-              description: The result of the action executed.
+              description: |-
+                The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
               minLength: 1
               maxLength: 50
               example: SUCCESS
@@ -26355,6 +26649,7 @@ components:
       maxLength: 50
     change_amount_request:
       type: object
+      title: refund_request
       properties:
         amount:
           type: string
@@ -26362,6 +26657,86 @@ components:
           minLength: 1
           maxLength: 50
           example: '11099'
+        gratuity_amount:
+          type: string
+          description: The amount of the gratuity for a transaction.
+          minLength: 1
+          maxLength: 50
+          example: '11099'
+        surcharge_amount:
+          type: string
+          description: The amount that reflects the additional charge the merchant applied to the transaction for using a specific payment method.
+          minLength: 1
+          maxLength: 50
+          example: '11099'
+        tax_amount:
+          type: string
+          description: The total amount of tax charges associated with this transaction.
+          minLength: 1
+          maxLength: 50
+          example: '100'
+        reference:
+          type: string
+          description: Merchant defined field to reference the transaction.
+          minLength: 8
+          maxLength: 50
+          example: becf9f3e-4d33-459c-8ed2-0c4affc9555e
+        order:
+          type: object
+          properties:
+            shipping_amount:
+              type: string
+              description: The total shipping amount incurred for the order.
+              minLength: 1
+              maxLength: 50
+              example: '100'
+            duty_amount:
+              type: string
+              title: duty_amount_TRANSACTIONS.order.duty_amount
+              description: The total import or export duties amount included in the order.
+              minLength: 1
+              maxLength: 50
+              example: '1000'
+            taxes:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - VAT
+                    - NATIONAL
+                    - SERVICE
+                    - DUTY
+                    - ALTERNATE
+                    - STATE
+                    - HST
+                    - GST
+                    - QST
+                    - SHIPPING
+                  title: type_TRANSACTIONS.order.taxes.type
+                  description: |-
+                    The type of tax being charged.
+                      * `VAT` -  Value-added tax
+                      * `NATIONAL` -  National tax.
+                      * `SERVICE` - Service tax.
+                      * `DUTY` -  Duty tax or sometimes referred to as a tariff.
+                      * `STATE` -  State or provinical tax.
+                      * `HST` -  Harmonized sales tax. 
+                      * `GST` -  Goods and services tax.
+                      * `QST` -  Quebec Sales tax.
+                      * `SHIPPING` -  Shippig tax.
+                      * `ALTERNATE` - Use if tax does not apply to other types listed.
+                      
+                amount:
+                  type: string
+                  title: amount_TRANSACTIONS.order.taxes.amount
+                  description: Tax amount.
+                  example: '1000'
+                percentage:
+                  type: integer
+                  title: percentage_TRANSACTIONS.order.taxes.percentage
+                  description: Tax rate. Must be between 0.1 and 22%
+                  example: 1
         currency_conversion:
           type: object
           properties:
@@ -26371,6 +26746,56 @@ components:
               minLength: 1
               maxLength: 50
               example: CCS_6a061b51-6e7a-4200-9d8c-01be5e26a5bb
+    tax_amount_TRANSACTIONS.tax_amount:
+      type: string
+      description: The total amount of tax charges associated with this transaction.
+      minLength: 1
+      maxLength: 50
+      example: '100'
+    duty_amount_TRANSACTIONS.order.duty_amount:
+      type: string
+      title: duty_amount_TRANSACTIONS.order.duty_amount
+      description: The total import or export duties amount included in the order.
+      minLength: 1
+      maxLength: 50
+      example: '1000'
+    type_TRANSACTIONS.order.taxes.type:
+      type: string
+      enum:
+        - VAT
+        - NATIONAL
+        - SERVICE
+        - DUTY
+        - ALTERNATE
+        - STATE
+        - HST
+        - GST
+        - QST
+        - SHIPPING
+      title: type_TRANSACTIONS.order.taxes.type
+      description: |-
+        The type of tax being charged.
+          * `VAT` -  Value-added tax
+          * `NATIONAL` -  National tax.
+          * `SERVICE` - Service tax.
+          * `DUTY` -  Duty tax or sometimes referred to as a tariff.
+          * `STATE` -  State or provinical tax.
+          * `HST` -  Harmonized sales tax. 
+          * `GST` -  Goods and services tax.
+          * `QST` -  Quebec Sales tax.
+          * `SHIPPING` -  Shippig tax.
+          * `ALTERNATE` - Use if tax does not apply to other types listed.
+          
+    amount_TRANSACTIONS.order.taxes.amount:
+      type: string
+      title: amount_TRANSACTIONS.order.taxes.amount
+      description: Tax amount.
+      example: '1000'
+    percentage_TRANSACTIONS.order.taxes.percentage:
+      type: integer
+      title: percentage_TRANSACTIONS.order.taxes.percentage
+      description: Tax rate. Must be between 0.1 and 22%
+      example: 1
     existing_transaction_response:
       type: object
       properties:
@@ -26709,7 +27134,11 @@ components:
                 - DECLINED
                 - PENDING
                 - ERROR
-              description: The result of the action executed.
+              description: |-
+                The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
               minLength: 1
               maxLength: 50
               example: SUCCESS
@@ -27167,6 +27596,8 @@ components:
                     - OPEN_BANKING
                     - ALIPAY
                     - WECHAT
+                    - BLIK
+                    - BANK_PAYMENT
                   description: A string used to identify the payment method provider being used to execute this transaction.
                   minLength: 1
                   maxLength: 50
@@ -27194,6 +27625,8 @@ components:
                 - OPEN_BANKING
                 - ALIPAY
                 - WECHAT
+                - BLIK
+                - BANK_PAYMENT
               description: A string used to identify the payment method provider being used to execute this transaction.
               minLength: 1
               maxLength: 50
@@ -27218,6 +27651,8 @@ components:
             - OPEN_BANKING
             - ALIPAY
             - WECHAT
+            - BLIK
+            - BANK_PAYMENT
           description: A string used to identify the payment method provider being used to execute this transaction.
           minLength: 1
           maxLength: 50
@@ -27253,6 +27688,8 @@ components:
                     - OPEN_BANKING
                     - ALIPAY
                     - WECHAT
+                    - BLIK
+                    - BANK_PAYMENT
                   description: A string used to identify the payment method provider being used to execute this transaction.
                   minLength: 1
                   maxLength: 50
@@ -27295,6 +27732,8 @@ components:
                 - OPEN_BANKING
                 - ALIPAY
                 - WECHAT
+                - BLIK
+                - BANK_PAYMENT
               description: A string used to identify the payment method provider being used to execute this transaction.
               minLength: 1
               maxLength: 50
@@ -27334,6 +27773,8 @@ components:
             - OPEN_BANKING
             - ALIPAY
             - WECHAT
+            - BLIK
+            - BANK_PAYMENT
           description: A string used to identify the payment method provider being used to execute this transaction.
           minLength: 1
           maxLength: 50
@@ -27837,7 +28278,11 @@ components:
                 - DECLINED
                 - PENDING
                 - ERROR
-              description: The result of the action executed.
+              description: |-
+                The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
               minLength: 1
               maxLength: 50
               example: SUCCESS
@@ -28281,7 +28726,11 @@ components:
                 - DECLINED
                 - PENDING
                 - ERROR
-              description: The result of the action executed.
+              description: |-
+                The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
               minLength: 1
               maxLength: 50
               example: SUCCESS
@@ -28413,6 +28862,7 @@ components:
             - UNDER_REVIEW
             - WITH_MERCHANT
             - CLOSED
+            - FUNDED
           description: Indicated where the dispute is in the life-cycle.
           minLength: 1
           maxLength: 50
@@ -28476,7 +28926,11 @@ components:
                 - DECLINED
                 - PENDING
                 - ERROR
-              description: The result of the action executed.
+              description: |-
+                The result of the action executed. * `SUCCESS` - indicates the action executed successfully.
+                * `DECLINED` - indicates the result of the action was to DECLINE it. This means to consider that payment is not allowed and goods or services should not be provided. For transaction processing this means the payment method declined the transaction.
+                * `PENDING` - indicates the result is not known but a final result will be subsequently provided. When the result is known the value can be updated to a SUCCESS, DECLINED or ERROR code.
+                * `ERROR` - indicates the action was PENDING but when the final result was known, it had errored.
               minLength: 1
               maxLength: 50
               example: SUCCESS
@@ -28499,6 +28953,7 @@ components:
         - UNDER_REVIEW
         - WITH_MERCHANT
         - CLOSED
+        - FUNDED
       description: Indicated where the dispute is in the life-cycle.
       minLength: 1
       maxLength: 50
