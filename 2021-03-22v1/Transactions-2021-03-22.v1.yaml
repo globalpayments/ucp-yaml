@@ -825,7 +825,6 @@ paths:
                         * `USE_NETWORK_TOKEN` - When using the payment method token to transaction process, this indicates to use the network token instead of the card number.
                       minLength: 1
                       maxLength: 50
-                      default: USE_NETWORK_TOKEN
                       example: SINGLE
                     encryption:
                       type: object
@@ -15069,7 +15068,6 @@ components:
                 * `USE_NETWORK_TOKEN` - When using the payment method token to transaction process, this indicates to use the network token instead of the card number.
               minLength: 1
               maxLength: 50
-              default: USE_NETWORK_TOKEN
               example: SINGLE
             encryption:
               type: object
@@ -16648,7 +16646,6 @@ components:
             * `USE_NETWORK_TOKEN` - When using the payment method token to transaction process, this indicates to use the network token instead of the card number.
           minLength: 1
           maxLength: 50
-          default: USE_NETWORK_TOKEN
           example: SINGLE
         encryption:
           type: object
@@ -17245,7 +17242,6 @@ components:
         * `USE_NETWORK_TOKEN` - When using the payment method token to transaction process, this indicates to use the network token instead of the card number.
       minLength: 1
       maxLength: 50
-      default: USE_NETWORK_TOKEN
       example: SINGLE
     method_TRANSACTIONS.payment_method.encryption.method:
       type: string
