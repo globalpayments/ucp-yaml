@@ -71,6 +71,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/create_response'
+          headers:
+            Content-Type:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            Content-Encoding:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Idempotency:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Version:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -238,7 +251,7 @@ paths:
                     amount: '5089'
                     currency: EUR
                     reference: 3400dd37-101d-4940-be15-3c963b6109b3
-                    address_match_indicator: 'YES'
+                    address_match_indicator: 'TRUE'
                     shipping_address:
                       line1: Apartment 852
                       line2: Complex 741
@@ -246,7 +259,7 @@ paths:
                       city: Chicago
                       postal_code: '50001'
                       state: IL
-                      country: US
+                      country: '840'
                     gift_card_count: 1
                     gift_card_currency: EUR
                     gift_card_amount: '25000'
@@ -271,6 +284,9 @@ paths:
                     account_change_indicator: THIS_TRANSACTION
                     account_password_change_date: '2019-01-15'
                     account_password_change_indicator: LESS_THAN_THIRTY_DAYS
+                    mobile_phone:
+                      country_code: '44'
+                      subscriber_number: '987654321'
                     home_phone:
                       country_code: '44'
                       subscriber_number: '123456789'
@@ -322,7 +338,7 @@ paths:
                     amount: '5089'
                     currency: EUR
                     reference: 3400dd37-101d-4940-be15-3c963b6109b3
-                    address_match_indicator: 'YES'
+                    address_match_indicator: 'TRUE'
                     shipping_address:
                       line1: Apartment 852
                       line2: Complex 741
@@ -330,7 +346,7 @@ paths:
                       city: Chicago
                       postal_code: '50001'
                       state: IL
-                      country: US
+                      country: '840'
                     gift_card_count: 1
                     gift_card_currency: EUR
                     gift_card_amount: '25000'
@@ -355,6 +371,9 @@ paths:
                     account_change_indicator: THIS_TRANSACTION
                     account_password_change_date: '2019-01-15'
                     account_password_change_indicator: LESS_THAN_THIRTY_DAYS
+                    mobile_phone:
+                      country_code: '44'
+                      subscriber_number: '987654321'
                     home_phone:
                       country_code: '44'
                       subscriber_number: '123456789'
@@ -402,6 +421,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/initiate_response'
+          headers:
+            Content-Type:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            Content-Encoding:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Idempotency:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Version:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -452,6 +484,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/result_response'
+          headers:
+            Content-Type:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            Content-Encoding:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Idempotency:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Version:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -2048,10 +2093,6 @@ components:
               $ref: '#/components/schemas/account_password_change_date_AUTHENTICATIONS.payer.account_password_change_date'
             account_password_change_indicator:
               $ref: '#/components/schemas/account_change_indicator_AUTHENTICATIONS.payer.account_change_indicator'
-            landline_phone:
-              $ref: '#/components/schemas/landline_phone_AUTHENTICATIONS.payer.landline_phone'
-            mobile_phone:
-              $ref: '#/components/schemas/mobile_phone_AUTHENTICATIONS.payer.mobile_phone'
             email:
               $ref: '#/components/schemas/email_AUTHENTICATIONS.payer.email'
             billing_address:
@@ -2085,7 +2126,14 @@ components:
                 country_code:
                   $ref: '#/components/schemas/country_code_AUTHENTICATIONS.payer.work_phone.country_code'
                 subscriber_number:
-                  $ref: '#/components/schemas/subscriber_number_AUTHENTICATIONS.payer.home_phone.subscriber_number'
+                  $ref: '#/components/schemas/subscriber_number_AUTHENTICATIONS.payer.work_phone.subscriber_number'
+            mobile_phone:
+              type: object
+              properties:
+                country_code:
+                  $ref: '#/components/schemas/country_code_AUTHENTICATIONS.payer.mobile_phone.country_code'
+                subscriber_number:
+                  $ref: '#/components/schemas/subscriber_number_AUTHENTICATIONS.payer.mobile_phone.subscriber_number'
             payment_account_creation_date:
               $ref: '#/components/schemas/payment_account_creation_date_AUTHENTICATIONS.payer.payment_account_creation_date'
             payment_account_age_indicator:
@@ -2355,16 +2403,16 @@ components:
     address_match_indicator_AUTHENTICATIONS.order.address_match_indicator:
       type: string
       enum:
-        - 'YES'
-        - 'NO'
+        - 'TRUE'
+        - 'FALSE'
       description: |
         Indicates whether the shipping address matches the billing address.
-         * `YES`
-         * `NO`
+         * `TRUE`
+         * `FALSE`
          Note for European merchants- This field is recommended for SCA.
       minLength: 1
       maxLength: 50
-      example: 'YES'
+      example: 'TRUE'
     line_1_AUTHENTICATIONS.order.shipping_address.line_1:
       type: string
       description: First line of the address.
@@ -2876,14 +2924,6 @@ components:
     account_password_change_date_AUTHENTICATIONS.payer.account_password_change_date:
       type: string
       description: Date the customer's account with the merchant had a password change or account reset.
-    landline_phone_AUTHENTICATIONS.payer.landline_phone:
-      type: string
-      description: The landline phone number.
-    mobile_phone_AUTHENTICATIONS.payer.mobile_phone:
-      type: string
-      description: |
-        The mobile phone number.
-        Note for European merchants: This field is mandatory for SCA.
     email_AUTHENTICATIONS.payer.email:
       type: string
       title: email_AUTHENTICATIONS.payer.email
@@ -2891,25 +2931,56 @@ components:
     country_code_AUTHENTICATIONS.payer.home_phone.country_code:
       type: string
       description: |
-
-        The country code that is used when dialling the phone number from another country.  For example  for USA or Canada  it would be +1 for England it would be +44 for Germany it would be +49
-        Note for European merchants: This field is mandatory for SCA unless customer Email is being sent by the Merchant. 
+        The country code that is used when dialling the phone number from another country. Note for European merchants: This field is mandatory for SCA unless customer Email is being sent by the Merchant. 
+        For example 
+          for USA or Canada  it would be 1
+          for England it would be 44
+          for Germany it would be 49
       minLength: 1
-      maxLength: 50
+      maxLength: 3
     subscriber_number_AUTHENTICATIONS.payer.home_phone.subscriber_number:
       type: string
       description: |
         The phone number. 
         Note for European merchants: This field is mandatory for SCA unless customer Email is being sent by the Merchant. Global Payments recommend you to send at least one phone number (Mobile, Home or Work). 
       minLength: 1
-      maxLength: 50
+      maxLength: 15
     country_code_AUTHENTICATIONS.payer.work_phone.country_code:
       type: string
       description: |
-        The country code that is used when dialling the phone number from another country. 
-        For example  for USA or Canada  it would be +1 for England it would be +44 for Germany it would be +49 Note for European merchants: This field is mandatory for SCA unless customer Email is being sent by the Merchant. 
+        The country code that is used when dialling the phone number from another country. Note for European merchants: This field is mandatory for SCA unless customer Email is being sent by the Merchant. 
+        For example 
+          for USA or Canada  it would be 1
+          for England it would be 44
+          for Germany it would be 49
       minLength: 1
-      maxLength: 50
+      maxLength: 3
+    subscriber_number_AUTHENTICATIONS.payer.work_phone.subscriber_number:
+      type: string
+      description: |
+        The phone number. 
+
+        Note for European merchants: This field is mandatory for SCA unless customer Email is being sent by the Merchant. Global Payments recommend you to send at least one phone number (Mobile, Home or Work). 
+      minLength: 1
+      maxLength: 15
+    country_code_AUTHENTICATIONS.payer.mobile_phone.country_code:
+      type: string
+      description: |
+        The country code that is used when dialling the phone number from another country. Note for European merchants: This field is mandatory for SCA unless customer Email is being sent by the Merchant. 
+        For example 
+          for USA or Canada  it would be 1
+          for England it would be 44
+          for Germany it would be 49
+      minLength: 1
+      maxLength: 3
+    subscriber_number_AUTHENTICATIONS.payer.mobile_phone.subscriber_number:
+      type: string
+      description: |
+        The phone number. 
+
+        Note for European merchants: This field is mandatory for SCA unless customer Email is being sent by the Merchant. Global Payments recommend you to send at least one phone number (Mobile, Home or Work). 
+      minLength: 1
+      maxLength: 15
     payment_account_creation_date_AUTHENTICATIONS.payer.payment_account_creation_date:
       type: string
       description: Date the payment account was associated with the customer's account.
@@ -3127,7 +3198,7 @@ components:
       example: '2021-05-03T21:23:39.718Z'
     acs_reference_number_AUTHENTICATIONS.three_ds.acs_reference_number:
       type: string
-      description: Reference Number assigned by the ACS.
+      description: Certification reference Number assigned by the ACS.
       minLength: 1
       maxLength: 50
     authentication_source_AUTHENTICATION.three_ds.authentication_source:
