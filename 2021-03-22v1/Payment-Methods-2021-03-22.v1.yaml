@@ -7,6 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
+  x-gp-yaml-file-version: 1
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -499,7 +500,7 @@ components:
       required: true
       schema:
         type: string
-        default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+        default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
         example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
     Content-type:
       name: Content-type
