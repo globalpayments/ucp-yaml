@@ -1,4 +1,4 @@
-openapi: 3.0.2
+openapi: 3.0.3
 info:
   version: 2021 03 22
   title: Verifications
@@ -7,6 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
+  x-gp-yaml-file-version: 1
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -54,6 +55,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/create_response'
+          headers:
+            Content-Type:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            Content-Encoding:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Idempotency:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Version:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -89,8 +103,8 @@ components:
       required: true
       schema:
         type: string
-        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ  #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
-        example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
+        example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
     X-GP-Idempotency:
       name: X-GP-Idempotency
       in: header
@@ -204,6 +218,8 @@ components:
               $ref: '#/components/schemas/entry_mode_VERIFICATIONS.payment_method.entry_mode'
             fingerprint_mode:
               $ref: '#/components/schemas/fingerprint_mode_VERIFICATIONS.payment_method.fingerprint_mode'
+            storage_mode:
+              $ref: '#/components/schemas/storage_mode_VERIFICATIONS.payment_method.storage_mode'
             encryption:
               type: object
               properties:
@@ -213,6 +229,8 @@ components:
                   $ref: '#/components/schemas/version_VERIFICATIONS.payment_method.encryption.version'
                 info:
                   $ref: '#/components/schemas/info_VERIFICATIONS.payment_method.encryption.info'
+                type:
+                  $ref: '#/components/schemas/type_VERIFICATIONS.payment_method.encryption.type'
             authentication:
               type: object
               properties:
@@ -351,25 +369,58 @@ components:
         * `ON_SUCCESS` - Always check and create the fingerprint value when the card authorization is successful.
       minLength: 1
       maxLength: 50
+    storage_mode_VERIFICATIONS.payment_method.storage_mode:
+      type: string
+      enum:
+        - ALWAYS
+        - ON_SUCCESS
+      title: storage_mode_VERIFICATIONS.payment_method.storage_mode
+      description: |
+        Indicates whether to store the card as part of a transaction. 
+          * `ALWAYS` -  The card information is always stored irrespective of whether the payment method authorization was successful or not. 
+          * `ON_SUCCESS` - The card information is only stored if the payment method authorization was successful.
+      minLength: 1
+      maxLength: 50
+      example: ALWAYS
     method_VERIFICATIONS.payment_method.encryption.method:
       type: string
       enum:
         - KTB
         - KSN
-      description: The encryption method used when sending encrypted card data to Global Payments.
+        - RSA_2048_OAEP_SHA_512
+      description: |
+        Indicates the encryption method used when sending encrypted card data.
+          * `KTB` -  Indicates Key Transmission Block is being used
+          * `KSN` -  Indicates Key Serial Number is being used
+          * `RSA_2048_OAEP_SHA_512` -  Indicates RSA algorithm is being used with OAEP SHA 512 padding
       minLength: 1
       maxLength: 50
       example: KTB
     version_VERIFICATIONS.payment_method.encryption.version:
       type: string
-      description: The version of encryption being used.
+      description: The version of encryption being used. It is in the form of a two digit value. For example 05 or 06.
       minLength: 1
       maxLength: 50
+      example: '05'
     info_VERIFICATIONS.payment_method.encryption.info:
       type: string
-      description: The encryption info used when sending encrypted card data to Global Payments.
+      description: |
+        The encryption key id info used when sending encrypted data. If encryption.method is 
+          * `KTB` then it is the Key Transmission Block key id value,
+          * `KSN` then it is the Key Serial Number key id value,
+          * `RSA` then it is the RSA key id value base64 encoded.
       minLength: 1
       maxLength: 2000
+    type_VERIFICATIONS.payment_method.encryption.type:
+      type: string
+      enum:
+        - BINARY
+        - ASCII
+      description: |
+        Indicates the encryption encoding format used to encrypt the data.
+          * `BINARY` -  Indicates data is binary encoded.
+          * `ASCII`  -  Indicates data is encoded as ASCII.
+      example: ASCII
     id_VERIFICATIONS.payment_method.authentication.id:
       type: string
       description: A unique identifier that is used to identify and reference an instance of this resource. It is generated by Global Payments to identify the authentication details (3DS data) used with this transaction.
@@ -435,10 +486,11 @@ components:
       type: string
       description: Data from magnetic stripe of a card
       minLength: 1
-      maxLength: 500
+      maxLength: 1000
     cvv_VERIFICATIONS.payment_method.card.cvv:
       type: string
       description: The numeric value printed on the physical card.
+      minLength: 3
       maxLength: 4
       example: '852'
     cvv_indicator_VERIFICATIONS.payment_method.card.cvv_indicator:
@@ -463,6 +515,7 @@ components:
     avs_postal_code_VERIFICATIONS.payment_method.card.avs_postal_code:
       type: string
       description: Postal code of the address associated with the card.
+      maxLength: 50
       example: TGX562
     create_response:
       type: object
