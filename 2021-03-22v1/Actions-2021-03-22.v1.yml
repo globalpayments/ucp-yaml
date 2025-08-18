@@ -6,6 +6,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
+  x-gp-yaml-file-version: 1
   version: 2021 03 22
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
