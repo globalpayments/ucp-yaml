@@ -4613,7 +4613,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key. #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key. #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
         - name: X-GP-Version
           in: header
@@ -5566,30 +5566,18 @@ paths:
                     x-examples: {}
           headers:
             Content-Type:
-              schema:
-                name: Content-type
-                in: header
-                required: true
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             Content-Encoding:
-              schema:
-                name: Content-type
-                in: header
-                required: true
                 schema:
                   type: string
                   default: application/json
                   example: application/json
                 description: Format of the message body.
             X-GP-Version:
-              schema:
-                name: Content-type
-                in: header
-                required: true
                 schema:
                   type: string
                   default: application/json
@@ -5801,7 +5789,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key. #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key. #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
+            default: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             example: Bearer DCKbRy6gtN6gWJI2ja0B7e3POtbb
         - name: X-GP-Version
           in: header
