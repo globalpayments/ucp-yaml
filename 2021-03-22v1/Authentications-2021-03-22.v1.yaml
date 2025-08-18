@@ -72,6 +72,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/create_response'
+          headers:
+            Content-Type:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            Content-Encoding:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Idempotency:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Version:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -409,6 +422,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/initiate_response'
+          headers:
+            Content-Type:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            Content-Encoding:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Idempotency:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Version:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -459,6 +485,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/result_response'
+          headers:
+            Content-Type:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            Content-Encoding:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Idempotency:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
+            X-GP-Version:
+              schema:
+                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -2088,12 +2127,17 @@ components:
                 country_code:
                   $ref: '#/components/schemas/country_code_AUTHENTICATIONS.payer.home_phone.country_code'
                 subscriber_number:
-                  $ref: '#/components/schemas/subscriber_number_AUTHENTICATIONS.payer.home_phone.subscriber_number'
+
+                  $ref: '#/components/schemas/subscriber_number_AUTHENTICATIONS.payer.work_phone.subscriber_number'
+
             mobile_phone:
               type: object
               properties:
                 country_code:
-                  $ref: '#/components/schemas/country_code_AUTHENTICATIONS.payer.home_phone.country_code'
+
+
+                  $ref: '#/components/schemas/country_code_AUTHENTICATIONS.payer.mobile_phone.country_code'
+
                 subscriber_number:
                   $ref: '#/components/schemas/subscriber_number_AUTHENTICATIONS.payer.mobile_phone.subscriber_number'
             payment_account_creation_date:
@@ -2912,6 +2956,34 @@ components:
         Note for European merchants: This field is mandatory for SCA unless customer Email is being sent by the Merchant. Global Payments recommend you to send at least one phone number (Mobile, Home or Work). 
       minLength: 1
       maxLength: 15
+    country_code_AUTHENTICATIONS.payer.work_phone.country_code:
+      type: string
+      description: |
+        The country code that is used when dialling the phone number from another country. Note for European merchants: This field is mandatory for SCA unless customer Email is being sent by the Merchant. 
+        For example 
+          for USA or Canada  it would be 1
+          for England it would be 44
+          for Germany it would be 49
+      minLength: 1
+      maxLength: 3
+    subscriber_number_AUTHENTICATIONS.payer.work_phone.subscriber_number:
+      type: string
+      description: |
+        The phone number. 
+
+        Note for European merchants: This field is mandatory for SCA unless customer Email is being sent by the Merchant. Global Payments recommend you to send at least one phone number (Mobile, Home or Work). 
+      minLength: 1
+      maxLength: 15
+    country_code_AUTHENTICATIONS.payer.mobile_phone.country_code:
+      type: string
+      description: |
+        The country code that is used when dialling the phone number from another country. Note for European merchants: This field is mandatory for SCA unless customer Email is being sent by the Merchant. 
+        For example 
+          for USA or Canada  it would be 1
+          for England it would be 44
+          for Germany it would be 49
+      minLength: 1
+      maxLength: 3
     subscriber_number_AUTHENTICATIONS.payer.mobile_phone.subscriber_number:
       type: string
       description: |
