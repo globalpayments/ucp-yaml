@@ -30,7 +30,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/request'
-           #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
             examples:
               Get Access Token:
                 value:
