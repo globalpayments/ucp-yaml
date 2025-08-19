@@ -7,6 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
+  x-gp-yaml-file-version: 1
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -2124,14 +2125,19 @@ components:
               type: object
               properties:
                 country_code:
-                  $ref: '#/components/schemas/country_code_AUTHENTICATIONS.payer.work_phone.country_code'
+                  $ref: '#/components/schemas/country_code_AUTHENTICATIONS.payer.home_phone.country_code'
                 subscriber_number:
+
                   $ref: '#/components/schemas/subscriber_number_AUTHENTICATIONS.payer.work_phone.subscriber_number'
+
             mobile_phone:
               type: object
               properties:
                 country_code:
+
+
                   $ref: '#/components/schemas/country_code_AUTHENTICATIONS.payer.mobile_phone.country_code'
+
                 subscriber_number:
                   $ref: '#/components/schemas/subscriber_number_AUTHENTICATIONS.payer.mobile_phone.subscriber_number'
             payment_account_creation_date:
@@ -2146,8 +2152,13 @@ components:
               $ref: '#/components/schemas/transactions_last_24hours_count_AUTHENTICATIONS.payer.transactions_last_24hours_count'
             shipping_address_time_created_reference:
               $ref: '#/components/schemas/shipping_address_time_created_reference_AUTHENTICATIONS.payer.shipping_address_time_created_reference'
-            shipping_address_creation_indicator:
-              $ref: '#/components/schemas/shipping_address_creation_indicator_AUTHENTICATIONS.payer.shipping_address_creation_indicator'
+            acct_info:
+              type: object
+              properties:
+                shipping_address_creation_indicator:
+                  $ref: '#/components/schemas/shipping_address_creation_indicator_AUTHENTICATIONS.payer.shipping_address_creation_indicator'
+            '':
+              type: string
         payer_login_data:
           type: object
           properties:
@@ -3030,13 +3041,13 @@ components:
         - THIS_TRANSACTION
         - LESS_THAN_THIRTY_DAYS
         - THIRTY_TO_SIXTY_DAYS
-        - MORE_THEN_SIXTY_DAYS
+        - MORE_THAN_SIXTY_DAYS
       description: |
         When the shipping address was first used with the merchant.
             * `THIS_TRANSACTION`
             * `LESS_THAN_THIRTY_DAYS`
             * `THIRTY_TO_SIXTY_DAYS`
-            * `MORE_THEN_SIXTY_DAYS`
+            * `MORE_THAN_SIXTY_DAYS`
       minLength: 1
       maxLength: 50
       example: LESS_THAN_THIRTY_DAYS

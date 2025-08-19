@@ -7,6 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
+  x-gp-yaml-file-version: 1
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -592,6 +593,8 @@ components:
           $ref: '#/components/schemas/fingerprint_mode_PAYMENT_METHODS.fingerprint_mode'
         name:
           $ref: '#/components/schemas/name_PAYMENT_METHODS.name'
+        auto_updater:
+          $ref: '#/components/schemas/auto_updater_PAYMENT_METHODS.auto_updater'
         payer:
           type: object
           properties:
@@ -663,6 +666,13 @@ components:
       description: The name of the owner of the payment method. For example the cardholder's name.
       maxLength: 100
       example: John's payment method
+    auto_updater_PAYMENT_METHODS.auto_updater:
+      type: string
+      enum:
+        - ENABLE
+        - DISABLE
+      description: Indicates whether this payment token should be enabled for account updater services. Availability of this is dependent on your live configuration
+      example: ENABLE
     id_PAYMENT_METHODS.payer.id:
       type: string
       description: Unique identifier for the Payer on the Global Payments system.
@@ -725,6 +735,8 @@ components:
           $ref: '#/components/schemas/usage_mode_PAYMENT_METHODS.usage_mode'
         name:
           $ref: '#/components/schemas/name_PAYMENT_METHODS.name'
+        auto_updater:
+          $ref: '#/components/schemas/auto_updater_PAYMENT_METHODS.auto_updater'
         payer:
           type: object
           properties:
@@ -1090,6 +1102,8 @@ components:
           $ref: '#/components/schemas/fingerprint_mode_PAYMENT_METHODS.fingerprint_mode'
         name:
           $ref: '#/components/schemas/name_PAYMENT_METHODS.name'
+        auto_updater:
+          $ref: '#/components/schemas/auto_updater_PAYMENT_METHODS.auto_updater'
         card:
           type: object
           properties:
@@ -1119,6 +1133,8 @@ components:
           $ref: '#/components/schemas/usage_mode_PAYMENT_METHODS.usage_mode'
         name:
           $ref: '#/components/schemas/name_PAYMENT_METHODS.name'
+        auto_updater:
+          $ref: '#/components/schemas/auto_updater_PAYMENT_METHODS.auto_updater'
         card:
           type: object
           properties:

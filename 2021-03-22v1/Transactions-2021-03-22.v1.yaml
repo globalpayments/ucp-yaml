@@ -7,6 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
+  x-gp-yaml-file-version: 1.0
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -964,10 +965,14 @@ paths:
                           enum:
                             - PREV_SUCCESS
                             - PREV_FAILED
-                          description: |
+                            - NON_CHIP_TRANSACTION
+                            - UNKNOWN
+                          description: |-
                             Indicates if a fallback mechanism was used to obtain the card information when EMV/chip did not work as expected. 
                                                  * `PREV_SUCCESS` - indicates the previous transaction with this card was a success. 
                                                  * `PREV_FAILED` - indicates the previous transaction with this card failed.
+                                                 * `NON_CHIP_TRANSACTION` - indicates this was not a chip transaction.
+                                                 * `UNKNOWN` - indicates the reason is unknown. 
                           minLength: 1
                           maxLength: 50
                           example: PREV_SUCCESS
@@ -1051,6 +1056,25 @@ paths:
                           type: string
                           description: The 2 digit expiry date year of the network token.
                           example: '30'
+                        swipe_reason:
+                          type: string
+                          enum:
+                            - TERMINAL_CONNECTION_ERROR
+                            - CARD_COMPATIBILITY_ERROR
+                          title: swipe_reason_TRANSACTIONS.payment_method.card.swipe_reason
+                          description: |-
+                            The condition that caused the chip or POS reader to fail. When this happens, the POS device offers a fallback option and provides the fallback condition.
+                            * `TERMINAL_CONNECTION_ERROR` - Failure due to connection issues.The ICC and terminal could not exchange EMV data with each other to complete a flow.
+                            * `CARD_COMPATIBILITY_ERROR` - Failure due to compatibiliyt issues.The ICC and terminal do not share a common AID that would have allowed a transaction to happen
+                        payment_account_reference_mode:
+                          type: string
+                          enum:
+                            - REQUESTED
+                            - NOT_REQUESTED
+                          description: 'Indicates whether Payment Account Reference (PAR) should be returned with the authorization, when available'
+                          minLength: 1
+                          maxLength: 50
+                          example: REQUESTED
                     digital_wallet:
                       type: object
                       properties:
@@ -1132,6 +1156,15 @@ paths:
                           description: Postal code of the address associated with the card.
                           minLength: 1
                           maxLength: 50
+                        payment_account_reference_mode:
+                          type: string
+                          enum:
+                            - REQUESTED
+                            - NOT_REQUESTED
+                          description: 'Indicates whether Payment Account Reference (PAR) should be returned with the authorization, when available'
+                          minLength: 1
+                          maxLength: 50
+                          example: REQUESTED
                     apm:
                       type: object
                       properties:
@@ -1315,6 +1348,30 @@ paths:
                 device:
                   type: object
                   properties:
+                    type:
+                      type: string
+                      enum:
+                        - TERMINAL
+                        - MOBILE_PHONE
+                        - POS
+                        - MOBILE_POS
+                        - MOBILE_POS_PLUS_HARDWARE
+                        - MOBILE_POS_PLUS_DONGLE
+                        - DONGLE_PIN
+                        - MOBILE_POS_PIN
+                      description: |
+                        Indicates the type of physical device used to process the transaction.
+                               * `TERMINAL` - A device used to prompt the payer to enter their payment method credentials to process a transaction.
+                               * `MOBILE_PHONE` - A mobile phone was used as the processing device.
+                               * `MOBILE_POS` - Mobile device with no add-on hardware.
+                               * `MOBILE_POS_PLUS_HARDWARE` - Mobile device with add-on hardware.
+                               * `MOBILE_POS_PLUS_DONGLE` - Dedicated mPOS Terminal with PCI compliant dongle.
+                               * `DONGLE_PIN` - Dongle with software-based application that supports PIN entry on glass.
+                               * `MOBILE_POS_PIN` - Off the shelf mobile device with software-based application that supports PIN entry on glass.
+                                         
+                      minLength: 1
+                      maxLength: 50
+                      example: TERMINAL
                     time:
                       type: string
                       description: The time from the device in ISO8601 format.
@@ -1373,6 +1430,18 @@ paths:
                       description: Indicates the version of the application being used on the device
                       minLength: 1
                       maxLength: 50
+                    payer_verifcations:
+                      type: string
+                      enum:
+                        - NOT_VERIFIED
+                        - PINPAD
+                        - ELECTRONIC_SIGNATURE_ANALYSIS
+                        - MANUAL_SIGNATURE_ANALYSIS
+                        - MANUAL_OTHER
+                        - UNKNOWN
+                        - SYSTEMATIC_OTHER
+                      title: payer_verifications_TRANSACTIONS.device.payer_verifications
+                      description: 'Indicates the method used to verify the payer. '
                     os:
                       type: string
                       enum:
@@ -1404,6 +1473,7 @@ paths:
                               - MANUAL
                               - SWIPE
                               - CONTACTLESS_SWIPE
+                              - OPTICAL_CHARACTER_READER
                           example:
                             - CHIP
                         payer_verifications:
@@ -1415,6 +1485,11 @@ paths:
                               - PINPAD
                               - PAYER_DEVICE
                               - CONTACTLESS_SIGNATURE
+                              - NONE
+                              - SIGNATURE_ANALYSIS
+                              - NO_SIGNATURE_ANALYSIS
+                              - OTHER
+                              - UNKNOWN
                           example:
                             - PINPAD
                         mobile:
@@ -1470,6 +1545,61 @@ paths:
                         display_line_count:
                           type: number
                           description: The number of lines that can be used to display information on the device.
+                        max_pin_count:
+                          type: string
+                          enum:
+                            - UNKNOWN
+                            - NOT_SUPPORTED
+                          title: max_pin_count_TRANSACTIONS.device.capabilities.max_pin_count
+                          description: 'Indicates the maximum accepted length for PIN number. '
+                        location:
+                          type: string
+                          enum:
+                            - ON_MERCHANT_PREMISES
+                            - OFF_MERCHANT_PREMISES
+                            - OFF_MERCHANT_PREMISES_MPOS
+                            - ON_MERCHANT_PREMISES_MPOS
+                            - OFF_MERCHANT_PREMISES_PAYER_POS
+                            - ON_MERCHANT_PREMISES_PAYER_POS
+                            - OFF_PAYER_PREMISES
+                            - ON_PAYER_PREMISES
+                            - UNKNOWN
+                          title: location_TRANSACTIONS.device.capabilities.location
+                          description: |-
+                            Describes the location where the device is being used. 
+
+                            * `ON_MERCHANT_PREMISIS` - The transaction took place on the merchant's premesis. This value should be used for EMV contact transactions and must be provided in conjuction with an attendance_mode.
+                            * `OFF_MERCHANT_PREMISIS` - The transaction took place away from the merchant's premesis. This value should be used for EMV contact transactions and must be provided in conjuction with an attendance_mode.
+                            * `ON_PAYER_PREMISIS` - The transaction took place on the payer's premesis. This value can be used for EMV contact or EMV contactless transactions and must be provided in conjuction with an attendance_mode.
+                            * `OFF_PAYER_PREMISIS` - The transaction took place away from the payer's premesis. This value can be used for EMV contact or EMV contactless transactions and must be provided in conjuction with an attendance_mode.
+                            * `ON_MERCHANT_PREMISES_MPOS` - The transaction took place on the merchant's premesis, using the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+                            * `OFF_MERCHANT_PREMISES_MPOS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+                            * `ON_MERCHANT_PREMISES_PAYER_POS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+                            * `OFF_MERCHANT_PREMISES_PAYER_POS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+                            * `UNKNOWN` - The transaction took place at an unknown location. 
+                        card_update:
+                          type: string
+                          enum:
+                            - 'YES'
+                            - 'NO'
+                          title: card_updated_TRANSACTIONS.device.capabilities.card_update
+                          description: This field indicates the ability of the device and software to update or change the card information
+                        output:
+                          type: string
+                          enum:
+                            - NONE
+                            - PRINT
+                            - DISPLAY
+                            - PRINT_AND_DISPLAY
+                            - UNKNOWN
+                          title: output_TRANSACTIONS.device.capabilities.output
+                          description: |-
+                            Indicates the output capabilities of the device.
+                                 * `NONE` - The device has no output capability. 
+                                 * `PRINT` - The device has the ability to print. 
+                                 * `DISPLAY` - The device has display capability. 
+                                 * `PRINT_AND_DISPLAY` - The device has print and display capability. 
+                                 * `UNKNOWN` - The device's output capability is unknown. 
                     ip_address:
                       type: string
                       description: The IP address of the device used for this transaction.
@@ -2197,6 +2327,46 @@ paths:
                       network_token: '4895370019060711'
                       network_token_expiry_month: '12'
                       network_token_expiry_year: '30'
+              BLIK:
+                value:
+                  account_name: APM_Transaction_Processing
+                  channel: CNP
+                  capture_mode: AUTO
+                  type: SALE
+                  amount: '1000'
+                  currency: PLN
+                  country: PL
+                  reference: Test BLIK 412191210000
+                  payment_method:
+                    entry_mode: ECOM
+                    apm:
+                      provider: BLIK
+                  notifications:
+                    return_url: 'https://webhook.site/b628afed-2245-49f2-8a87-39286b26e0ef'
+                    status_url: 'https://webhook.site/b628afed-2245-49f2-8a87-39286b26e0ef'
+                    cancel_url: 'https://webhook.site/b628afed-2245-49f2-8a87-39286b26e0ef'
+              PayU:
+                value:
+                  account_name: APM_Transaction_Processing
+                  channel: CNP
+                  capture_mode: AUTO
+                  type: SALE
+                  amount: '1000'
+                  currency: PLN
+                  country: PL
+                  reference: PayU Test
+                  payment_method:
+                    name: Jane Doe
+                    entry_mode: ECOM
+                    apm:
+                      provider: BANK_PAYMENT
+                    bank_transfer:
+                      bank:
+                        name: mbank
+                  notifications:
+                    return_url: 'https://webhook.site/d76a62ef-4bd1-4a96-b8e2-ef0ea00fd2d4'
+                    status_url: 'https://webhook.site/d76a62ef-4bd1-4a96-b8e2-ef0ea00fd2d4'
+                    cancel_url: 'https://webhook.site/d76a62ef-4bd1-4a96-b8e2-ef0ea00fd2d4'
       responses:
         '200':
           description: OK
@@ -2719,6 +2889,11 @@ paths:
                             description: Postal code of the address associated with the card.
                             minLength: 1
                             maxLength: 50
+                          payment_account_reference:
+                            type: string
+                            description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+                            minLength: 1
+                            maxLength: 35
                       apm:
                         type: object
                         description: Data associated with the response of an APM transaction.
@@ -3225,6 +3400,11 @@ paths:
                             type: string
                             description: The 2 digit expiry date year of the network token.
                             example: '30'
+                          payment_account_reference:
+                            type: string
+                            description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+                            minLength: 1
+                            maxLength: 35
                       bank_transfer:
                         type: object
                         properties:
@@ -3628,6 +3808,113 @@ paths:
                         minLength: 1
                         maxLength: 50
                         example: my_lovely_app
+              examples:
+                BLIK:
+                  value:
+                    id: TRN_Nbvdyqxxxx8p5CMr67me2MwEq7xxxx_412191210000
+                    time_created: '2025-07-09T12:28:42.704Z'
+                    type: SALE
+                    status: INITIATED
+                    channel: CNP
+                    capture_mode: AUTO
+                    amount: '1000'
+                    currency: PLN
+                    country: PL
+                    merchant_id: MER_28c5fcexxxxxx95bb1a5125xxxxxxxxx
+                    merchant_name: Test_Merchant
+                    account_id: TRA_a5d4xxxxxxx24195b1efe85xxxxxxxxx
+                    account_name: APM_Transaction_Processing
+                    reference: Test BLIK 202412191212769
+                    payment_method:
+                      result: '01'
+                      message: PENDING
+                      entry_mode: ECOM
+                      provider_narrative: ''
+                      apm:
+                        redirect_url: url
+                        provider: blik
+                        provider_payer_name: NAME NOT PROVIDED
+                        wait_notification: ''
+                        fund_status: ''
+                        optional_redirect: ''
+                        bank:
+                          account_number: ''
+                          iban: ''
+                          identifier_code: ''
+                          name: ''
+                          code: ''
+                        mandate:
+                          reference: ''
+                    platforms:
+                      - type: ECOM
+                        transaction_id: ''
+                        order_id: TRN_Nbvdyqxxxx8p5CMr67me2MwEq7xxxx_412191210000
+                        authcode: ''
+                        pasref: '17520641213700000'
+                    payer:
+                      country: PL
+                      email: ''
+                    batch_id: BATCH_ID
+                    action:
+                      id: ACT_NbvdyqZ1GE8p5CMr67me2MwEq7qNhp
+                      type: INITIATE
+                      time_created: '2025-07-09T12:28:42.704Z'
+                      result_code: SUCCESS
+                      app_id: p2GgW0PntEUiUh4qXhJHPoDqj3xxxxxx
+                      app_name: Test_Automation_App
+                PayU:
+                  value:
+                    id: TRN_JrTB4BDYxxxxxxxHr1iMvxxxxxxrIF_59010000
+                    time_created: '2025-07-09T17:21:11.636Z'
+                    type: SALE
+                    status: INITIATED
+                    channel: CNP
+                    capture_mode: AUTO
+                    amount: '1000'
+                    currency: CZK
+                    country: CZ
+                    merchant_id: MER_28c5fcexxxxxx95bb1a5125xxxxxxxxx
+                    merchant_name: Test_Merchant
+                    account_id: TRA_a5d4xxxxxxx24195b1efe85xxxxxxxxx
+                    account_name: APM_CZ_Transaction_Processing
+                    reference: Test PayU 59010000
+                    payment_method:
+                      result: '01'
+                      message: PENDING
+                      entry_mode: ECOM
+                      provider_narrative: ''
+                      apm:
+                        redirect_url: <<url>>
+                        provider: BANK_PAYMENT
+                        provider_payer_name: Jane
+                        wait_notification: ''
+                        fund_status: ''
+                        optional_redirect: ''
+                        bank:
+                          account_number: ''
+                          iban: ''
+                          identifier_code: ''
+                          name: ''
+                          code: ''
+                        mandate:
+                          reference: ''
+                    platforms:
+                      - type: ECOM
+                        transaction_id: ''
+                        order_id: TRN_JrTB4BDYxxxxxxxHr1iMvxxxxxxrIF_59010000
+                        authcode: ''
+                        pasref: '17520816701800000'
+                    payer:
+                      country: CZ
+                      email: ''
+                    batch_id: BATCH_ID
+                    action:
+                      id: ACT_JrTB4BDY7pB481xHr1iMv8Fo4uNrIF
+                      type: INITIATE
+                      time_created: '2025-07-09T17:21:11.636Z'
+                      result_code: SUCCESS
+                      app_id: p2GgW0xxxxxxUh4qXhJHPoDqjxxxxxxx
+                      app_name: Test_App
           headers:
             Content-Type:
                 schema:
@@ -6302,6 +6589,11 @@ paths:
                             description: Postal code of the address associated with the card.
                             minLength: 1
                             maxLength: 50
+                          payment_account_reference:
+                            type: string
+                            description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+                            minLength: 1
+                            maxLength: 35
                       authentication:
                         type: object
                         title: authentication
@@ -12385,9 +12677,21 @@ paths:
                       - TERMINAL
                       - MOBILE_PHONE
                       - POS
+                      - MOBILE_POS
+                      - MOBILE_POS_PLUS_HARDWARE
+                      - MOBILE_POS_PLUS_DONGLE
+                      - DONGLE_PIN
+                      - MOBILE_POS_PIN
                     description: |
-                      Indicates the type of physical device.
+                      Indicates the type of physical device used to process the transaction.
                              * `TERMINAL` - A device used to prompt the payer to enter their payment method credentials to process a transaction.
+                             * `MOBILE_PHONE` - A mobile phone was used as the processing device.
+                             * `MOBILE_POS` - Mobile device with no add-on hardware.
+                             * `MOBILE_POS_PLUS_HARDWARE` - Mobile device with add-on hardware.
+                             * `MOBILE_POS_PLUS_DONGLE` - Dedicated mPOS Terminal with PCI compliant dongle.
+                             * `DONGLE_PIN` - Dongle with software-based application that supports PIN entry on glass.
+                             * `MOBILE_POS_PIN` - Off the shelf mobile device with software-based application that supports PIN entry on glass.
+                                       
                     minLength: 1
                     maxLength: 50
                     example: TERMINAL
@@ -15207,10 +15511,14 @@ components:
                   enum:
                     - PREV_SUCCESS
                     - PREV_FAILED
-                  description: |
+                    - NON_CHIP_TRANSACTION
+                    - UNKNOWN
+                  description: |-
                     Indicates if a fallback mechanism was used to obtain the card information when EMV/chip did not work as expected. 
                                          * `PREV_SUCCESS` - indicates the previous transaction with this card was a success. 
                                          * `PREV_FAILED` - indicates the previous transaction with this card failed.
+                                         * `NON_CHIP_TRANSACTION` - indicates this was not a chip transaction.
+                                         * `UNKNOWN` - indicates the reason is unknown. 
                   minLength: 1
                   maxLength: 50
                   example: PREV_SUCCESS
@@ -15294,6 +15602,25 @@ components:
                   type: string
                   description: The 2 digit expiry date year of the network token.
                   example: '30'
+                swipe_reason:
+                  type: string
+                  enum:
+                    - TERMINAL_CONNECTION_ERROR
+                    - CARD_COMPATIBILITY_ERROR
+                  title: swipe_reason_TRANSACTIONS.payment_method.card.swipe_reason
+                  description: |-
+                    The condition that caused the chip or POS reader to fail. When this happens, the POS device offers a fallback option and provides the fallback condition.
+                    * `TERMINAL_CONNECTION_ERROR` - Failure due to connection issues.The ICC and terminal could not exchange EMV data with each other to complete a flow.
+                    * `CARD_COMPATIBILITY_ERROR` - Failure due to compatibiliyt issues.The ICC and terminal do not share a common AID that would have allowed a transaction to happen
+                payment_account_reference_mode:
+                  type: string
+                  enum:
+                    - REQUESTED
+                    - NOT_REQUESTED
+                  description: 'Indicates whether Payment Account Reference (PAR) should be returned with the authorization, when available'
+                  minLength: 1
+                  maxLength: 50
+                  example: REQUESTED
             digital_wallet:
               type: object
               properties:
@@ -15375,6 +15702,15 @@ components:
                   description: Postal code of the address associated with the card.
                   minLength: 1
                   maxLength: 50
+                payment_account_reference_mode:
+                  type: string
+                  enum:
+                    - REQUESTED
+                    - NOT_REQUESTED
+                  description: 'Indicates whether Payment Account Reference (PAR) should be returned with the authorization, when available'
+                  minLength: 1
+                  maxLength: 50
+                  example: REQUESTED
             apm:
               type: object
               properties:
@@ -15558,6 +15894,30 @@ components:
         device:
           type: object
           properties:
+            type:
+              type: string
+              enum:
+                - TERMINAL
+                - MOBILE_PHONE
+                - POS
+                - MOBILE_POS
+                - MOBILE_POS_PLUS_HARDWARE
+                - MOBILE_POS_PLUS_DONGLE
+                - DONGLE_PIN
+                - MOBILE_POS_PIN
+              description: |
+                Indicates the type of physical device used to process the transaction.
+                       * `TERMINAL` - A device used to prompt the payer to enter their payment method credentials to process a transaction.
+                       * `MOBILE_PHONE` - A mobile phone was used as the processing device.
+                       * `MOBILE_POS` - Mobile device with no add-on hardware.
+                       * `MOBILE_POS_PLUS_HARDWARE` - Mobile device with add-on hardware.
+                       * `MOBILE_POS_PLUS_DONGLE` - Dedicated mPOS Terminal with PCI compliant dongle.
+                       * `DONGLE_PIN` - Dongle with software-based application that supports PIN entry on glass.
+                       * `MOBILE_POS_PIN` - Off the shelf mobile device with software-based application that supports PIN entry on glass.
+                                 
+              minLength: 1
+              maxLength: 50
+              example: TERMINAL
             time:
               type: string
               description: The time from the device in ISO8601 format.
@@ -15616,6 +15976,18 @@ components:
               description: Indicates the version of the application being used on the device
               minLength: 1
               maxLength: 50
+            payer_verifcations:
+              type: string
+              enum:
+                - NOT_VERIFIED
+                - PINPAD
+                - ELECTRONIC_SIGNATURE_ANALYSIS
+                - MANUAL_SIGNATURE_ANALYSIS
+                - MANUAL_OTHER
+                - UNKNOWN
+                - SYSTEMATIC_OTHER
+              title: payer_verifications_TRANSACTIONS.device.payer_verifications
+              description: 'Indicates the method used to verify the payer. '
             os:
               type: string
               enum:
@@ -15647,6 +16019,7 @@ components:
                       - MANUAL
                       - SWIPE
                       - CONTACTLESS_SWIPE
+                      - OPTICAL_CHARACTER_READER
                   example:
                     - CHIP
                 payer_verifications:
@@ -15658,6 +16031,11 @@ components:
                       - PINPAD
                       - PAYER_DEVICE
                       - CONTACTLESS_SIGNATURE
+                      - NONE
+                      - SIGNATURE_ANALYSIS
+                      - NO_SIGNATURE_ANALYSIS
+                      - OTHER
+                      - UNKNOWN
                   example:
                     - PINPAD
                 mobile:
@@ -15713,6 +16091,61 @@ components:
                 display_line_count:
                   type: number
                   description: The number of lines that can be used to display information on the device.
+                max_pin_count:
+                  type: string
+                  enum:
+                    - UNKNOWN
+                    - NOT_SUPPORTED
+                  title: max_pin_count_TRANSACTIONS.device.capabilities.max_pin_count
+                  description: 'Indicates the maximum accepted length for PIN number. '
+                location:
+                  type: string
+                  enum:
+                    - ON_MERCHANT_PREMISES
+                    - OFF_MERCHANT_PREMISES
+                    - OFF_MERCHANT_PREMISES_MPOS
+                    - ON_MERCHANT_PREMISES_MPOS
+                    - OFF_MERCHANT_PREMISES_PAYER_POS
+                    - ON_MERCHANT_PREMISES_PAYER_POS
+                    - OFF_PAYER_PREMISES
+                    - ON_PAYER_PREMISES
+                    - UNKNOWN
+                  title: location_TRANSACTIONS.device.capabilities.location
+                  description: |-
+                    Describes the location where the device is being used. 
+
+                    * `ON_MERCHANT_PREMISIS` - The transaction took place on the merchant's premesis. This value should be used for EMV contact transactions and must be provided in conjuction with an attendance_mode.
+                    * `OFF_MERCHANT_PREMISIS` - The transaction took place away from the merchant's premesis. This value should be used for EMV contact transactions and must be provided in conjuction with an attendance_mode.
+                    * `ON_PAYER_PREMISIS` - The transaction took place on the payer's premesis. This value can be used for EMV contact or EMV contactless transactions and must be provided in conjuction with an attendance_mode.
+                    * `OFF_PAYER_PREMISIS` - The transaction took place away from the payer's premesis. This value can be used for EMV contact or EMV contactless transactions and must be provided in conjuction with an attendance_mode.
+                    * `ON_MERCHANT_PREMISES_MPOS` - The transaction took place on the merchant's premesis, using the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+                    * `OFF_MERCHANT_PREMISES_MPOS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+                    * `ON_MERCHANT_PREMISES_PAYER_POS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+                    * `OFF_MERCHANT_PREMISES_PAYER_POS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+                    * `UNKNOWN` - The transaction took place at an unknown location. 
+                card_update:
+                  type: string
+                  enum:
+                    - 'YES'
+                    - 'NO'
+                  title: card_updated_TRANSACTIONS.device.capabilities.card_update
+                  description: This field indicates the ability of the device and software to update or change the card information
+                output:
+                  type: string
+                  enum:
+                    - NONE
+                    - PRINT
+                    - DISPLAY
+                    - PRINT_AND_DISPLAY
+                    - UNKNOWN
+                  title: output_TRANSACTIONS.device.capabilities.output
+                  description: |-
+                    Indicates the output capabilities of the device.
+                         * `NONE` - The device has no output capability. 
+                         * `PRINT` - The device has the ability to print. 
+                         * `DISPLAY` - The device has display capability. 
+                         * `PRINT_AND_DISPLAY` - The device has print and display capability. 
+                         * `UNKNOWN` - The device's output capability is unknown. 
             ip_address:
               type: string
               description: The IP address of the device used for this transaction.
@@ -16646,6 +17079,7 @@ components:
             * `USE_NETWORK_TOKEN` - When using the payment method token to transaction process, this indicates to use the network token instead of the card number.
           minLength: 1
           maxLength: 50
+          
           example: SINGLE
         encryption:
           type: object
@@ -16785,10 +17219,14 @@ components:
               enum:
                 - PREV_SUCCESS
                 - PREV_FAILED
-              description: |
+                - NON_CHIP_TRANSACTION
+                - UNKNOWN
+              description: |-
                 Indicates if a fallback mechanism was used to obtain the card information when EMV/chip did not work as expected. 
                                      * `PREV_SUCCESS` - indicates the previous transaction with this card was a success. 
                                      * `PREV_FAILED` - indicates the previous transaction with this card failed.
+                                     * `NON_CHIP_TRANSACTION` - indicates this was not a chip transaction.
+                                     * `UNKNOWN` - indicates the reason is unknown. 
               minLength: 1
               maxLength: 50
               example: PREV_SUCCESS
@@ -16872,6 +17310,25 @@ components:
               type: string
               description: The 2 digit expiry date year of the network token.
               example: '30'
+            swipe_reason:
+              type: string
+              enum:
+                - TERMINAL_CONNECTION_ERROR
+                - CARD_COMPATIBILITY_ERROR
+              title: swipe_reason_TRANSACTIONS.payment_method.card.swipe_reason
+              description: |-
+                The condition that caused the chip or POS reader to fail. When this happens, the POS device offers a fallback option and provides the fallback condition.
+                * `TERMINAL_CONNECTION_ERROR` - Failure due to connection issues.The ICC and terminal could not exchange EMV data with each other to complete a flow.
+                * `CARD_COMPATIBILITY_ERROR` - Failure due to compatibiliyt issues.The ICC and terminal do not share a common AID that would have allowed a transaction to happen
+            payment_account_reference_mode:
+              type: string
+              enum:
+                - REQUESTED
+                - NOT_REQUESTED
+              description: 'Indicates whether Payment Account Reference (PAR) should be returned with the authorization, when available'
+              minLength: 1
+              maxLength: 50
+              example: REQUESTED
         digital_wallet:
           type: object
           properties:
@@ -16953,6 +17410,15 @@ components:
               description: Postal code of the address associated with the card.
               minLength: 1
               maxLength: 50
+            payment_account_reference_mode:
+              type: string
+              enum:
+                - REQUESTED
+                - NOT_REQUESTED
+              description: 'Indicates whether Payment Account Reference (PAR) should be returned with the authorization, when available'
+              minLength: 1
+              maxLength: 50
+              example: REQUESTED
         apm:
           type: object
           properties:
@@ -17242,6 +17708,7 @@ components:
         * `USE_NETWORK_TOKEN` - When using the payment method token to transaction process, this indicates to use the network token instead of the card number.
       minLength: 1
       maxLength: 50
+      
       example: SINGLE
     method_TRANSACTIONS.payment_method.encryption.method:
       type: string
@@ -17372,10 +17839,14 @@ components:
           enum:
             - PREV_SUCCESS
             - PREV_FAILED
-          description: |
+            - NON_CHIP_TRANSACTION
+            - UNKNOWN
+          description: |-
             Indicates if a fallback mechanism was used to obtain the card information when EMV/chip did not work as expected. 
                                  * `PREV_SUCCESS` - indicates the previous transaction with this card was a success. 
                                  * `PREV_FAILED` - indicates the previous transaction with this card failed.
+                                 * `NON_CHIP_TRANSACTION` - indicates this was not a chip transaction.
+                                 * `UNKNOWN` - indicates the reason is unknown. 
           minLength: 1
           maxLength: 50
           example: PREV_SUCCESS
@@ -17459,6 +17930,25 @@ components:
           type: string
           description: The 2 digit expiry date year of the network token.
           example: '30'
+        swipe_reason:
+          type: string
+          enum:
+            - TERMINAL_CONNECTION_ERROR
+            - CARD_COMPATIBILITY_ERROR
+          title: swipe_reason_TRANSACTIONS.payment_method.card.swipe_reason
+          description: |-
+            The condition that caused the chip or POS reader to fail. When this happens, the POS device offers a fallback option and provides the fallback condition.
+            * `TERMINAL_CONNECTION_ERROR` - Failure due to connection issues.The ICC and terminal could not exchange EMV data with each other to complete a flow.
+            * `CARD_COMPATIBILITY_ERROR` - Failure due to compatibiliyt issues.The ICC and terminal do not share a common AID that would have allowed a transaction to happen
+        payment_account_reference_mode:
+          type: string
+          enum:
+            - REQUESTED
+            - NOT_REQUESTED
+          description: 'Indicates whether Payment Account Reference (PAR) should be returned with the authorization, when available'
+          minLength: 1
+          maxLength: 50
+          example: REQUESTED
     number_TRANSACTIONS.payment_method.card.number:
       type: string
       description: The card number used to authorize the transaction. Also known as PAN (Primary Account Number).
@@ -17497,10 +17987,14 @@ components:
       enum:
         - PREV_SUCCESS
         - PREV_FAILED
-      description: |
+        - NON_CHIP_TRANSACTION
+        - UNKNOWN
+      description: |-
         Indicates if a fallback mechanism was used to obtain the card information when EMV/chip did not work as expected. 
                              * `PREV_SUCCESS` - indicates the previous transaction with this card was a success. 
                              * `PREV_FAILED` - indicates the previous transaction with this card failed.
+                             * `NON_CHIP_TRANSACTION` - indicates this was not a chip transaction.
+                             * `UNKNOWN` - indicates the reason is unknown. 
       minLength: 1
       maxLength: 50
       example: PREV_SUCCESS
@@ -17584,6 +18078,25 @@ components:
       type: string
       description: The 2 digit expiry date year of the network token.
       example: '30'
+    swipe_reason_TRANSACTIONS.payment_method.card.swipe_reason:
+      type: string
+      enum:
+        - TERMINAL_CONNECTION_ERROR
+        - CARD_COMPATIBILITY_ERROR
+      title: swipe_reason_TRANSACTIONS.payment_method.card.swipe_reason
+      description: |-
+        The condition that caused the chip or POS reader to fail. When this happens, the POS device offers a fallback option and provides the fallback condition.
+        * `TERMINAL_CONNECTION_ERROR` - Failure due to connection issues.The ICC and terminal could not exchange EMV data with each other to complete a flow.
+        * `CARD_COMPATIBILITY_ERROR` - Failure due to compatibiliyt issues.The ICC and terminal do not share a common AID that would have allowed a transaction to happen
+    payment_account_reference_mode_TRANSACTIONS.payment_method.card.payment_account_reference_mode:
+      type: string
+      enum:
+        - REQUESTED
+        - NOT_REQUESTED
+      description: 'Indicates whether Payment Account Reference (PAR) should be returned with the authorization, when available'
+      minLength: 1
+      maxLength: 50
+      example: REQUESTED
     digital_wallet_request:
       type: object
       properties:
@@ -17665,6 +18178,15 @@ components:
           description: Postal code of the address associated with the card.
           minLength: 1
           maxLength: 50
+        payment_account_reference_mode:
+          type: string
+          enum:
+            - REQUESTED
+            - NOT_REQUESTED
+          description: 'Indicates whether Payment Account Reference (PAR) should be returned with the authorization, when available'
+          minLength: 1
+          maxLength: 50
+          example: REQUESTED
     token_TRANSACTIONS.payment_method.digital_wallet.token:
       type: string
       description: 'This value represents, or is the payment method account, stored with  the digital wallet.'
@@ -18027,6 +18549,30 @@ components:
       description: URL to redirect the payer from the merchant's system to the payment method system.
       minLength: 1
       maxLength: 50
+    type_TRANSACTIONS.device.type:
+      type: string
+      enum:
+        - TERMINAL
+        - MOBILE_PHONE
+        - POS
+        - MOBILE_POS
+        - MOBILE_POS_PLUS_HARDWARE
+        - MOBILE_POS_PLUS_DONGLE
+        - DONGLE_PIN
+        - MOBILE_POS_PIN
+      description: |
+        Indicates the type of physical device used to process the transaction.
+               * `TERMINAL` - A device used to prompt the payer to enter their payment method credentials to process a transaction.
+               * `MOBILE_PHONE` - A mobile phone was used as the processing device.
+               * `MOBILE_POS` - Mobile device with no add-on hardware.
+               * `MOBILE_POS_PLUS_HARDWARE` - Mobile device with add-on hardware.
+               * `MOBILE_POS_PLUS_DONGLE` - Dedicated mPOS Terminal with PCI compliant dongle.
+               * `DONGLE_PIN` - Dongle with software-based application that supports PIN entry on glass.
+               * `MOBILE_POS_PIN` - Off the shelf mobile device with software-based application that supports PIN entry on glass.
+                         
+      minLength: 1
+      maxLength: 50
+      example: TERMINAL
     time_TRANSACTIONS.device.time:
       type: string
       description: The time from the device in ISO8601 format.
@@ -18085,6 +18631,18 @@ components:
       description: Indicates the version of the application being used on the device
       minLength: 1
       maxLength: 50
+    payer_verifications_TRANSACTIONS.device.payer_verifications:
+      type: string
+      enum:
+        - NOT_VERIFIED
+        - PINPAD
+        - ELECTRONIC_SIGNATURE_ANALYSIS
+        - MANUAL_SIGNATURE_ANALYSIS
+        - MANUAL_OTHER
+        - UNKNOWN
+        - SYSTEMATIC_OTHER
+      title: payer_verifications_TRANSACTIONS.device.payer_verifications
+      description: 'Indicates the method used to verify the payer. '
     os_TRANSACTIONS.device.os:
       type: string
       enum:
@@ -18116,6 +18674,7 @@ components:
               - MANUAL
               - SWIPE
               - CONTACTLESS_SWIPE
+              - OPTICAL_CHARACTER_READER
           example:
             - CHIP
         payer_verifications:
@@ -18127,6 +18686,11 @@ components:
               - PINPAD
               - PAYER_DEVICE
               - CONTACTLESS_SIGNATURE
+              - NONE
+              - SIGNATURE_ANALYSIS
+              - NO_SIGNATURE_ANALYSIS
+              - OTHER
+              - UNKNOWN
           example:
             - PINPAD
         mobile:
@@ -18182,6 +18746,61 @@ components:
         display_line_count:
           type: number
           description: The number of lines that can be used to display information on the device.
+        max_pin_count:
+          type: string
+          enum:
+            - UNKNOWN
+            - NOT_SUPPORTED
+          title: max_pin_count_TRANSACTIONS.device.capabilities.max_pin_count
+          description: 'Indicates the maximum accepted length for PIN number. '
+        location:
+          type: string
+          enum:
+            - ON_MERCHANT_PREMISES
+            - OFF_MERCHANT_PREMISES
+            - OFF_MERCHANT_PREMISES_MPOS
+            - ON_MERCHANT_PREMISES_MPOS
+            - OFF_MERCHANT_PREMISES_PAYER_POS
+            - ON_MERCHANT_PREMISES_PAYER_POS
+            - OFF_PAYER_PREMISES
+            - ON_PAYER_PREMISES
+            - UNKNOWN
+          title: location_TRANSACTIONS.device.capabilities.location
+          description: |-
+            Describes the location where the device is being used. 
+
+            * `ON_MERCHANT_PREMISIS` - The transaction took place on the merchant's premesis. This value should be used for EMV contact transactions and must be provided in conjuction with an attendance_mode.
+            * `OFF_MERCHANT_PREMISIS` - The transaction took place away from the merchant's premesis. This value should be used for EMV contact transactions and must be provided in conjuction with an attendance_mode.
+            * `ON_PAYER_PREMISIS` - The transaction took place on the payer's premesis. This value can be used for EMV contact or EMV contactless transactions and must be provided in conjuction with an attendance_mode.
+            * `OFF_PAYER_PREMISIS` - The transaction took place away from the payer's premesis. This value can be used for EMV contact or EMV contactless transactions and must be provided in conjuction with an attendance_mode.
+            * `ON_MERCHANT_PREMISES_MPOS` - The transaction took place on the merchant's premesis, using the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+            * `OFF_MERCHANT_PREMISES_MPOS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+            * `ON_MERCHANT_PREMISES_PAYER_POS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+            * `OFF_MERCHANT_PREMISES_PAYER_POS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+            * `UNKNOWN` - The transaction took place at an unknown location. 
+        card_update:
+          type: string
+          enum:
+            - 'YES'
+            - 'NO'
+          title: card_updated_TRANSACTIONS.device.capabilities.card_update
+          description: This field indicates the ability of the device and software to update or change the card information
+        output:
+          type: string
+          enum:
+            - NONE
+            - PRINT
+            - DISPLAY
+            - PRINT_AND_DISPLAY
+            - UNKNOWN
+          title: output_TRANSACTIONS.device.capabilities.output
+          description: |-
+            Indicates the output capabilities of the device.
+                 * `NONE` - The device has no output capability. 
+                 * `PRINT` - The device has the ability to print. 
+                 * `DISPLAY` - The device has display capability. 
+                 * `PRINT_AND_DISPLAY` - The device has print and display capability. 
+                 * `UNKNOWN` - The device's output capability is unknown. 
     entry_modes_TRANSACTIONS.device.capabilities.entry_modes:
       type: array
       description: Describes the entry mode capabilities a device has.
@@ -18193,6 +18812,7 @@ components:
           - MANUAL
           - SWIPE
           - CONTACTLESS_SWIPE
+          - OPTICAL_CHARACTER_READER
       example:
         - CHIP
     payer_verifications_TRANSACTIONS.device.capabilities.payer_verifications:
@@ -18204,6 +18824,11 @@ components:
           - PINPAD
           - PAYER_DEVICE
           - CONTACTLESS_SIGNATURE
+          - NONE
+          - SIGNATURE_ANALYSIS
+          - NO_SIGNATURE_ANALYSIS
+          - OTHER
+          - UNKNOWN
       example:
         - PINPAD
     mobile_TRANSACTIONS.device.capabilities.mobile:
@@ -18259,6 +18884,61 @@ components:
     display_line_count_TRANSACTIONS.device.capabilities.display_line_count:
       type: number
       description: The number of lines that can be used to display information on the device.
+    max_pin_count_TRANSACTIONS.device.capabilities.max_pin_count:
+      type: string
+      enum:
+        - UNKNOWN
+        - NOT_SUPPORTED
+      title: max_pin_count_TRANSACTIONS.device.capabilities.max_pin_count
+      description: 'Indicates the maximum accepted length for PIN number. '
+    location_TRANSACTIONS.device.capabilities.location:
+      type: string
+      enum:
+        - ON_MERCHANT_PREMISES
+        - OFF_MERCHANT_PREMISES
+        - OFF_MERCHANT_PREMISES_MPOS
+        - ON_MERCHANT_PREMISES_MPOS
+        - OFF_MERCHANT_PREMISES_PAYER_POS
+        - ON_MERCHANT_PREMISES_PAYER_POS
+        - OFF_PAYER_PREMISES
+        - ON_PAYER_PREMISES
+        - UNKNOWN
+      title: location_TRANSACTIONS.device.capabilities.location
+      description: |-
+        Describes the location where the device is being used. 
+
+        * `ON_MERCHANT_PREMISIS` - The transaction took place on the merchant's premesis. This value should be used for EMV contact transactions and must be provided in conjuction with an attendance_mode.
+        * `OFF_MERCHANT_PREMISIS` - The transaction took place away from the merchant's premesis. This value should be used for EMV contact transactions and must be provided in conjuction with an attendance_mode.
+        * `ON_PAYER_PREMISIS` - The transaction took place on the payer's premesis. This value can be used for EMV contact or EMV contactless transactions and must be provided in conjuction with an attendance_mode.
+        * `OFF_PAYER_PREMISIS` - The transaction took place away from the payer's premesis. This value can be used for EMV contact or EMV contactless transactions and must be provided in conjuction with an attendance_mode.
+        * `ON_MERCHANT_PREMISES_MPOS` - The transaction took place on the merchant's premesis, using the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+        * `OFF_MERCHANT_PREMISES_MPOS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+        * `ON_MERCHANT_PREMISES_PAYER_POS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+        * `OFF_MERCHANT_PREMISES_PAYER_POS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location. 
+        * `UNKNOWN` - The transaction took place at an unknown location. 
+    card_updated_TRANSACTIONS.device.capabilities.card_update:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      title: card_updated_TRANSACTIONS.device.capabilities.card_update
+      description: This field indicates the ability of the device and software to update or change the card information
+    output_TRANSACTIONS.device.capabilities.output:
+      type: string
+      enum:
+        - NONE
+        - PRINT
+        - DISPLAY
+        - PRINT_AND_DISPLAY
+        - UNKNOWN
+      title: output_TRANSACTIONS.device.capabilities.output
+      description: |-
+        Indicates the output capabilities of the device.
+             * `NONE` - The device has no output capability. 
+             * `PRINT` - The device has the ability to print. 
+             * `DISPLAY` - The device has display capability. 
+             * `PRINT_AND_DISPLAY` - The device has print and display capability. 
+             * `UNKNOWN` - The device's output capability is unknown. 
     ip_address_TRANSACTIONS.device.ip_address:
       type: string
       description: The IP address of the device used for this transaction.
@@ -18936,6 +19616,11 @@ components:
                   description: Postal code of the address associated with the card.
                   minLength: 1
                   maxLength: 50
+                payment_account_reference:
+                  type: string
+                  description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+                  minLength: 1
+                  maxLength: 35
             apm:
               type: object
               description: Data associated with the response of an APM transaction.
@@ -19442,6 +20127,11 @@ components:
                   type: string
                   description: The 2 digit expiry date year of the network token.
                   example: '30'
+                payment_account_reference:
+                  type: string
+                  description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+                  minLength: 1
+                  maxLength: 35
             bank_transfer:
               type: object
               properties:
@@ -20093,6 +20783,11 @@ components:
               description: Postal code of the address associated with the card.
               minLength: 1
               maxLength: 50
+            payment_account_reference:
+              type: string
+              description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+              minLength: 1
+              maxLength: 35
         apm:
           type: object
           description: Data associated with the response of an APM transaction.
@@ -20599,6 +21294,11 @@ components:
               type: string
               description: The 2 digit expiry date year of the network token.
               example: '30'
+            payment_account_reference:
+              type: string
+              description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+              minLength: 1
+              maxLength: 35
         bank_transfer:
           type: object
           properties:
@@ -20777,6 +21477,11 @@ components:
           description: Postal code of the address associated with the card.
           minLength: 1
           maxLength: 50
+        payment_account_reference:
+          type: string
+          description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+          minLength: 1
+          maxLength: 35
     masked_number_last4_TRANSACTIONS.payment_method.digital_wallet.masked_number_last4:
       type: string
       description: Masked card number with last 4 digits visible.
@@ -20789,6 +21494,11 @@ components:
       minLength: 1
       maxLength: 50
       example: 426397xxxxxx5262
+    payment_account_reference_TRANSACTIONS.payment_method.digital_wallet.payment_account_reference:
+      type: string
+      description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+      minLength: 1
+      maxLength: 35
     apm_response:
       type: object
       description: Data associated with the response of an APM transaction.
@@ -21450,6 +22160,11 @@ components:
           type: string
           description: The 2 digit expiry date year of the network token.
           example: '30'
+        payment_account_reference:
+          type: string
+          description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+          minLength: 1
+          maxLength: 35
     tag_response_TRANSACTIONS.payment_method.card.tag_response:
       type: string
       description: The card EMV tag response data from the card issuer for a contactless or chip card transaction.
@@ -25546,6 +26261,11 @@ components:
                   description: Postal code of the address associated with the card.
                   minLength: 1
                   maxLength: 50
+                payment_account_reference:
+                  type: string
+                  description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+                  minLength: 1
+                  maxLength: 35
             authentication:
               type: object
               title: authentication
@@ -26215,6 +26935,11 @@ components:
               description: Postal code of the address associated with the card.
               minLength: 1
               maxLength: 50
+            payment_account_reference:
+              type: string
+              description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+              minLength: 1
+              maxLength: 35
         authentication:
           type: object
           title: authentication
@@ -28581,9 +29306,21 @@ components:
             - TERMINAL
             - MOBILE_PHONE
             - POS
+            - MOBILE_POS
+            - MOBILE_POS_PLUS_HARDWARE
+            - MOBILE_POS_PLUS_DONGLE
+            - DONGLE_PIN
+            - MOBILE_POS_PIN
           description: |
-            Indicates the type of physical device.
+            Indicates the type of physical device used to process the transaction.
                    * `TERMINAL` - A device used to prompt the payer to enter their payment method credentials to process a transaction.
+                   * `MOBILE_PHONE` - A mobile phone was used as the processing device.
+                   * `MOBILE_POS` - Mobile device with no add-on hardware.
+                   * `MOBILE_POS_PLUS_HARDWARE` - Mobile device with add-on hardware.
+                   * `MOBILE_POS_PLUS_DONGLE` - Dedicated mPOS Terminal with PCI compliant dongle.
+                   * `DONGLE_PIN` - Dongle with software-based application that supports PIN entry on glass.
+                   * `MOBILE_POS_PIN` - Off the shelf mobile device with software-based application that supports PIN entry on glass.
+                             
           minLength: 1
           maxLength: 50
           example: TERMINAL
@@ -28749,18 +29486,6 @@ components:
       minLength: 1
       maxLength: 50
       example: DEV_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
-    type_TRANSACTIONS.device.type:
-      type: string
-      enum:
-        - TERMINAL
-        - MOBILE_PHONE
-        - POS
-      description: |
-        Indicates the type of physical device.
-               * `TERMINAL` - A device used to prompt the payer to enter their payment method credentials to process a transaction.
-      minLength: 1
-      maxLength: 50
-      example: TERMINAL
     status_TRANSACTIONS.device.status:
       type: string
       enum:

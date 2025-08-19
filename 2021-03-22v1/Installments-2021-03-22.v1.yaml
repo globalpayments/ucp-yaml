@@ -6,6 +6,7 @@ info:
   contact:
     name: API Integrations
     email: api.integrations@globalpay.com
+  x-gp-yaml-file-version: 1
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
