@@ -30,23 +30,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/request'
-           #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
-            examples:
-              Get Access Token:
-                value:
-                  app_id: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
-                  nonce: random_string
-                  secret: e776ce1d9e94d5072ee132258e446cd92668d7c28b2e475a345319b475ba601956c16e3983926ce279db6301d78b7f47cfb729e41b4169814e373f0a0bf38716
-                  grant_type: client_credentials
-              Get Access Token - Set Permissions:
-                value:
-                  app_id: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
-                  nonce: random_string
-                  secret: e776ce1d9e94d5072ee132258e446cd92668d7c28b2e475a345319b475ba601956c16e3983926ce279db6301d78b7f47cfb729e41b4169814e373f0a0bf38716
-                  grant_type: client_credentials
-                  seconds_to_expire: 6400
-                  permissions:
-                    - TRN_POST_Authorize
       responses:
         '200':
           description: OK
