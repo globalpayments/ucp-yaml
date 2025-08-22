@@ -72,19 +72,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/create_response'
-          headers:
-            Content-Type:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
-            Content-Encoding:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
-            X-GP-Idempotency:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
-            X-GP-Version:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -422,19 +409,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/initiate_response'
-          headers:
-            Content-Type:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
-            Content-Encoding:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
-            X-GP-Idempotency:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
-            X-GP-Version:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -485,19 +459,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/result_response'
-          headers:
-            Content-Type:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
-            Content-Encoding:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
-            X-GP-Idempotency:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
-            X-GP-Version:
-              schema:
-                $ref: ../Data-Dict/Shared/Parameters.yaml#/components/parameters/Content-type
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
