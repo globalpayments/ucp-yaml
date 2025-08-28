@@ -8,6 +8,7 @@ servers:
     description: Sandbox Environment
   - url: 'https://apis.globalpay.com/ucp'
     description: Production Environment
+x-gp-yaml-file-version: 1
 paths:
   /links:
     get:
