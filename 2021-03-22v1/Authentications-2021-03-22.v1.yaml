@@ -7,7 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
-  x-gp-yaml-file-version: 1
+  x-gp-yaml-file-version: 1.1
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -1837,6 +1837,7 @@ components:
         - INSUFFICIENT_TIME_TO_AUTHENTICATE
         - AUTHENTICATION_ATTEMPTED_BUT_NOT_PERFORMED
         - SCHEME_STATUS_REASON
+        - " "
       description: |
         Provides information on why the authentication status field has the specified value based on the response from the 3DS provider.
            * `CARD_AUTHENTICATION_FAILED`
@@ -1866,6 +1867,7 @@ components:
            * `INSUFFICIENT_TIME_TO_AUTHENTICATE`
            * `AUTHENTICATION_ATTEMPTED_BUT_NOT_PERFORMED`
            * `SCHEME_STATUS_REASON`
+           * " "
       minLength: 1
       maxLength: 50
       example: HIGH_CONFIDENCE
@@ -3410,6 +3412,8 @@ components:
               properties:
                 acs_trans_ref:
                   $ref: '#/components/schemas/acs_trans_ref_AUTHENTICATIONS.three_ds.acs_trans_ref'
+                acs_reference_number:
+                  $ref: '#/components/schemas/acs_reference_number_AUTHENTICATIONS.three_ds.acs_reference_number' 
                 ds_trans_ref:
                   $ref: '#/components/schemas/ds_trans_ref_AUTHENTICATIONS.three_ds.ds_trans_ref'
                 server_trans_ref:
