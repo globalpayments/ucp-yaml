@@ -17,3 +17,11 @@
 > * Added new field auto_updater for TAAS integration 
 > ### Transactions
 > * Large set of updates to fields and examples
+
+ # 2025-09-22
+
+> ## UPDATED
+> ### Authentications
+> * Fixing typo in payment_account_age_indicator field
+> * Updated all instances of MORE_THEN_SIXTY_DAYS enum to MORE_THAN_SIXTY_DAYS
+> * updating authentications yaml version to 1.2

@@ -7,7 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
-  x-gp-yaml-file-version: 1.1
+  x-gp-yaml-file-version: 1.2
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -2861,14 +2861,14 @@ components:
         - THIS_TRANSACTION
         - LESS_THAN_THIRTY_DAYS
         - THIRTY_TO_SIXTY_DAYS
-        - MORE_THEN_SIXTY_DAYS
+        - MORE_THAN_SIXTY_DAYS
       description: |
         Length of time the customer has had an account with the merchant.        
            * `NO_ACCOUNT`
            * `THIS_TRANSACTION`
            * `LESS_THAN_THIRTY_DAYS`
            * `THIRTY_TO_SIXTY_DAYS`
-           * `MORE_THEN_SIXTY_DAYS`
+           * `MORE_THAN_SIXTY_DAYS`
            Note for European merchants: This field is recommended for SCA.
       minLength: 1
       maxLength: 50
@@ -2885,13 +2885,13 @@ components:
         - THIS_TRANSACTION
         - LESS_THAN_THIRTY_DAYS
         - THIRTY_TO_SIXTY_DAYS
-        - MORE_THEN_SIXTY_DAYS
+        - MORE_THAN_SIXTY_DAYS
       description: |
         Length of time since the account has changed.
             * `THIS_TRANSACTION`
             * `LESS_THAN_THIRTY_DAYS`
             * `THIRTY_TO_SIXTY_DAYS`
-            * `MORE_THEN_SIXTY_DAYS`
+            * `MORE_THAN_SIXTY_DAYS`
       minLength: 1
       maxLength: 50
       example: THIS_TRANSACTION
@@ -2964,15 +2964,15 @@ components:
         - NO_ACCOUNT
         - THIS_TRANSACTION
         - LESS_THAN_THIRTY_DAYS
-        - THIRTY_TO_SIXTY_DAYS.
-        - MORE_THEN_SIXTY_DAYS
+        - THIRTY_TO_SIXTY_DAYS
+        - MORE_THAN_SIXTY_DAYS
       description: |
         Length of time the customer has had an account with the merchant.
             * `NO_ACCOUNT`
             * `THIS_TRANSACTION`
             * `LESS_THAN_THIRTY_DAYS`
             * `THIRTY_TO_SIXTY_DAYS`
-            * `MORE_THEN_SIXTY_DAYS`
+            * `MORE_THAN_SIXTY_DAYS`
       minLength: 1
       maxLength: 50
       example: NO_ACCOUNT
