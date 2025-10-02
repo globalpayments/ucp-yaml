@@ -7,7 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
-  x-gp-yaml-file-version: 1.2
+  x-gp-yaml-file-version: 1.3
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -2001,7 +2001,9 @@ components:
             category:
               $ref: '#/components/schemas/category_AUTHENTICATIONS.order.category'
             reorder_indicator:
-              $ref: '#/components/schemas/reorder_indicator_AUTHENTICATIONS.order.reorder_indicator'
+              $ref: '#/components/schemas/reorder_indicator_AUTHENTICATIONS.order.reorder_indicator'        
+          required:
+            - time_created_reference
         browser_data:
           type: object
           properties:
@@ -2088,7 +2090,7 @@ components:
               type: object
               properties:
                 country_code:
-                  $ref: '#/components/schemas/country_code_AUTHENTICATIONS.payer.home_phone.country_code'
+                  $ref: '#/components/schemas/country_code_AUTHENTICATIONS.payer.work_phone.country_code'
                 subscriber_number:
 
                   $ref: '#/components/schemas/subscriber_number_AUTHENTICATIONS.payer.work_phone.subscriber_number'
@@ -2120,8 +2122,6 @@ components:
               properties:
                 shipping_address_creation_indicator:
                   $ref: '#/components/schemas/shipping_address_creation_indicator_AUTHENTICATIONS.payer.shipping_address_creation_indicator'
-            '':
-              type: string
         payer_login_data:
           type: object
           properties:

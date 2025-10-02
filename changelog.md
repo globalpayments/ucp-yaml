@@ -25,3 +25,12 @@
 > * Fixing typo in payment_account_age_indicator field
 > * Updated all instances of MORE_THEN_SIXTY_DAYS enum to MORE_THAN_SIXTY_DAYS
 > * updating authentications yaml version to 1.2
+
+ # 2025-09-22
+
+> ## UPDATED
+> ### Authentications
+> * Marked order.time_created reference as mandatory 
+> * removed empty field in initiate request 
+> * fixed issue with payer.work_phone field not being used
+> * updating authentications yaml version to 1.3
