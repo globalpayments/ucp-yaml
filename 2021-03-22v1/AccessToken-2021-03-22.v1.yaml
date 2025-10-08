@@ -7,7 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
-  x-gp-yaml-file-version: 1
+  x-gp-yaml-file-version: 1.1
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -185,6 +185,8 @@ components:
     seconds_to_expire_ACCESS_TOKENS.seconds_to_expire:
       type: number
       description: The time in seconds that the access token will expire and can no longer be used.
+      minimum: 60
+      maximum: 604800
     restricted_token_ACCESS_TOKEN.restricted_token:
       type: string
       enum:
