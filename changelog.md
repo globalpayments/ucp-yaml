@@ -40,3 +40,18 @@
 ## UPDATED
 ### Access Token
 - Updated min and max values for field seconds_to_expire
+
+ # 2025-10-13
+
+> ## UPDATED
+> ### Authentications
+> * updated the min and max length for a couple of fields 
+> * Made challenge_return_url and three_ds_method_return_url required in initiate request
+> * updating authentications yaml version to 1.4
+
+> ### Transactions
+> * Added a new field for recurring transactions in Mexico called contract_reference 
+> * Added new digital wallet enum CLICK_TO_PAY
+> * Fixed typo in payer_verifications
+> * added two new enums for device object
+> * updating transactions yaml version to 1.1
