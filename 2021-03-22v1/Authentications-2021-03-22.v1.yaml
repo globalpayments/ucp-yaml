@@ -7,7 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
-  x-gp-yaml-file-version: 1.3
+  x-gp-yaml-file-version: 1.4
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -717,6 +717,9 @@ components:
               $ref: '#/components/schemas/three_ds_method_return_url_AUTHENTICATIONS.notifications.three_ds_method_return_url'
             decoupled_challenge_return_url:
               $ref: '#/components/schemas/decoupled_challenge_return_url_AUTHENTICATIONS.notifications.decoupled_challenge_return_url'
+          required:
+            - challenge_return_url
+            - three_ds_method_return_url
       required:
         - account_name
         - country
@@ -995,18 +998,28 @@ components:
     return_url_AUTHENTICATIONS.notifications.return_url:
       type: string
       description: 'The merchant URL to return the payer to, once the payer has completed payment using the payment method. This returns control of the payer''s payment experience to the merchant.'
+      minLength: 1
+      maxLength: 256
     status_url_AUTHENTICATIONS.notifications.status_url:
       type: string
       description: Indicates to Global Payments where the merchant wants to receive notifications of certain status events that occur on the Global Payments system.
+      minLength: 1
+      maxLength: 256
     challenge_return_url_AUTHENTICATIONS.notifications.challenge_return_url:
       type: string
       description: The merchant URL that will receive the notification when the customer has completed the authentication challenge process. Please note that local URLs are not allowed. The URL provided has to be valid
+      minLength: 1
+      maxLength: 256
     three_ds_method_return_url_AUTHENTICATIONS.notifications.three_ds_method_return_url:
       type: string
       description: The merchant URL that will receive the notification when the 3DS ACS successfully gathers device information.
+      minLength: 1
+      maxLength: 256
     decoupled_challenge_return_url_AUTHENTICATIONS.notifications.decoupled_challenge_return_url:
       type: string
       description: The merchant URL that will receive the notification when the customer has completed the authentication when the authentication is decoupled and separate to the purchase.
+      minLength: 1
+      maxLength: 256
     create_response:
       type: object
       properties:
@@ -1079,7 +1092,7 @@ components:
                 three_ds_server_trans_id:
                   $ref: '#/components/schemas/three_ds_server_trans_id_AUTHENTICATIONS.three_ds.method_data.three_ds_server_trans_id'
                 three_ds_method_return_url:
-                  $ref: '#/components/schemas/three_ds_method_return_url_AUTHENTICATIONS.notifications.three_ds_method_return_url'
+                  $ref: '#/components/schemas/three_ds_method_return_url_AUTHENTICATIONS.three_ds.method_data.three_ds_method_return_url'
                 encoded_method_data:
                   $ref: '#/components/schemas/encoded_method_data_AUTHENTICATIONS.three_ds.method_data.encoded_method_data'
         notifications:
@@ -1299,6 +1312,9 @@ components:
     three_ds_server_trans_id_AUTHENTICATIONS.three_ds.method_data.three_ds_server_trans_id:
       type: string
       description: The reference created by the 3DSecure provider to identify the specific authentication attempt.
+    three_ds_method_return_url_AUTHENTICATIONS.three_ds.method_data.three_ds_method_return_url:
+      type: string
+      description: The merchant URL that will receive the notification when the 3DS ACS successfully gathers device information.
     encoded_method_data_AUTHENTICATIONS.three_ds.method_data.encoded_method_data:
       type: string
       description: 'JSON object containing the Base64Url encoded string, made up of the integator''s method_notification_url and the server_trans_ref which must be sent to the method_url when facilitating the ACS to gather device information.'
