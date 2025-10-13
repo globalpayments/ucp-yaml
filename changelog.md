@@ -34,3 +34,9 @@
 > * removed empty field in initiate request 
 > * fixed issue with payer.work_phone field not being used
 > * updating authentications yaml version to 1.3
+
+# 2025-10-02
+
+## UPDATED
+### Access Token
+- Updated min and max values for field seconds_to_expire
