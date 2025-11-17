@@ -7,7 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
-  x-gp-yaml-file-version: 1.4
+  x-gp-yaml-file-version: 1.5
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -1883,7 +1883,7 @@ components:
            * `INSUFFICIENT_TIME_TO_AUTHENTICATE`
            * `AUTHENTICATION_ATTEMPTED_BUT_NOT_PERFORMED`
            * `SCHEME_STATUS_REASON`
-           * " "
+           * " " - No Reason returned
       minLength: 1
       maxLength: 50
       example: HIGH_CONFIDENCE
