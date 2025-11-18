@@ -55,3 +55,9 @@
 > * Fixed typo in payer_verifications
 > * added two new enums for device object
 > * updating transactions yaml version to 1.1
+ # 2025-11-17
+
+> ## UPDATED
+> ### Authentications
+> * updated the description for empty status reason. 
+> * updating authentications yaml version
