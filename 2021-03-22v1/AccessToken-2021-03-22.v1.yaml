@@ -248,6 +248,7 @@ components:
         - MER_INS
         - MER_PMT
         - MER_PMT_POST_Detokenize
+        - MER_PMT_SINGLE_USE
         - MER_ACT
         - MER_ACT_GET_Single_Logs
         - MER_ACT_POST_Multiple
