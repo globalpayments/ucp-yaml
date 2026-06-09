@@ -1,3 +1,9 @@
+# 2026-06-09
+## ADDED
+### Decrypt
+- Added Decrypt resource.
+
+
 # 2025-12-04
 ## UPDATED
 ### Access Token
