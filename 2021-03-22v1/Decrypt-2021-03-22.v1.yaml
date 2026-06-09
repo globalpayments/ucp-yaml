@@ -1,0 +1,709 @@
+openapi: 3.1.0
+info:
+  version: 2021 03 22
+  title: Decrypt
+  description: Decrypt represents the decryption of a digital wallet for a specific transaction.
+  contact:
+    name: API Integrations
+    email: api.integrations@globalpay.com
+  x-gp-yaml-file-version: 1
+servers:
+  - url: 'https://apis.sandbox.globalpay.com/ucp'
+    description: Sandbox Environment
+  - url: 'https://apis.globalpay.com/ucp'
+    description: Production Environment
+paths:
+  /decrypt:
+    post:
+      tags:
+        - Decrypt a Digital Wallet
+      summary: Decrypt Digital Wallet
+      description: "Decrypt a digital wallet which allows merchants to perfrom additional Fraud or Risk management actions and send the transaction for 3DS authentication.\r\nAvailability of this feature in production depends on your allowed live configuration. \r\nPlease contact Global Payments before coding this feature to confirm it will be available to you when you go live."
+      operationId: create-decryption
+      parameters:
+        - $ref: '#/components/parameters/X-GP-Version'
+        - $ref: '#/components/parameters/Authorization_installment'
+        - $ref: '#/components/parameters/Content-type'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/post_decrypt_request'
+            examples:
+              Decrypt Click to Pay:
+                value:
+                  account_name: transaction_processing
+                  type: DECRYPT
+                  capture_mode: AUTO
+                  channel: CNP
+                  amount: '212'
+                  currency: EUR
+                  country: US
+                  payment_method:
+                    name: James Mason
+                    entry_mode: IN_APP
+                    digital_wallet:
+                      provider: CLICK_TO_PAY
+                      brand: VISA
+                      payment_token:
+                        data: eyJraWQiOiJKN00zRTE0V1pVUDhHRkxUQkUzODEzcm1ydC0tRGRFTTZGZEZORVdQakpjNVJfTHZrIiwiYWxnIjoiUlMyNTYiLCJqdGkiOiJaRFkzWXpSa09ETXROell4TVMwME9ERTFMV0ZtWXpNdE1qUXdZVGN6WVdKbE4yUTUiLCJpYXQiOjE3NzcyODEyMzd9.eyJzcmNDb3JyZWxhdGlvbklkIjoiNDMxMTdmZjQtNDY5Zi03ZWVkLWI4YTAtMWI1MDIyYjFkMTAyIiwic3JjaVRyYW5zYWN0aW9uSWQiOiI4MTllYmQ0Ny0yMzBhLTRkMTEtYjU2MS1kMzUxNTExNjZjMDAiLCJtYXNrZWRDYXJkIjp7InNyY0RpZ2l0YWxDYXJkSWQiOiI3MWVhYWExMjM2OWRkZjcxNTg1YTE1YWE5N2Y4NTUwMiIsInBhbkJpbiI6IjQzOTU4NCIsInBhbkxhc3RGb3VyIjoiMDAxMSIsInRva2VuQmluUmFuZ2UiOiI0OTA2MjQ2ODkiLCJwYXltZW50QWNjb3VudFJlZmVyZW5jZSI6IlYwMDEwMDEzMDI1MjA4MzY4NjkyNTI0NTgyOTMyIiwidG9rZW5MYXN0Rm91ciI6IjAwODIiLCJwYW5FeHBpcmF0aW9uTW9udGgiOiIxMiIsInBhbkV4cGlyYXRpb25ZZWFyIjoiMjAyOSIsImRpZ2l0YWxDYXJkRGF0YSI6eyJzdGF0dXMiOiJBQ1RJVkUiLCJkZXNjcmlwdG9yTmFtZSI6Ik9CTiIsImFydFVyaSI6Imh0dHBzOi8vc2FuZGJveC5hc3NldHMudmltcy52aXNhLmNvbS92aW1zL2NhcmRhcnQvNWFmMzczNGNjYTRlNDM5ZTk3ZjAwZTQ0NzRkODI0NDdfaW1hZ2VBQDJ4LnBuZyIsImFydEhlaWdodCI6MjEwLCJhcnRXaWR0aCI6MzM0fSwiZGF0ZW9mQ2FyZENyZWF0ZWQiOjE3NzI3MTAwMDczOTEsImRhdGVvZkNhcmRMYXN0VXNlZCI6MTc3NjkzMDI2MTUyMywibWFza2VkQmlsbGluZ0FkZHJlc3MiOnsiYWRkcmVzc0lkIjoiZWQ2ZTI3MGUtN2E5Yi03Zjk0LWY5NmMtMTM3NmY4ODljOTAxIiwiY291bnRyeUNvZGUiOiJHQiJ9LCJlbGlnaWJsZSI6ZmFsc2UsInBheW1lbnRDYXJkVHlwZSI6IkRFQklUIiwidG9rZW5JZCI6ImIxMmNkZDkwMWQwOGFhZWNkYTllMWE0M2JjODFkOTAyIn0sIm1hc2tlZENvbnN1bWVyIjp7InNyY0NvbnN1bWVySWQiOiJDRkpHcXdxNDZEaDZZaEVRdXA2YzM4d2ZQVENGSmlXYXhHS3NUNmpTZWJNPSIsImZpcnN0TmFtZSI6IlQqKioqKiIsImxhc3ROYW1lIjoiVioqKioqIiwiZnVsbE5hbWUiOiJUKioqKiogVioqKioqIiwiZW1haWxBZGRyZXNzIjoidmxhKipAZ2xvYmFscGF5LmNvbSIsIm1vYmlsZU51bWJlciI6eyJjb3VudHJ5Q29kZSI6IjQwIiwicGhvbmVOdW1iZXIiOiIqKioqKioqKjU2NTQifSwiY291bnRyeUNvZGUiOiJHQiIsImxhbmd1YWdlQ29kZSI6ImVuLUdCIiwic3RhdHVzIjoiQUNUSVZFIn0sImFzc3VyYW5jZURhdGEiOnsiZWNpIjoiMDcifSwiaXNHdWVzdENoZWNrb3V0IjpmYWxzZSwiaXNOZXdVc2VyIjpmYWxzZX0.SVO_SIwHHsFQHA1EYI7vxizRUpAEdGAL3Ke2PRkq7Hnjd52Ht2RZzxGFs_8WN7_aM536ZwKIbxtyQwjljgFwCTcwBaKSLkbcl5IKd6-GPnrY5o6aws1RsJ4kezdOI5_2IrJhSjjw8_vxDql_SnZl6ywvoqmDCLyL4t0vbpLA9ZS75UMojHAtx6_c7Ac8EIqQRqU0U3a6hLbfaSFH5axLUk5YtyFiRT1X6mGbOn_94OGCucIHh4jG-HQNWOVJCOPEYFMEIUoWHYpsMC3aaJR4yXEXklVbABGNzloVIF-hCXoVrAaAmn2Eay1I76FCLke6mcG5SpPqFHKIV7AUe5O6AQ
+                        dpa_reference: 08f56394-4599-af88-ff38-1a64db7c6502
+                        data_type_indicator: FULL
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/post_decrypt_response'
+        '404':
+          description: User Not Found
+      servers:
+        - url: 'https://apis.sandbox.globalpay.com/ucp'
+          description: Sandbox Environment
+        - url: 'https://apis.globalpay.com/ucp'
+          description: Production Environment
+components:
+  parameters:
+    X-GP-Version:
+      name: X-GP-Version
+      in: header
+      description: The version of the API to execute the request.
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 50
+        default: '2021-03-22'
+        examples:
+          - '2021-03-22'
+    Authorization_installment:
+      name: Authorization
+      in: header
+      description: Bearer access token value used to authorize and access the API.  Must always begin with the string "Bearer".
+      schema:
+        type: string
+        default: Bearer REkHCEZXhqkbdQ3OzurolO3eDANL
+        examples:
+          - Bearer REkHCEZXhqkbdQ3OzurolO3eDANL
+    Content-type:
+      name: Content-type
+      in: header
+      description: Format of the message body.
+      required: true
+      schema:
+        type: string
+        default: application/json
+        examples:
+          - application/json
+  schemas:
+    post_decrypt_request:
+      type: object
+      title: post_decrypt_request
+      properties:
+        account_name:
+          $ref: '#/components/schemas/account_name_INSTALLMENTS.account_name'
+        type:
+          $ref: '#/components/schemas/type_DECRYPT.type'
+        capture_mode:
+          $ref: '#/components/schemas/capture_mode_DECRYPT.capture_mode'
+        channel:
+          $ref: '#/components/schemas/channel_DECRYPT.channel'
+        amount:
+          $ref: '#/components/schemas/amount_DECRYPT.amount'
+        country:
+          $ref: '#/components/schemas/country_DECRYPT.country'
+        currency:
+          $ref: '#/components/schemas/currency_DECRYPT.currency'
+        payment_method:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/name_DECRYPT.payment_method.name'
+            entry_mode:
+              $ref: '#/components/schemas/entry_mode_INSTALLMENTS.payment_method.entry_mode'
+            digital_wallet:
+              type: object
+              properties:
+                provider:
+                  $ref: '#/components/schemas/provider_DECRYPT.payment_method.digital_wallet.provider'
+                brand:
+                  $ref: '#/components/schemas/brand_DECRYPT.payment_method.digital_wallet.brand'
+                payment_token:
+                  type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/data_Decrypt.payment_method.digital_wallet.payment_token.data'
+                    dpa_reference:
+                      $ref: '#/components/schemas/dpa_reference_Decrypt.payment_method.digital_wallet.payment_token.dpa_reference'
+                    data_type_indicator:
+                      $ref: '#/components/schemas/data_type_indicator_Decrypt.payment_method.digital_wallet.payment_token.data_type_indicator'
+                  required:
+                    - data
+                    - dpa_reference
+              required:
+                - provider
+                - brand
+          required:
+            - entry_mode
+      required:
+        - account_name
+        - type
+        - channel
+        - country
+        - currency
+    account_name_INSTALLMENTS.account_name:
+      type: string
+      description: A meaningful label that better identifies the account.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - transaction_processing
+    type_DECRYPT.type:
+      const: DECRYPT
+      description: |
+        Indications the type.
+                         * `DECRYPT`
+      minLength: 1
+      maxLength: 50
+      examples:
+        - DECRYPT
+    capture_mode_DECRYPT.capture_mode:
+      type: string
+      enum:
+        - AUTO
+        - LATER
+        - MULTIPLE
+        - LATER_FINAL
+      description: |
+        Indicates whether the transaction is to be captured automatically, later or later using more than 1 partial capture. 
+                         * `AUTO` - If a transaction is authorized, funds will exchange between the payer and merchant automatically and as soon as possible.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - AUTO
+    channel_DECRYPT.channel:
+      type: string
+      enum:
+        - CP
+        - CNP
+      description: |
+        Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario.
+
+         * `CP`  - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk
+
+         * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+      examples:
+        - CP
+    amount_DECRYPT.amount:
+      type: string
+      description: The amount to transfer between Payer and Merchant for a SALE or a REFUND. It is always represented in the lowest denomination of the related currency.
+      examples:
+        - 11099
+    country_DECRYPT.country:
+      type: string
+      description: 'This is the country the merchant is domiciled in. For example, if the merchant is based in Canada it must be set to CA.if the merchant is based in England it must be set to GB.if the merchant is based in USA it must be set to US.The country in ISO-3166-1(alpha-2 code) format.'
+      minLength: 2
+      maxLength: 2
+      examples:
+        - US
+    currency_DECRYPT.currency:
+      type: string
+      enum:
+        - USD
+        - EUR
+        - GBP
+        - CAD
+        - CHF
+        - HKD
+        - SGD
+        - MOP etc.
+      description: The currency of the amount in ISO-4217(alpha-3).
+      minLength: 3
+      maxLength: 3
+      examples:
+        - USD
+    name_DECRYPT.payment_method.name:
+      type: string
+      description: The name of the owner of the payment method
+      minLength: 1
+      maxLength: 50
+      examples:
+        - John Doe
+    entry_mode_INSTALLMENTS.payment_method.entry_mode:
+      type: string
+      enum:
+        - ECOM
+        - IN_APP
+      description: |
+        Indicates how the payment method information was obtained by the Merchant for this transaction.
+                                 * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser. 
+                                 * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - ECOM
+    provider_DECRYPT.payment_method.digital_wallet.provider:
+      const: CLICK_TO_PAY
+      description: Identifies the digital wallet provider to the payer.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - CLICK_TO_PAY
+    brand_DECRYPT.payment_method.digital_wallet.brand:
+      type: string
+      enum:
+        - VISA
+        - MASTERCARD
+        - AMEX
+        - DINERS
+        - DISCOVER
+        - JCB
+        - CUP
+      description: Indicates the card brand that issued the card.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - VISA
+    data_Decrypt.payment_method.digital_wallet.payment_token.data:
+      type: string
+      description: Digital Wallet provider defined data
+      minLength: 1
+      maxLength: 50
+    dpa_reference_Decrypt.payment_method.digital_wallet.payment_token.dpa_reference:
+      type: string
+      description: Data Processing Agreement (DPA) Identifier provided during onboarding. Registered identifier for the DPA accessing the service.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - e4ff70d9-a345-f0cc-9e06-196ac1bb6801
+    data_type_indicator_Decrypt.payment_method.digital_wallet.payment_token.data_type_indicator:
+      type: string
+      enum:
+        - FULL
+        - PAYMENT
+        - NON_PAYMENT
+        - NONE
+      description: |
+        Identifies the type of encrypted payload to be returned. Possible values are:
+
+                                    * FULL - Includes everything: all PCI & PII data (card/token, billing, shipping, consumer); supported by Mastercard, Visa, Amex
+                                    * PAYMENT - Same as FULL; supported by Mastercard, Visa, Amex
+                                    * NON_PAYMENT - Includes only PII data (billing, shipping, consumer); supported by Mastercard, Visa
+                                    * NONE - Returns empty payload; supported by Mastercard, Visa
+      minLength: 1
+      maxLength: 50
+      examples:
+        - FULL
+    post_decrypt_response:
+      type: object
+      title: post_decrypt_response
+      properties:
+        id:
+          $ref: '#/components/schemas/id_DECRYPT.id'
+        time_created:
+          $ref: '#/components/schemas/time_created_DECRYPT.time_created'
+        type:
+          $ref: '#/components/schemas/status_DECRYPT.status'
+        status:
+          $ref: '#/components/schemas/status_INSTALLMENTS.status'
+        channel:
+          $ref: '#/components/schemas/channel_DECRYPT.channel'
+        merchant_id:
+          $ref: '#/components/schemas/merchant_id_DECRYPT.merchant_id'
+        merchant_name:
+          $ref: '#/components/schemas/merchant_name_DECRYPT.merchant_name'
+        account_id:
+          $ref: '#/components/schemas/account_id_DECRYPT.account_id'
+        account_name:
+          $ref: '#/components/schemas/account_name_DECRYPT.account_name'
+        reference:
+          $ref: '#/components/schemas/reference_DECRYPT.reference'
+        payment_method:
+          type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/id_DECRYPT.payment_method.id'
+            entry_mode:
+              $ref: '#/components/schemas/entry_mode_INSTALLMENTS.payment_method.entry_mode'
+            narrative:
+              $ref: '#/components/schemas/narrative_DECRYPT.payment_method.narrative'
+            digital_wallet:
+              type: object
+              properties:
+                provider:
+                  $ref: '#/components/schemas/provider_DECRYPT.payment_method.digital_wallet.provider'
+                funding:
+                  $ref: '#/components/schemas/funding_DECRYPT.payment_method.digital_wallet.funding'
+                token_format:
+                  $ref: '#/components/schemas/token_format_DECRYPT.payment_method.digital_wallet.token_format'
+                number_last4:
+                  $ref: '#/components/schemas/token_last4_DECRYPT.payment_method.digital_wallet.token_last4'
+                card_time_last_used:
+                  $ref: '#/components/schemas/card_time_last_used_DECRYPT.payment_method.digital_wallet.card_time_last_used'
+                card_bin:
+                  $ref: '#/components/schemas/card_bin_CARD_BINS.card_bin'
+                eci:
+                  $ref: '#/components/schemas/eci_DECRYPT.payment_method.digital_wallet.eci'
+                payment_account_reference:
+                  $ref: '#/components/schemas/payment_account_reference_DECRYPT.payment_method.digital_wallet.payment_account_reference'
+                brand:
+                  $ref: '#/components/schemas/brand_DECRYPT.payment_method.digital_wallet.brand'
+                authcode:
+                  $ref: '#/components/schemas/authcode_DECRYPT.payment_method.digital_wallet.authcode'
+                brand_reference:
+                  $ref: '#/components/schemas/brand_reference_DECRYPT.payment_method.digital_wallet.brand_reference'
+                image:
+                  type: object
+                  properties:
+                    width:
+                      $ref: '#/components/schemas/width_DECRYPT.payment_method.digital_wallet.image.width'
+                    height:
+                      $ref: '#/components/schemas/height_DECRYPT.payment_method.digital_wallet.image.height'
+                    url:
+                      $ref: '#/components/schemas/url_DECRYPT.payment_method.digital_wallet.image.url'
+                    status:
+                      $ref: '#/components/schemas/status_DECRYPT.payment_method.digital_wallet.image.status'
+        payer:
+          type: object
+          properties:
+            first_name:
+              $ref: '#/components/schemas/first_name_DECRYPT.payer.first_name'
+            last_name:
+              $ref: '#/components/schemas/last_name_DECRYPT.payer.last_name'
+            name:
+              $ref: '#/components/schemas/name_DECRYPT.payer.name'
+            email:
+              $ref: '#/components/schemas/email_DECRYPT.payer.email'
+            reference:
+              $ref: '#/components/schemas/reference_DECRYPT.payer.reference'
+            language:
+              $ref: '#/components/schemas/language_DECRYPT.payer.language'
+            mobile_phone:
+              type: object
+              properties:
+                country_code:
+                  $ref: '#/components/schemas/country_code_DECRYPT.payer.mobile_phone.country_code'
+                subscriber_number:
+                  $ref: '#/components/schemas/subscriber_number_DECRYPT.payer.mobile_phone.subscriber_number'
+            verification_type:
+              $ref: '#/components/schemas/identity_type_DECRYPT.payer.identity_type'
+            time_created:
+              $ref: '#/components/schemas/time_created_DECRYPT.payer.time_created'
+            time_last_updated:
+              $ref: '#/components/schemas/time_last_updated_DECRYPT.payer.time_last_updated'
+            billing_address:
+              type: object
+              properties:
+                country:
+                  $ref: '#/components/schemas/country_DECRYPT.payer.addresses.country'
+        action:
+          type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/id_INSTALLMENTS.action.id'
+            type:
+              $ref: '#/components/schemas/type_DECRYPT.action.type'
+            time_created:
+              $ref: '#/components/schemas/time_created_INSTALLMENTS.action.time_created'
+            result_code:
+              $ref: '#/components/schemas/result_code_INSTALLMENTS.action.result_code'
+            app_id:
+              $ref: '#/components/schemas/app_id_INSTALLMENTS.action.app_id'
+            app_name:
+              $ref: '#/components/schemas/app_name_INSTALLMENTS.action.app_name'
+    id_DECRYPT.id:
+      type: string
+      description: A unique identifier generated by Global Payments to identify a decryption
+      minLength: 1
+      maxLength: 50
+      examples:
+        - DEC_qoXEeNvhABgzRTRNbNpWtVjWMc1off
+    time_created_DECRYPT.time_created:
+      type: string
+      description: Time indicating when the object was created in ISO-8601 format.
+      format: date-time
+      examples:
+        - '2021-05-03T21:23:39.718Z'
+    status_DECRYPT.status:
+      type: string
+      enum:
+        - DECRYPTED
+        - FAILED
+      description: Indicates where a resource object is in its life-cycle.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - DECRYPTED
+    status_INSTALLMENTS.status:
+      type: string
+      enum:
+        - AVAILABLE
+        - NOT_AVAILABLE
+      description: Indicates the status of the installment.
+      examples:
+        - AVAILABLE
+    merchant_id_DECRYPT.merchant_id:
+      type: string
+      description: A unique identifier for the merchant set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - MER_c4c0df11039c48a9b63701adeaa296c3
+    merchant_name_DECRYPT.merchant_name:
+      type: string
+      description: A meaningful label for the merchant set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - Sandbox_merchant_2
+    account_id_DECRYPT.account_id:
+      type: string
+      description: A unique identifier for the merchant account set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - TRA_86920f927028745yt34d077d88beb29b
+    account_name_DECRYPT.account_name:
+      type: string
+      description: A meaningful label for the merchant account set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - transaction_processing
+    reference_DECRYPT.reference:
+      type: string
+      description: Merchant defined field to reference the transaction.
+      minLength: 8
+      maxLength: 50
+      examples:
+        - becf9f3e-4d33-459c-8ed2-0c4affc9555e
+    id_DECRYPT.payment_method.id:
+      type: string
+      description: Unique platform generated id used to reference a stored payment method on the platform. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - PMT_31087d9c-e68c-4389-9f13-39378e166ea5
+    narrative_DECRYPT.payment_method.narrative:
+      type: string
+      description: Contains the value a merchant wishes to appear on the payer's payment method statement for this transaction.
+      minLength: 1
+      maxLength: 50
+    funding_DECRYPT.payment_method.digital_wallet.funding:
+      type: string
+      enum:
+        - DEBIT
+        - CREDIT
+        - PREPAID
+        - COMBO
+        - FLEX
+      description: |
+        Indicates how the card is funded:
+                                   * `DEBIT` - indicates the card is a debit card where the funds may be present in an account to fulfill the transaction amount. 
+                                   * `CREDIT` - indicates the card is a credit card where the funds may be available on credit to the payer to fulfill the transaction amount.
+                                   * `PREPAID` - indicates the card is a prepaid card where the funds are loaded to the card account to fulfill the transaction amount. Unlike a debit card, a prepaid is not linked to a bank account.
+                                   * `COMBO` - indicates the card is a combo card that combine both funding types - credit and debit
+                                   * `FLEX` - indicates the card is a flex card
+      minLength: 1
+      maxLength: 50
+      examples:
+        - DEBIT
+    token_format_DECRYPT.payment_method.digital_wallet.token_format:
+      type: string
+      enum:
+        - CARD_NUMBER
+        - CARD_TOKEN
+      description: |
+        Indicates if the actual card number or a token is being used to process the transaction. 
+                                    * `CARD_NUMBER` - The value in the digital wallet token field is a real card number (PAN) 
+                                    * `CARD_TOKEN` - The value in the digital wallet token field is a temporary token in the format of a card number (PAN) but is not a real card number.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - CARD_NUMBER
+    token_last4_DECRYPT.payment_method.digital_wallet.token_last4:
+      type: string
+      description: The last 4 digits of the digital wallet token.
+      minLength: 1
+      maxLength: 4
+      examples:
+        - '1234'
+    card_time_last_used_DECRYPT.payment_method.digital_wallet.card_time_last_used:
+      type: string
+      description: Time indicating when the card was last used in ISO-8601 format.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - '2021-05-03T21:23:39.718Z'
+    card_bin_CARD_BINS.card_bin:
+      type: string
+      description: BINs can be anything between 10 and 12 digits in length.
+      minLength: 10
+      maxLength: 16
+      examples:
+        - '40247200123'
+    eci_DECRYPT.payment_method.digital_wallet.eci:
+      type: string
+      description: An indication of the degree of the authentication process when using digital wallets.
+      minLength: 1
+      maxLength: 5
+    payment_account_reference_DECRYPT.payment_method.digital_wallet.payment_account_reference:
+      type: string
+      description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+      minLength: 1
+      maxLength: 35
+    authcode_DECRYPT.payment_method.digital_wallet.authcode:
+      type: string
+      description: Code generated by the card provider when the card is successfully authorized.
+      minLength: 1
+      maxLength: 50
+    brand_reference_DECRYPT.payment_method.digital_wallet.brand_reference:
+      type: string
+      description: The unique reference created by the brands/schemes to uniquely identify the transaction.
+      minLength: 1
+      maxLength: 50
+    width_DECRYPT.payment_method.digital_wallet.image.width:
+      type: string
+      description: Total width of the card art in pixels.
+    height_DECRYPT.payment_method.digital_wallet.image.height:
+      type: string
+      description: Total height of the card art in pixels.
+    url_DECRYPT.payment_method.digital_wallet.image.url:
+      type: string
+      description: URL that houses the card art image to be used for presentation purposes
+    status_DECRYPT.payment_method.digital_wallet.image.status:
+      type: string
+      enum:
+        - ACTIVE
+        - SUSPENDED
+        - EXPIRED
+        - PENDING
+        - CANCELLED
+      description: Indicates the state of the Digital Card
+      minLength: 1
+      maxLength: 50
+      examples:
+        - ACTIVE
+    first_name_DECRYPT.payer.first_name:
+      type: string
+      description: The first name of the Payer
+      minLength: 1
+      maxLength: 50
+      examples:
+        - John
+    last_name_DECRYPT.payer.last_name:
+      type: string
+      description: The last name of the Payer
+      minLength: 1
+      maxLength: 50
+      examples:
+        - James
+    name_DECRYPT.payer.name:
+      type: string
+      description: The full name of the payer.
+      minLength: 1
+      maxLength: 50
+    email_DECRYPT.payer.email:
+      type: string
+      description: The email address of the payer.
+      minLength: 1
+      maxLength: 50
+    reference_DECRYPT.payer.reference:
+      type: string
+      description: An integrator's reference to the payer.
+      minLength: 1
+      maxLength: 50
+    language_DECRYPT.payer.language:
+      type: string
+      description: The preferred language of the payer. In the format ISO-639-1 (alpha-2) or ISO-639-1 (alpha-2)_ISO-3166(alpha-2)
+      minLength: 2
+      maxLength: 5
+      examples:
+        - en
+    country_code_DECRYPT.payer.mobile_phone.country_code:
+      type: string
+      description: |
+        The country code that is used when dialling the phone number from another country.  For example  for USA or Canada  it would be +1 for England it would be +44 for Germany it would be +49
+      minLength: 1
+      maxLength: 50
+    subscriber_number_DECRYPT.payer.mobile_phone.subscriber_number:
+      type: string
+      description: The phone number.
+      minLength: 1
+      maxLength: 50
+    identity_type_DECRYPT.payer.identity_type:
+      type: string
+      enum:
+        - EMAIL_ADDRESS
+        - MOBILE_PHONE_NUMBER
+        - CUSTOM_IDENTIFIER
+      description: Identifies the type of consumer identity used to access stored cards for generating the payload per transaction.
+      examples:
+        - EMAIL_ADDRESS
+    time_created_DECRYPT.payer.time_created:
+      type: string
+      description: Time indicating when the consumer was created in ISO-8601 format.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - '2021-05-03T21:23:39.718Z'
+    time_last_updated_DECRYPT.payer.time_last_updated:
+      type: string
+      description: Time indicating when the consumer was last updated in ISO-8601 format.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - '2021-05-03T21:23:39.718Z'
+    country_DECRYPT.payer.addresses.country:
+      type: string
+      description: This is the country of the address represented as in ISO-3166-1(alpha-2 code) format.
+      minLength: 2
+      maxLength: 2
+      examples:
+        - US
+    id_INSTALLMENTS.action.id:
+      type: string
+      description: A unique identifier generated by the platform to identify an action.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    type_DECRYPT.action.type:
+      const: DECRYPT_TOKEN
+      description: Indicates the specific action taken.
+      examples:
+        - DECRYPT_TOKEN
+    time_created_INSTALLMENTS.action.time_created:
+      type: string
+      description: Time indicating when the object was created in ISO-8601 format.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - '2026-05-03T21:23:39.718Z'
+    result_code_INSTALLMENTS.action.result_code:
+      type: string
+      enum:
+        - SUCCESS
+        - DECLINED
+        - PENDING
+        - ERROR
+      description: The result of the action executed.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - SUCCESS
+    app_id_INSTALLMENTS.action.app_id:
+      type: string
+      description: The id of the app that was used to create the token.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    app_name_INSTALLMENTS.action.app_name:
+      type: string
+      description: The name of the app the user gave to the application.
+      minLength: 1
+      maxLength: 50
+      examples:
+        - my_lovely_app
