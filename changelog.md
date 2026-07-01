@@ -1,3 +1,8 @@
+# 2026-07-01
+## ADDED
+### Decrypt Rsource
+- Added Decrypt resource file
+
 # 2025-12-04
 ## UPDATED
 ### Access Token
