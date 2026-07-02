@@ -1,3 +1,12 @@
+# 2026-07-01
+## ADDED
+### Decrypt Rsource
+- Added Decrypt resource file
+
+## UPDATED
+### Transactions Rsource
+- Updated Transactions resource file with new format
+
 # 2025-12-04
 ## UPDATED
 ### Access Token
