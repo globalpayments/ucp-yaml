@@ -1,3 +1,11 @@
+# 2026-07-09
+## UPDATED
+### [v. 1.1] | Decrypt
+- Updated max length for data field
+- Updated example value for component amount
+- Added metadata for tags, contact url
+- Updated currency list
+
 # 2026-07-01
 ## ADDED
 ### Decrypt Rsource

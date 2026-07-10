@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   version: 2021 03 22
   title: Decrypt
@@ -6,7 +6,8 @@ info:
   contact:
     name: API Integrations
     email: api.integrations@globalpay.com
-  x-gp-yaml-file-version: 1.0
+    url: 'https://developer.globalpay.com'
+  x-gp-yaml-file-version: 1.1
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -63,6 +64,9 @@ paths:
           description: Sandbox Environment
         - url: 'https://apis.globalpay.com/ucp'
           description: Production Environment
+tags:
+  - name: Decrypt a Digital Wallet
+    description: Decrypt a digital wallet for a specific transaction.
 components:
   parameters:
     X-GP-Version:
@@ -199,7 +203,7 @@ components:
       type: string
       description: The amount to transfer between Payer and Merchant for a SALE or a REFUND. It is always represented in the lowest denomination of the related currency.
       examples:
-        - 11099
+        - '11099'
     country_DECRYPT.country:
       type: string
       description: 'This is the country the merchant is domiciled in. For example, if the merchant is based in Canada it must be set to CA.if the merchant is based in England it must be set to GB.if the merchant is based in USA it must be set to US.The country in ISO-3166-1(alpha-2 code) format.'
@@ -212,12 +216,160 @@ components:
       enum:
         - USD
         - EUR
-        - GBP
         - CAD
-        - CHF
+        - AFN
+        - DZD
+        - ARS
+        - AMD
+        - AWG
+        - AUD
+        - AZN
+        - BSD
+        - BHD
+        - THB
+        - PAB
+        - BBD
+        - BYN
+        - BZD
+        - BMD
+        - VEF
+        - BOB
+        - BRL
+        - BND
+        - BGN
+        - BIF
+        - CVE
+        - CLP
+        - COP
+        - KMF
+        - CDF
+        - NIO
+        - CRC
+        - CUP
+        - CZK
+        - GMD
+        - DKK
+        - MKD
+        - DJF
+        - STD
+        - DOP
+        - VND
+        - XCD
+        - EGP
+        - SVC
+        - ETB
+        - FKP
+        - FJD
+        - HUF
+        - GHS
+        - GIP
+        - HTG
+        - PYG
+        - GNF
+        - GYD
         - HKD
+        - UAH
+        - ISK
+        - INR
+        - IRR
+        - IQD
+        - JMD
+        - JOD
+        - KES
+        - PGK
+        - HRK
+        - KWD
+        - AOA
+        - MMK
+        - LAK
+        - GEL
+        - LBP
+        - ALL
+        - HNL
+        - SLL
+        - LRD
+        - LYD
+        - SZL
+        - LSL
+        - MGA
+        - MWK
+        - MYR
+        - MUR
+        - MXN
+        - MDL
+        - MAD
+        - MZN
+        - BOV
+        - NGN
+        - ERN
+        - NAD
+        - NPR
+        - ANG
+        - ILS
+        - TWD
+        - NZD
+        - BTN
+        - KPW
+        - NOK
+        - MRO
+        - TOP
+        - PKR
+        - MOP
+        - CUC
+        - UYU
+        - PHP
+        - GBP
+        - BWP
+        - QAR
+        - GTQ
+        - ZAR
+        - OMR
+        - KHR
+        - RON
+        - MVR
+        - IDR
+        - RUB
+        - RWF
+        - SHP
+        - SAR
+        - RSD
+        - SCR
         - SGD
-        - MOP etc.
+        - PEN
+        - SBD
+        - KGS
+        - SOS
+        - TJS
+        - SSP
+        - LKR
+        - XSU
+        - SDG
+        - SRD
+        - SEK
+        - CHF
+        - SYP
+        - BDT
+        - WST
+        - TZS
+        - KZT
+        - TTD
+        - MNT
+        - TND
+        - TRY
+        - TMT
+        - AED
+        - UGX
+        - CLF
+        - COU
+        - UZS
+        - VUV
+        - KRW
+        - YER
+        - JPY
+        - CNY
+        - ZMW
+        - ZWL
+        - PLN
       description: The currency of the amount in ISO-4217(alpha-3).
       minLength: 3
       maxLength: 3
@@ -269,7 +421,6 @@ components:
       type: string
       description: Digital Wallet provider defined data
       minLength: 1
-      maxLength: 50
     dpa_reference_Decrypt.payment_method.digital_wallet.payment_token.dpa_reference:
       type: string
       description: Data Processing Agreement (DPA) Identifier provided during onboarding. Registered identifier for the DPA accessing the service.
