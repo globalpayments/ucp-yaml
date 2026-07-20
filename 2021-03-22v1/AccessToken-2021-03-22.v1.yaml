@@ -7,7 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
-  x-gp-yaml-file-version: 1.1
+  x-gp-yaml-file-version: 1.2
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -248,6 +248,7 @@ components:
         - MER_INS
         - MER_PMT
         - MER_PMT_POST_Detokenize
+        - MER_PMT_SINGLE_USE
         - MER_ACT
         - MER_ACT_GET_Single_Logs
         - MER_ACT_POST_Multiple
