@@ -1,3 +1,10 @@
+# 2026-07-23
+## UPDATED
+### Access Token
+- updated list of permissions 
+- Fixed some definitions and data types 
+- Incremented file version
+
 # 2026-07-09
 ## UPDATED
 ### [v. 1.1] | Decrypt
