@@ -363,7 +363,7 @@ components:
       enum:
         - Bearer
       description: |
-        The type of token created. minLength:
+        The type of token created.
         * `Bearer` - Indicates that the holder or bearer of this access token can access the API.
       minLength: 1
       maxLength: 50
