@@ -7,7 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
-  x-gp-yaml-file-version: 1.2
+  x-gp-yaml-file-version: 1.3
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -58,6 +58,58 @@ paths:
           description: Sandbox Environment
         - url: 'https://apis.globalpay.com/ucp'
           description: Production Environment
+      x-gp-partner-permissions-enum:
+        - MER_TRN
+        - MER_TRN_POST_Refund_Standalone
+        - MER_TRN_POST_Force
+        - MER_VER
+        - MER_BAT
+        - MER_INS
+        - MER_PMT
+        - MER_PMT_POST_Detokenize
+        - MER_PMT_SINGLE_USE
+        - MER_ACT
+        - MER_ACT_GET_Single_Logs
+        - MER_ACT_POST_Multiple
+        - MER_DEV
+        - MER_GET_Single
+        - MER_GET_List
+        - MER_ACC
+        - MER_CCS
+        - MER_ACC_GET_Single_Platform
+        - MER_AUT
+        - ACC_GET_Single
+        - ACC_GET_List
+        - GET_Single
+        - ACC_GET_Single_Platform
+        - ACT_GET_Single
+        - ACT_GET_List
+        - ACT_GET_Single_Logs
+        - ACT_POST_Multiple
+        - MER_APP
+        - APP_GET_Single
+        - APP_GET_List
+        - MER_PFC
+        - MER_POST_Create
+        - PFC_PATCH_Edit
+        - MER_PATCH_Edit
+        - PFC_GET_Single
+        - PFC_GET_List
+        - APP_GET_Single_Key
+        - MER_APP_GET_Single_Key
+        - MER_ACC_POST_Create
+        - MER_ACC_PATCH_Edit
+        - MER_RAS
+        - ACT_POST_Auto_Action
+        - MER_TRF
+        - MER_LNK
+        - MER_FND
+        - MER_TRN_GET_Platform_References
+        - MER_BIN
+        - MER_HLD
+        - MER_REL
+        - MER_DOC
+        - MER_DEC
 tags:
   - name: Create Access Token
     description: Authenticate using app credentials to use GP API.
@@ -143,7 +195,7 @@ components:
         seconds_to_expire:
           $ref: '#/components/schemas/seconds_to_expire_ACCESS_TOKENS.seconds_to_expire'
         restricted_token:
-          $ref: '#/components/schemas/restricted_token_ACCESS_TOKEN.restricted_token'
+          $ref: '#/components/schemas/restricted_token_ACCESS_TOKENS.restricted_token'
         interval_to_expire:
           $ref: '#/components/schemas/interval_to_expire_ACCESS_TOKENS.interval_to_expire'
         permissions:
@@ -159,7 +211,7 @@ components:
       description: The id of the app that was used to create the token.
       minLength: 1
       maxLength: 50
-      example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+      example: i9R0byBBor6RqTQNj3g4MuVBwH5rd7yR
     nonce_ACCESS_TOKENS.nonce:
       type: string
       description: A unique random value used to create the secret. The integrator must ensure this is unique and different for every request to create an access token.
@@ -168,17 +220,23 @@ components:
       example: random_string
     secret_ACCESS_TOKENS.secret:
       type: string
-      description: A unique string created using the nonce and app-key. This value is used to further authenticate the request. Created as follows - SHA512(NONCEAPP-KEY
+      description: |
+        A unique string created using the nonce and app-key that is used to authenticate the request. It is created by creating a SHA512 digest, using the concatenated value of the nonce and app_key.
+        e.g.
+        1) nonce=2023-09-13T13:34:23.444Z
+        2) app_key=mUJvvbN1DsG2r3RY
+        3) SHA512(2023-09-13T13:34:23.444ZmUJvvbN1DsG2r3RY)=212af0653a857a69a387ba4e39415d11d1d80f527601338ec9b5d833f034fa02477fc08df4746a2db569fb2bfa622d7873d098e90c3a3044f57b7f15ff5c02ed
+        4) secret=212af0653a857a69a387ba4e39415d11d1d80f527601338ec9b5d833f034fa02477fc08df4746a2db569fb2bfa622d7873d098e90c3a3044f57b7f15ff5c02ed
       minLength: 1
-      maxLength: 200
-      example: e776ce1d9e94d5072ee13225
+      maxLength: 2000
+      example: 212af0653a857a69a387ba4e39415d11d1d80f527601338ec9b5d833f034fa02477fc08df4746a2db569fb2bfa622d7873d098e90c3a3044f57b7f15ff5c02ed
     grant_type_ACCESS_TOKENS.grant_type:
       type: string
       enum:
         - client_credentials
       description: |
         This is an Oauth specific field that must be set to client_credentials. This indicates to the platform to give access to the apps own resources.
-          * `client_credentials` 
+        * `client_credentials`
       minLength: 1
       maxLength: 50
       example: client_credentials
@@ -187,16 +245,18 @@ components:
       description: The time in seconds that the access token will expire and can no longer be used.
       minimum: 60
       maximum: 604800
-    restricted_token_ACCESS_TOKEN.restricted_token:
+    restricted_token_ACCESS_TOKENS.restricted_token:
       type: string
       enum:
         - 'YES'
         - 'NO'
-      title: restricted_token_ACCESS_TOKEN.restricted_token
       description: |
         Masks the account, merchant and app details that is returned in the response to a tokenisation request.
-          * `YES` - A restricted access token will be created. Restricted access token is used when integrating with Drop-in UI or Hosted Fields to create a single-use payment token.
-          * `NO` - A restricted access token will not be created.
+        * `YES` - A restricted access token will be created. Restricted access token is used when integrating with Drop-in UI or Hosted Fields to create a single-use payment token.
+        * `NO` - A restricted access token will not be created.
+      minLength: 1
+      maxLength: 50
+      example: 'NO'
     interval_to_expire_ACCESS_TOKENS.interval_to_expire:
       type: string
       enum:
@@ -211,19 +271,19 @@ components:
         - 5_MINUTES
       description: |
         The time interval set for when the token will expire.
-          * `WEEK`
-          * `DAY`
-          * `12_HOURS`
-          * `6_HOURS`
-          * `3_HOURS`
-          * `1_HOUR`
-          * `30_MINUTES`
-          * `10_MINUTES`
-          * `5_MINUTES`
+        * `WEEK`
+        * `DAY`
+        * `12_HOURS`
+        * `6_HOURS`
+        * `3_HOURS`
+        * `1_HOUR`
+        * `30_MINUTES`
+        * `10_MINUTES`
+        * `5_MINUTES`
       example: 1_HOUR
     permissions_ACCESS_TOKENS.scope.accounts.permissions:
       type: array
-      description: All of the permissions or activites that may be performed by the account.
+      description: All of the permissions or activities that may be performed by the account.
       items:
         type: string
         enum:
@@ -239,57 +299,6 @@ components:
           - AUT_POST_Check_Availability
       example:
         - TRN_POST_Authorize
-      x-gp-partner-permissions-enum:
-        - MER_TRN
-        - MER_TRN_POST_Refund_Standalone
-        - MER_TRN_POST_Force
-        - MER_VER
-        - MER_BAT
-        - MER_INS
-        - MER_PMT
-        - MER_PMT_POST_Detokenize
-        - MER_PMT_SINGLE_USE
-        - MER_ACT
-        - MER_ACT_GET_Single_Logs
-        - MER_ACT_POST_Multiple
-        - MER_DEV
-        - MER_GET_Single
-        - MER_GET_List
-        - MER_ACC
-        - MER_CCS
-        - MER_ACC_GET_Single_Platform
-        - MER_AUT
-        - ACC_GET_Single
-        - ACC_GET_List
-        - GET_Single
-        - ACC_GET_Single_Platform
-        - ACT_GET_Single
-        - ACT_GET_List
-        - ACT_GET_Single_Logs
-        - ACT_POST_Multiple
-        - MER_APP
-        - APP_GET_Single
-        - APP_GET_List
-        - MER_PFC
-        - MER_POST_Create
-        - PFC_PATCH_Edit
-        - MER_PATCH_Edit
-        - PFC_GET_Single
-        - PFC_GET_List
-        - APP_GET_Single_Key
-        - MER_APP_GET_Single_Key
-        - MER_ACC_POST_Create
-        - MER_ACC_PATCH_Edit
-        - MER_RAS
-        - ACT_POST_Auto_Action
-        - MER_TRF
-        - MER_LNK
-        - MER_FND
-        - MER_TRN_GET_Platform_References
-        - MER_BIN
-        - MER_HLD
-        - MER_REL
-        - MER_DOC
     response:
       type: object
       properties:
@@ -338,8 +347,8 @@ components:
       enum:
         - Bearer
       description: |
-        The type of token created. 
-          * `Bearer` - Indicates that the holder or bearer of this access token can access the API.
+        The type of token created.
+        * `Bearer` - Indicates that the holder or bearer of this access token can access the API.
       minLength: 1
       maxLength: 50
       example: Bearer
@@ -359,15 +368,14 @@ components:
       type: string
       description: |
         A unique identifier that is used to identify and reference an instance of this resource. It can begin with one of the following the three letters combinations. Each one representing a different account type and capability.
-
-          TRA - Transaction Processing
-          TKA - Tokenization
-          DIA - Dispute Management
-          DAA - Data Services
-          MMA - Merchant Management
-          FPA - File Processing
-          FMA - Funds Management
-          RAA - Risk Assessment
+        TRA - Transaction Processing
+        TKA - Tokenization
+        DIA - Dispute Management
+        DAA - Data Services
+        MMA - Merchant Management
+        FPA - File Processing
+        FMA - Funds Management
+        RAA - Risk Assessment
       minLength: 1
       maxLength: 50
       example: TRA_be83259a-455e-4ce6-a53a-6d5d31c79d41
@@ -386,6 +394,7 @@ components:
     time_created_ACCESS_TOKENS.time_created:
       type: string
       description: Time indicating when the object was created in ISO-8601 format. Provided in UTC.
+      format: date-time
       example: '2021-05-03T21:23:39.718Z'
     email_ACCESS_TOKENS.email:
       type: string
