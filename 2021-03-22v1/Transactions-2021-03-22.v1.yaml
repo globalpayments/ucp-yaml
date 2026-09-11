@@ -7,7 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
-  x-gp-yaml-file-version: 1.6
+  x-gp-yaml-file-version: 1.7
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -1253,7 +1253,7 @@ paths:
       summary: |
         Get a single view of a transaction using the transaction id.
       description: |-
-        Get a single view of a transaction using the transaction id.
+        Get a single view of a transaction or verification using its transaction or verification ID.
         Availability of this feature in production depends on your allowed live configuration. 
         Please contact Global Payments before coding this feature to confirm it will be available to you when you go live.
       operationId: getSingleSaleOrRefundTransaction
@@ -4155,6 +4155,8 @@ components:
           $ref: '#/components/schemas/dpa_reference_TRANSACTIONS.payment_method.digital_wallet.payment_token.dpa_reference'
         data_type_indicator:
           $ref: '#/components/schemas/data_type_indicator_TRANSACTIONS.payment_method.digital_wallet.payment_token.data_type_indicator'
+      required:
+        - dpa_reference
     data_TRANSACTIONS.payment_method.digital_wallet.payment_token.data:
       type: string
       description: Digital Wallet provider defined data

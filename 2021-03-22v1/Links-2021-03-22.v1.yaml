@@ -3,19 +3,19 @@ info:
   version: 2021 03 22
   title: Links
   description: 'Links allow you create a unique URL to share with your customers. '
+  x-gp-yaml-file-version: 1.1
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
   - url: 'https://apis.globalpay.com/ucp'
     description: Production Environment
-x-gp-yaml-file-version: 1
 paths:
   /links:
     get:
       tags:
         - Get a list of Links
       summary: 'Get a list of links recently processed, using criteria passed in the query string. Page through the result set to access all records.'
-      description: 'Get a list of links recently processed, using criteria passedin the query string. Page through the result set to access all records.'
+      description: "Get a list of links recently processed, using criteria passedin the query string. Page through the result set to access all records.\r\nAvailability of this feature in production depends on your allowed live configuration. \r\nPlease contact Global Payments before coding this feature to confirm it will be available to you when you go live."
       operationId: get-links
       parameters:
         - name: from_time_created
@@ -324,7 +324,7 @@ paths:
       tags:
         - Create a link
       summary: Create a new link
-      description: 'The PayLink API allows you to generate single or multi-use unique payment links. These links can be sent to consumers. You can send these links to your customers via any channel, for example, email, SMS etc. When the customer clicks on the link they will be redirected to a page where they can make a payment.'
+      description: "The PayLink API allows you to generate single or multi-use unique payment links. These links can be sent to consumers. You can send these links to your customers via any channel, for example, email, SMS etc. When the customer clicks on the link they will be redirected to a page where they can make a payment.\r\nAvailability of this feature in production depends on your allowed live configuration. \r\nPlease contact Global Payments before coding this feature to confirm it will be available to you when you go live."
       operationId: post-links
       parameters:
         - $ref: '#/components/parameters/Authorization'
@@ -346,12 +346,29 @@ paths:
                   $ref: '#/components/schemas/type_LINKS.type'
                 function:
                   $ref: '#/components/schemas/function_LINKS.function'
+                app_email:
+                  $ref: '#/components/schemas/app_email_LINKS.app_email'
+                app_ids:
+                  $ref: '#/components/schemas/app_ids_LINKS.app_ids'
                 referrer_url:
                   $ref: '#/components/schemas/referrer_url_LINKS.referrer_url'
                 ip_address:
                   $ref: '#/components/schemas/ip_address_LINKS.ip_address'
                 ip_subnet_mask:
                   $ref: '#/components/schemas/ip_subnet_mask_LINKS.ip_subnet_mask'
+                display_configuration:
+                  type: object
+                  properties:
+                    iframe_dimensions_domain:
+                      $ref: '#/components/schemas/iframe_dimensions_domain_LINKS.display_configuration.iframe_dimensions_domain'
+                    iframe_response_domain:
+                      $ref: '#/components/schemas/iframe_response_domain_LINKS.display_configuration.iframe_response_domain'
+                    cardholder_name:
+                      $ref: '#/components/schemas/cardholder_name_LINKS.display_configuration.cardholder_name'
+                    cvv:
+                      $ref: '#/components/schemas/cvv_LINKS.display_configuration.cvv'
+                    timeout_seconds:
+                      $ref: '#/components/schemas/timeout_seconds_LINKS.display_configuration.timeout_seconds'
                 transactions:
                   type: object
                   properties:
@@ -365,6 +382,13 @@ paths:
                       $ref: '#/components/schemas/currency_LINKS.transactions.currency'
                     country:
                       $ref: '#/components/schemas/country_LINKS.transactions.country'
+                    narrative:
+                      $ref: '#/components/schemas/narrative_LINKS.transactions.narrative'
+                    risk_assessment:
+                      type: object
+                      properties:
+                        mode:
+                          type: string
                   required:
                     - allowed_payment_methods
                     - amount
@@ -386,12 +410,153 @@ paths:
                 shipping_amount:
                   $ref: '#/components/schemas/shipping_amount_LINKS.shipping_amount'
                 expiration_date:
-                  $ref: '#/components/schemas/expriation_date_LINKS.expriation_date'
+                  $ref: '#/components/schemas/expiration_date_LINKS.expiration_date'
+                message_type:
+                  $ref: '#/components/schemas/message_type_LINKS.message_type'
                 'images ':
                   type: object
                   properties:
                     b64_content:
                       $ref: '#/components/schemas/b64_content_LINKS.images.b64_content'
+                payer:
+                  type: object
+                  properties:
+                    status:
+                      $ref: '#/components/schemas/status_LINKS.payer.status'
+                    id:
+                      $ref: '#/components/schemas/id_LINKS.payer.id'
+                    name:
+                      $ref: '#/components/schemas/name_LINKS.payer.name'
+                    first_name:
+                      $ref: '#/components/schemas/first_name_LINKS.payer.first_name'
+                    last_name:
+                      $ref: '#/components/schemas/last_name_LINKS.payer.last_name'
+                    language:
+                      $ref: '#/components/schemas/language_LINKS.payer.language'
+                    email:
+                      $ref: '#/components/schemas/email_LINKS.payer.email'
+                    email_subject:
+                      $ref: '#/components/schemas/email_subject_LINKS.payer.email_subject'
+                    email_content:
+                      $ref: '#/components/schemas/email_content_LINKS.payer.email_content'
+                    mobile_phone:
+                      type: object
+                      properties:
+                        country_code:
+                          $ref: '#/components/schemas/country_code_LINKS.payer.mobile_phone.country_code'
+                        subscriber_number:
+                          $ref: '#/components/schemas/subscriber_number_LINKS.payer.mobile_phone.subscriber_number'
+                        subscriber_content:
+                          $ref: '#/components/schemas/subscriber_content_LINKS.payer.mobile_phone.subscriber_content'
+                    billing_address:
+                      type: object
+                      properties:
+                        line_1:
+                          $ref: '#/components/schemas/line_1_LINKS.payer.billing_address.line_1'
+                        line_2:
+                          $ref: '#/components/schemas/line_2_LINKS.payer.billing_address.line_2'
+                        line_3:
+                          $ref: '#/components/schemas/line_3_LINKS.payer.billing_address.line_3'
+                        city:
+                          $ref: '#/components/schemas/city_LINKS.payer.billing_address.city'
+                        postal_code:
+                          $ref: '#/components/schemas/postal_code_LINKS.payer.billing_address.postal_code'
+                        country:
+                          $ref: '#/components/schemas/country_LINKS.payer.billing_address.country'
+                    address_match_indicator:
+                      $ref: '#/components/schemas/address_match_indicator_LINKS.payer.address_match_indicator'
+                order:
+                  type: object
+                  properties:
+                    amount:
+                      $ref: '#/components/schemas/amount_LINKS.order.amount'
+                    currency:
+                      $ref: '#/components/schemas/currency_LINKS.order.currency'
+                    reference:
+                      $ref: '#/components/schemas/reference_LINKS.order.reference'
+                    transaction_configuration:
+                      type: object
+                      properties:
+                        channel:
+                          $ref: '#/components/schemas/channel_LINKS.order.transaction_configuration.channel'
+                        country:
+                          $ref: '#/components/schemas/country_LINKS.order.transaction_configuration.country'
+                        capture_mode:
+                          $ref: '#/components/schemas/capture_mode_LINKS.order.transaction_configuration.capture_mode'
+                        currency_conversion_mode:
+                          $ref: '#/components/schemas/currency_conversion_mode_LINKS.order.transaction_configuration.currency_conversion_mode'
+                        allowed_payment_methods:
+                          $ref: '#/components/schemas/allowed_payment_methods_LINKS.order.transaction_configuration.allowed_payment_methods'
+                        surcharge:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              card_type:
+                                $ref: '#/components/schemas/card_type_LINKS.order.transaction_configuration.surcharge.card_type'
+                              amount:
+                                $ref: '#/components/schemas/amount_LINKS.order.transaction_configuration.surcharge.amount'
+                    payment_method_configuration:
+                      type: object
+                      properties:
+                        authentication:
+                          type: object
+                          properties:
+                            preference:
+                              $ref: '#/components/schemas/preference_LINKS.order.payment_method_configuration.authentication.preference'
+                            exempt_status:
+                              $ref: '#/components/schemas/exempt_status_LINKS.order.payment_method_configuration.authentication.exempt_status'
+                            billing_address_required:
+                              $ref: '#/components/schemas/billing_address_required_LINKS.order.payment_method_configuration.authentication.billing_address_required'
+                        apm:
+                          type: object
+                          properties:
+                            shipping_address_enabled:
+                              $ref: '#/components/schemas/shipping_address_enabled_LINKS.order.payment_method_configuration.apm.shipping_address_enabled'
+                            address_override:
+                              $ref: '#/components/schemas/address_override_LINKS.order.payment_method_configuration.apm.address_override'
+                        storage_mode:
+                          $ref: '#/components/schemas/storage_mode_LINKS.order.payment_method_configuration.storage_mode'
+                        entry_mode:
+                          $ref: '#/components/schemas/entry_mode_LINKS.order.payment_method_configuration.entry_mode'
+                        digital_wallets:
+                          type: object
+                          properties:
+                            provider:
+                              $ref: '#/components/schemas/provider_LINKS.order.payment_method_configuration.digital_wallets.provider'
+                        stored_credential:
+                          type: object
+                          properties:
+                            model:
+                              $ref: '#/components/schemas/model_LINKS.order.payment_method_configuration.stored_credential.model'
+                            initiator:
+                              $ref: '#/components/schemas/initiator_LINKS.order.payment_method_configuration.stored_credential.initiator'
+                            sequence:
+                              $ref: '#/components/schemas/sequence_LINKS.order.payment_method_configuration.stored_credential.sequence'
+                    shipping_address:
+                      type: object
+                      properties:
+                        line_1:
+                          $ref: '#/components/schemas/line_1_LINKS.order.shipping_address.line_1'
+                        line_2:
+                          $ref: '#/components/schemas/line_2_LINKS.order.shipping_address.line_2'
+                        line_3:
+                          $ref: '#/components/schemas/line_3_LINKS.order.shipping_address.line_3'
+                        city:
+                          $ref: '#/components/schemas/city_LINKS.order.shipping_address.city'
+                        postal_code:
+                          $ref: '#/components/schemas/postal_code_LINKS.order.shipping_address.postal_code'
+                        state:
+                          $ref: '#/components/schemas/state_LINKS.order.shipping_address.state'
+                        country:
+                          $ref: '#/components/schemas/country_LINKS.payer.billing_address.country'
+                    shipping_phone:
+                      type: object
+                      properties:
+                        country_code:
+                          $ref: '#/components/schemas/country_code_LINKS.order.shipping_phone.country_code'
+                        subscriber_number:
+                          $ref: '#/components/schemas/subscriber_number_LINKS.order.shipping_phone.subscriber_number'
                 notifications:
                   type: object
                   properties:
@@ -401,6 +566,18 @@ paths:
                       $ref: '#/components/schemas/status_url_LINKS.notifications.status_url'
                     cancel_url:
                       $ref: '#/components/schemas/cancel_url_LINKS.notifications.cancel_url'
+                installment:
+                  type: object
+                  properties:
+                    funding_mode:
+                      $ref: '#/components/schemas/funding_mode_LINKS.installment.funding_mode'
+                    terms:
+                      type: object
+                      properties:
+                        max_time_unit_number:
+                          $ref: '#/components/schemas/max_time_unit_number_LINKS.installment.terms.max_time_unit_number'
+                        max_amount:
+                          $ref: '#/components/schemas/max_amount_LINKS.installment.terms.max_amount'
               required:
                 - type
                 - usage_mode
@@ -440,6 +617,245 @@ paths:
                   referrer_url: 'http://www.myurl.com'
                   ip_address: 206.192.156.0
                   ip_subnet_mask: 255.255.255.0
+              Create a HPP Link:
+                value:
+                  account_name: transaction_processing_3
+                  type: HOSTED_PAYMENT_PAGE
+                  name: Mobile Bill Payment
+                  description: map_COMMENT1
+                  reference: 18500-638568128282978049
+                  expiration_date: '2026-12-20T00: 35: 28Z'
+                  payer:
+                    status: ACTIVE
+                    id: PYR_a488356f29ac4e4c9a89977652a3215e
+                    name: James Mason
+                    first_name: James
+                    last_name: Mason
+                    language: en
+                    email: jamesmason@example.com
+                    mobile_phone:
+                      country_code: '44'
+                      subscriber_number: '1801555888'
+                    billing_address:
+                      line_1: bill_street1
+                      line_2: bill_street2
+                      line_3: bill_street3
+                      city: Bill_city
+                      postal_code: '44'
+                      country: IE
+                    address_match_indicator: 'YES'
+                  order:
+                    amount: '1000'
+                    currency: EUR
+                    reference: '123456789'
+                    transaction_configuration:
+                      channel: CNP
+                      country: GB
+                      capture_mode: AUTO
+                      curreny_conversion_mode: 'ON'
+                      allowed_payment_methods:
+                        - CARD
+                        - BANK_PAYMENT
+                    payment_method_configuration:
+                      authentications:
+                        preference: CHALLENGE_PREFERRED
+                        exempt_status: LOW_VALUE
+                        billing_address_required: 'YES'
+                      apm:
+                        shipping_address_enabled: 'YES'
+                        address_override: 'YES'
+                      storage_mode: PROMPT
+                    shipping_address:
+                      line_1: Flat 123
+                      line_2: House 456
+                      line_3: Btower
+                      city: Chicago
+                      postal_code: '50001'
+                      state: IL
+                      country: US
+                    shipping_phone:
+                      country_code: '99'
+                      subscriber_number: '1801555999'
+                  notifications:
+                    return_url: 'https://envntz1qa15bi.x.pipedream.net/'
+                    status_url: 'https://envntz1qa15bi.x.pipedream.net/'
+              Exchange APP Credentials:
+                value:
+                  account_id: TRA_5cdae3d9551142d387f8f40a2739fb4c
+                  type: EXCHANGE_APP_CREDENTIALS
+                  app_email: someone@email.com
+                  app_ids:
+                    - yAIeZMkreGxgyGt7Azvum6iLHZAmlqcM
+              Create a HPP Link - PayU:
+                value:
+                  account_name: PAYU_APM_Transaction_Processing
+                  type: HOSTED_PAYMENT_PAGE
+                  name: Mobile Bill Payment
+                  description: March Invoice
+                  usage_mode: SINGLE
+                  usage_limit: '1'
+                  reference: Test PayU HPP for March Invoice
+                  expiration_date: '2026-12-21T11:55:03Z'
+                  payer:
+                    name: James Mason
+                    language: en
+                    email: jamesmason@example.com
+                    billing_address:
+                      line_1: 123 Maison Avenue
+                      line_2: Hill Road
+                      line_3: Paluch
+                      city: Warsaw
+                      postal_code: '123456'
+                      country: PL
+                  order:
+                    amount: '1000'
+                    currency: PLN
+                    reference: Test PayU HPP for March Invoice
+                    transaction_configuration:
+                      channel: CNP
+                      country: PL
+                      capture_mode: AUTO
+                      currency_conversion_mode: 'YES'
+                      allowed_payment_methods:
+                        - CARD
+                        - BANK_PAYMENT
+                        - BLIK
+                    payment_method_configuration:
+                      authentication:
+                        preference: NO_CHALLENGE_REQUESTED
+                      apm:
+                        shipping_address_enabled: 'NO'
+                        address_override: 'NO'
+                      storage_mode: PROMPT
+                    shipping_amount: '100'
+                    shipping_address:
+                      line_1: 123 Maison Avenue
+                      line_2: Hill Road
+                      line_3: Paluch
+                      city: Warsaw
+                      postal_code: '123456'
+                      country: PL
+                  notifications:
+                    return_url: 'https://webhook.site/d76a62ef-4bd1-4a96-b8e2-ef0ea00fd2d4'
+                    status_url: 'https://webhook.site/d76a62ef-4bd1-4a96-b8e2-ef0ea00fd2d4'
+                    cancel_url: 'https://webhook.site/d76a62ef-4bd1-4a96-b8e2-ef0ea00fd2d4'
+              Create a HPP Link - BLIK:
+                value:
+                  account_name: APM_Transaction_Processing
+                  type: HOSTED_PAYMENT_PAGE
+                  name: Mobile Bill Payment
+                  description: February Invoice
+                  usage_mode: SINGLE
+                  usage_limit: '1'
+                  reference: Test HPP BLIK February Invoice
+                  expiration_date: '2026-12-21T11:55:03Z'
+                  payer:
+                    name: James Mason
+                    language: en
+                    email: jamesmason@example.com
+                    billing_address:
+                      line_1: 123 Maison Avenue
+                      line_2: Hill Road
+                      line_3: Paluch
+                      city: Warsaw
+                      postal_code: '482002'
+                      country: PL
+                  order:
+                    amount: '1000'
+                    currency: PLN
+                    reference: BLIK February Invoice
+                    transaction_configuration:
+                      channel: CNP
+                      country: PL
+                      capture_mode: AUTO
+                      currency_conversion_mode: 'YES'
+                      allowed_payment_methods:
+                        - CARD
+                        - BANK_PAYMENT
+                        - BLIK
+                    payment_method_configuration:
+                      authentication:
+                        preference: NO_CHALLENGE_REQUESTED
+                      apm:
+                        shipping_address_enabled: 'NO'
+                        address_override: 'NO'
+                  notifications:
+                    return_url: 'https://webhook.site/d76a62ef-4bd1-4a96-b8e2-ef0ea00fd2d4'
+                    status_url: 'https://webhook.site/d76a62ef-4bd1-4a96-b8e2-ef0ea00fd2d4'
+                    cancel_url: 'https://webhook.site/d76a62ef-4bd1-4a96-b8e2-ef0ea00fd2d4'
+              Create a HPP link - VISA Installments:
+                value:
+                  account_name: GPECOM_HPP_Transaction_Processing
+                  type: HOSTED_PAYMENT_PAGE
+                  name: Mobile Bill Payment
+                  description: February and March Invoice
+                  usage_mode: SINGLE
+                  usage_limit: '1'
+                  reference: TRANS-20231218062503340Za51b72e6ee
+                  shippable: 'NO'
+                  expiration_date: '2023-12-21T11:55:03Z'
+                  payer:
+                    status: ACTIVE
+                    reference: '1234'
+                    id: ABC123
+                    name: James Mason
+                    language: en
+                    email: jamesmason@example.com
+                    mobile_phone:
+                      country_code: '44'
+                      subsriber_number: '1801555888'
+                    billing_address:
+                      line_1: uprenganj
+                      line_2: gopal bag
+                      line_3: damohnaka
+                      city: jabalpur
+                      postal_code: '482002'
+                      country: IN
+                    address_match_indicator: 'NO'
+                    first_name: James
+                    last_name: Mason
+                  order:
+                    amount: '1000'
+                    currency: EUR
+                    reference: '  REF-23'
+                    transaction_configuration:
+                      channel: CNP
+                      country: US
+                      capture_mode: AUTO
+                      currency_conversion_mode: 'NO'
+                      allowed_payment_methods:
+                        - CARD
+                        - BANK_PAYMENT
+                        - BLIK
+                    payment_method_configuration:
+                      authentication:
+                        preference: NO_CHALLENGE_REQUESTED
+                      apm:
+                        shipping_address_enabled: 'NO'
+                        address_override: 'NO'
+                      storage_mode: PROMPT
+                    shipping_address_mode: ''
+                    shipping_amount: '100'
+                    shipping_address:
+                      line_1: Flat 123
+                      line_2: House 456
+                      line_3: Btower
+                      city: Chicago
+                      postal_code: '50001'
+                      state: IL
+                      country: US
+                    shipping_phone:
+                      country_code: '91'
+                      subscriber_number: '9576454325'
+                  installment:
+                    funding_mode: MERCHANT_FUNDED
+                    terms:
+                      max_time_unit_number: 24
+                      max_amount: '100000'
+                  notifications:
+                    return_url: 'https://webhook.site/0b8b6210-4e1b-48bc-9f26-6893d990961e/'
+                    status_url: 'https://webhook.site/0b8b6210-4e1b-48bc-9f26-6893d990961e/'
+                    cancel_url: 'https://webhook.site/0b8b6210-4e1b-48bc-9f26-6893d990961e/'
       responses:
         '200':
           description: OK
@@ -464,10 +880,14 @@ paths:
                     $ref: '#/components/schemas/usage_limit_LINKS.usage_limit'
                   reference:
                     $ref: '#/components/schemas/reference_LINKS.reference'
-                  name:
-                    $ref: '#/components/schemas/name_LINKS.name'
+                  app_email:
+                    $ref: '#/components/schemas/app_email_LINKS.app_email'
+                  app_ids:
+                    $ref: '#/components/schemas/app_ids_LINKS.app_ids'
                   description:
                     $ref: '#/components/schemas/description_LINKS.description'
+                  name:
+                    $ref: '#/components/schemas/name_LINKS.name'
                   shippable:
                     $ref: '#/components/schemas/shippable_LINKS.shippable'
                   shipping_amount:
@@ -489,6 +909,22 @@ paths:
                         $ref: '#/components/schemas/country_LINKS.transactions.country'
                       allowed_payment_methods:
                         $ref: '#/components/schemas/allowed_payment_methods_LINKS.transactions.allowed_payment_methods'
+                  order:
+                    type: object
+                    properties:
+                      amount:
+                        $ref: '#/components/schemas/amount_LINKS.order.amount'
+                      currency:
+                        $ref: '#/components/schemas/currency_LINKS.order.currency'
+                      reference:
+                        $ref: '#/components/schemas/reference_LINKS.order.reference'
+                      transaction_configuration:
+                        type: object
+                        properties:
+                          country:
+                            $ref: '#/components/schemas/country_LINKS.order.transaction_configuration.country'
+                          channel:
+                            $ref: '#/components/schemas/channel_LINKS.order.transaction_configuration.channel'
                   images:
                     $ref: '#/components/schemas/images_LINKS.images'
                   action:
@@ -559,8 +995,6 @@ paths:
                     shippable: 'YES'
                     viewed_count: '10'
                     expiration_date: '2025-12-20T23:59:59Z'
-                    images:
-                      - null
                     action:
                       id: ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
                       type: LINK_CREATE
@@ -585,6 +1019,100 @@ paths:
                       result_code: SUCCESS
                       app_id: QSokpqb8huzaGIgBJNTTundAQXIACpDH
                       app_name: PayAbli
+                Exchange APP Credentials:
+                  value:
+                    id: LNK_4875d13e2922426eb7bf657c12a787
+                    url: 'https://mcscert.np-mcs.globalpay.com/apis/web-client/unifiedpayments?linkId=LNK_4875d13e2922426eb7bf657c12a787'
+                    status: ACTIVE
+                    type: EXCHANGE_APP_CREDENTIALS
+                    app_email: someone@email.com
+                    app_ids:
+                      - yAIeZMkreGxgyGt7Azvum6iLHZAmlqcM
+                    action:
+                      id: ACT_vVgjbQ0jBmh8ffAte7bM1PXX46HJAI
+                      type: LINK_CREATE
+                      time_created: '2025-05-08T12:42:26.870Z'
+                      result_code: SUCCESS
+                      app_id: yAIeZMkreGxgyGt7Azvum6iLHZAmlqcM
+                      app_name: test_app
+                Create a HPP Link - PayU:
+                  value:
+                    id: LNK_pxaTwigZVaa0wp4SZju99LPmjTBJ3f
+                    account_name: APM_Transaction_Processing
+                    url: 'https://apis.sandbox.globalpay.com/ucp/hpp/redirect/50b33850-988d-4e2c-af7c-b7c2fd978f6a'
+                    status: ACTIVE
+                    type: HOSTED_PAYMENT_PAGE
+                    usage_mode: SINGLE
+                    usage_limit: '1'
+                    name: Mobile Bill Payment
+                    description: March Invoice
+                    expiration_date: '2026-12-21T11:55:03Z'
+                    order:
+                      amount: '1000'
+                      currency: PLN
+                      reference: Test PayU HPP for March Invoice
+                      transaction_configuration:
+                        country: PL
+                        channel: CNP
+                    action:
+                      id: ACT_pxaTwigZVaa0wp4SZju99LPmjTBJ3f
+                      type: LINK_CREATE
+                      time_created: '2025-07-22T17:22:13.767Z'
+                      result_code: SUCCESS
+                      app_id: p2GgW0PntEUiUh4qXhJHPoDxxxxxxxx
+                      app_name: Test_App
+                Create a HPP Link - BLIK:
+                  value:
+                    id: LNK_6I2Ek6dhScaK3aOOqvsTrQUGIxxxxxL
+                    account_name: APM_Transaction_Processing
+                    url: 'https://apis.sandbox.globalpay.com/ucp/hpp/redirect/778488e8-c9c1-4039-b68c-ce40f452e3d2'
+                    status: ACTIVE
+                    type: HOSTED_PAYMENT_PAGE
+                    usage_mode: SINGLE
+                    usage_limit: '1'
+                    name: Mobile Bill Payment
+                    description: February Invoice
+                    expiration_date: '2026-12-21T11:55:03Z'
+                    order:
+                      amount: '1000'
+                      currency: PLN
+                      reference: BLIK February Invoice
+                      transaction_configuration:
+                        country: PL
+                        channel: CNP
+                    action:
+                      id: ACT_6I2Ek6dhScaK3aOOqvsTrQUGIxMyjL
+                      type: LINK_CREATE
+                      time_created: '2025-07-22T17:23:01.036Z'
+                      result_code: SUCCESS
+                      app_id: p2GgW0PntEUiUh4qXhJHPoDxxxxxxxx
+                      app_name: Test_App
+                Create a HPP link - VISA Installments:
+                  value:
+                    id: LNK_skVNQW92nhzHBjlAratmy7Fcfqx9n3
+                    account_name: GPECOM_HPP_Transaction_Processing
+                    url: 'https://apis-qa.globalpay.com/ucp/hpp/redirect/2cb12b44-24c5-4e11-8426-55157fcb4ef2'
+                    status: ACTIVE
+                    type: HOSTED_PAYMENT_PAGE
+                    usage_mode: SINGLE
+                    usage_limit: '1'
+                    name: Mobile Bill Payment
+                    description: February and March Invoice
+                    expiration_date: '2026-02-28T12:34:17.509Z'
+                    order:
+                      amount: '1000'
+                      currency: EUR
+                      reference: '  REF-23'
+                      transaction_configuration:
+                        country: US
+                        channel: CNP
+                    action:
+                      id: ACT_skVNQW92nhzHBjlAratmy7Fcfqx9n3
+                      type: LINK_CREATE
+                      time_created: '2026-02-27T12:34:17.509Z'
+                      result_code: SUCCESS
+                      app_id: hlZAokTftDazLlWDPe8E6VAz5g9rSDPg
+                      app_name: UCP_Test_Automation_App
         '400':
           description: Bad Request
           content:
@@ -615,6 +1143,122 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnknownServerError_501'
+      callbacks:
+        notification:
+          '{$request.body#/notifications/status_url}':
+            post:
+              requestBody:
+                description: ''
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        id:
+                          $ref: '#/components/schemas/id_LINKS.transactions.id'
+                        time_created:
+                          $ref: '#/components/schemas/time_created_LINKS.time_created'
+                        type:
+                          $ref: '#/components/schemas/type_LINKS.type'
+                        status:
+                          $ref: '#/components/schemas/status_LINKS.status'
+                        channel:
+                          $ref: '#/components/schemas/channel_LINKS.channel'
+                        capture_mode:
+                          $ref: '#/components/schemas/capture_mode_LINKS.order.transaction_configuration.capture_mode'
+                        amount:
+                          $ref: '#/components/schemas/amount_LINKS.order.amount'
+                        currency:
+                          $ref: '#/components/schemas/currency_LINKS.transactions.currency'
+                        country:
+                          $ref: '#/components/schemas/country_LINKS.transactions.country'
+                        merchant_id:
+                          $ref: '#/components/schemas/merchant_id_LINKS.merchant_id'
+                        merchant_name:
+                          $ref: '#/components/schemas/merchant_name_LINKS.merchant_name'
+                        account_id:
+                          $ref: '#/components/schemas/account_id_ACTIONS.account_id'
+                        account_name:
+                          $ref: '#/components/schemas/account_name_LINKS.account_name'
+                        reference:
+                          $ref: '#/components/schemas/reference_LINKS.reference'
+                        payment_method:
+                          type: object
+                          properties:
+                            id:
+                              $ref: '#/components/schemas/id_LINKS.payment_method.id'
+                            result:
+                              $ref: '#/components/schemas/result_LINKS.payment_method.result'
+                            message:
+                              $ref: '#/components/schemas/message_LINKS.payment_method.message'
+                            entry_mode:
+                              $ref: '#/components/schemas/entry_mode_LINKS.payment_method.entry_mode'
+                            authentication:
+                              type: object
+                              properties:
+                                three_ds:
+                                  type: object
+                                  properties:
+                                    value_result:
+                                      $ref: '#/components/schemas/value_result_LINKS.payment_method.authentication.three_ds.value_result'
+                        link_data:
+                          type: object
+                          properties:
+                            id:
+                              $ref: '#/components/schemas/id_LINKS.link_data.id'
+                            url:
+                              $ref: '#/components/schemas/url_LINKS.link_data.url'
+                            status:
+                              $ref: '#/components/schemas/status_LINKS.status'
+                            type:
+                              $ref: '#/components/schemas/type_LINKS.type'
+                            usage_mode:
+                              $ref: '#/components/schemas/usage_mode_LINKS.link_data.usage_mode'
+                            usage_limit:
+                              $ref: '#/components/schemas/usage_limit_LINKS.link_data.usage_limit'
+                            reference:
+                              $ref: '#/components/schemas/reference_LINKS.link_data.reference'
+                            name:
+                              $ref: '#/components/schemas/name_LINKS.name'
+                            description:
+                              $ref: '#/components/schemas/description_LINKS.description'
+                            shippable:
+                              $ref: '#/components/schemas/shippable_LINKS.shippable'
+                            shipping_amount:
+                              $ref: '#/components/schemas/shipping_amount_LINKS.shipping_amount'
+                            usage_count:
+                              $ref: '#/components/schemas/usage_count_LINKS.usage_count'
+                            viewed_count:
+                              $ref: '#/components/schemas/viewed_count_LINKS.viewed_count'
+                            expiration_date:
+                              $ref: '#/components/schemas/expriation_date_LINKS.expriation_date'
+                            images:
+                              $ref: '#/components/schemas/b64_content_LINKS.images.b64_content'
+                            notifications:
+                              type: object
+                              properties:
+                                return_url:
+                                  $ref: '#/components/schemas/status_url_LINKS.notifications.status_url'
+                                status_url:
+                                  $ref: '#/components/schemas/status_url_LINKS.notifications.status_url'
+                                cancel_url:
+                                  $ref: '#/components/schemas/cancel_url_LINKS.notifications.cancel_url'
+                        action:
+                          type: object
+                          properties:
+                            id:
+                              $ref: '#/components/schemas/id_ACTIONS.id'
+                            type:
+                              $ref: '#/components/schemas/type_ACTIONS.action.type'
+                            time_created:
+                              $ref: '#/components/schemas/time_created_ACTIONS.action.time_created'
+                            result_code:
+                              $ref: '#/components/schemas/result_code_ACTIONS.action.result_code'
+                            app_id:
+                              $ref: '#/components/schemas/app_id_ACTIONS.action.app_id'
+                            app_name:
+                              $ref: '#/components/schemas/app_name_ACTIONS.action.app_name'
+              responses: {}
       security:
         - bearerAuth: []
       servers:
@@ -627,7 +1271,7 @@ paths:
       tags:
         - Get a link
       summary: Get a single view of a link using the Global Payments link id.
-      description: Get a single view of a link using the Global Payments ID.
+      description: "Get a single view of a link using the Global Payments ID.\r\nAvailability of this feature in production depends on your allowed live configuration. \r\nPlease contact Global Payments before coding this feature to confirm it will be available to you when you go live."
       operationId: get-links-id
       parameters:
         - name: id
@@ -861,8 +1505,8 @@ components:
       required: true
       schema:
         type: string
-        default: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ #Hard Coded for Testing. Don’t submit any personally identifiable information (PII) in requests made with this key.
-        example: Bearer G3FA4TuYGCBiCWs4YpzrALGCYXZJ
+        default: Bearer HoMMVWfRuhrB00wdTifFeMErGGWx
+        example: Bearer HoMMVWfRuhrB00wdTifFeMErGGWx
     X-GP-Version:
       name: X-GP-Version
       in: header
@@ -916,18 +1560,17 @@ components:
       type: string
       enum:
         - ACTIVE
-        - CLOSED
-        - PAID
         - INACTIVE
+        - CLOSED
         - EXPIRED
+        - PAID
       description: |
         The overall status of the instance of the resource.The overall status of the instance of the resource.
-              
-         * `ACTIVE` - When a link is initially created it is in an ACTIVE status waiting to be paid. Links can only be paid when they are in a ACTIVE status.
-         * `CLOSED` - When a multi use link is paid it max number of time it is updated to be CLOSED automatically. A CLOSED link cannot be paid again.
-         * `PAID` - When a single use link is paid once then its status is updated to PAID automatically. A PAID link cannot be paid again.
-         * `INACTIVE` - An INACTIVE link is a link that you have marked as INACTIVE. Links can be manually updated / toggled between ACTIVE and INACTIVE using the PATCH request. A link cannot be paid while it is in an INACTIVE state.
-         * `EXPIRED` - An EXPIRED link is a link the expiration_date set in the request is in the past.
+        *`ACTIVE` - When a link is initially created it is in an ACTIVE status waiting to be paid. Links can only be paid when they are in a ACTIVE status.
+        *`CLOSED` - When a multi use link is paid it max number of time it is updated to be CLOSED automatically. A CLOSED link cannot be paid again.
+        *`PAID` - When a single use link is paid once then its status is updated to PAID automatically. A PAID link cannot be paid again.
+        *`INACTIVE` - An INACTIVE link is a link that you have marked as INACTIVE. Links can be manually updated / toggled between ACTIVE and INACTIVE using the PATCH request. A link cannot be paid while it is in an INACTIVE state.
+        *`EXPIRED` - An EXPIRED link is a link the expiration_date set in the request is in the past.
       example: ACTIVE
     usage_mode_LINKS.usage_mode:
       type: string
@@ -938,7 +1581,7 @@ components:
       example: SINGLE
     name_LINKS.name:
       type: string
-      description: A descriptive name for the link. This will be visible to the customer on the payment page
+      description: A descriptive name for the link. This will be visible to the customer on the payment page.
       minLength: 1
       maxLength: 120
       example: Mobile Bill Payment
@@ -951,7 +1594,7 @@ components:
     reference_LINKS.reference:
       type: string
       description: Merchant defined field to reference the transaction.
-      minLength: 1
+      minLength: 8
       maxLength: 50
     country_LINKS.transactions.country:
       type: string
@@ -959,8 +1602,8 @@ components:
       example: US
     amount_LINKS.transactions.amount:
       type: string
-      description: The amount to transfer between Payer and Merchant for a SALE or a REFUND. It is always represented in the lowest denomiation of the related currency.
-      example: 11099
+      description: The amount to transfer between Payer and Merchant for a SALE or a REFUND. It is always represented in the lowest denomination of the related currency.
+      example: '11099'
     currency_LINKS.transactions.currency:
       type: string
       description: The currency of the amount in ISO-4217(alpha-3)
@@ -976,11 +1619,11 @@ components:
       example: 'YES'
     expriation_date_LINKS.expriation_date:
       type: string
-      description: Indicates the date and time after which the link can no longer be used or paid.
+      description: Indicates the date and time after which the link can no longer be used or paid. Please note that the timezone is in UTC+0
       example: '2025-12-20T23:59:59Z'
     total_record_count:
       type: number
-      description: 'The total number of records across all pages for the search filter. When searching for a collection of resoures, this is returned on the first page only and when the date range is a month or less.'
+      description: 'The total number of records across all pages for the search filter. When searching for a collection of resources, this is returned on the first page only and when the date range is a month or less.'
       example: 1000
     current_page_size:
       type: number
@@ -1008,7 +1651,9 @@ components:
       example: '718575802_978769'
     page_size.paging.page_size:
       type: number
-      description: The total number of records to return in a single page for a list.
+      description: 'The total number of records to return in a single page for a list. The maximum this value can be is 1000, meaning that the maximum number of records to return in a single request is 1000.'
+      minimum: 1
+      maximum: 1000
       default: 5
       example: 5
     page.paging.page:
@@ -1030,29 +1675,31 @@ components:
       example: TIME_CREATED
     url_LINKS.url:
       type: string
-      description: The url that can be used as a redirect or within an iframe to perform the function indicated.
+      description: The URL that the customer should be redirected to in order to make their payment.
       example: 'https://il01merchantportals.propay.com/ProPayCard/Index?authToken=91e981e3-ec11-418c-bf80-2b828c8a5b0f&accountnum=718575797'
     type_LINKS.type:
       type: string
       enum:
         - THIRD_PARTY_PAGE
         - PAYMENT
+        - HOSTED_PAYMENT_PAGE
+        - EXCHANGE_APP_CREDENTIALS
       description: GP API specific label that indicates the type resource an instance is.
       example: THIRD_PARTY_PAGE
     usage_limit_LINKS.usage_limit:
       type: string
       description: The number of the times that the link can be used or paid.
-      example: 5
+      example: '5'
     shipping_amount_LINKS.shipping_amount:
       type: string
       description: Indicates the cost of shipping when the shippable field is set to YES.
-      example: 1000
+      example: '1000'
     usage_count_LINKS.usage_count:
       type: string
       description: Indicates the number of times that a link has already been successfully paid.
-      example: 5
+      example: '5'
     viewed_count_LINKS.viewed_count:
-      type: string
+      type: number
       description: The number of times a link has been viewed.
       example: 10
     images_LINKS.images:
@@ -1066,7 +1713,7 @@ components:
       example: 'https://www.example.com/notifications/return'
     status_url_LINKS.notifications.status_url:
       type: string
-      description: Indicates to Global Payments where the merchant wants to receive notifications of certain events that occur on the Global Payments system.
+      description: Indicates to Global Payments where the merchant wants to receive notifications of certain events that occur on the platform.
       minLength: 1
       maxLength: 255
       example: 'https://www.example.com/notifications/return'
@@ -1076,6 +1723,9 @@ components:
       example: 'https://www.example.com/notifications/return'
     channel_LINKS.transactions.channel:
       type: string
+      enum:
+        - CP
+        - CNP
       description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * CP - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * CNP - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
       example: CP
     allowed_payment_methods_LINKS.transactions.allowed_payment_methods:
@@ -1084,8 +1734,11 @@ components:
       items:
         type: string
         enum:
+          - BLIK
+          - BANK_PAYMENT
           - CARD
-      example: CARD
+      example:
+        - CARD
     id_LINKS.transactions.id:
       type: string
       description: A unique identifier generated by Global Payments to identify the transaction.
@@ -1098,11 +1751,22 @@ components:
       example: '2021-10-01'
     status_LINKS.transactions.status:
       type: string
+      enum:
+        - INITIATED
+        - PREAUTHORIZED
+        - CAPTURED
+        - REVERSED
+        - DECLINED
+        - FUNDED
+        - REJECTED
       description: 'Indicates where a transaction is in its lifecycle. * INITIATED - A Transaction has been successfully initiated. An update on its status is expected via a separate asynchronous notification to a webhook. * PENDING - A Transaction has been sent to the payment method provider and are waiting for a result. * PREAUTHORIZED - A Transaction has been approved but a capture request is required to commence the movement of funds. * CAPTURED - A Transaction has been successfully authorized and captured. The funding process will commence once the transaction remains in this status. * REVERSED - A Transaction that had a status of PENDING, PREAUTHORIZED or CAPTURED has subsequently been reversed which voids/cancels a transaction before it is funded. * DECLINED - A Transaction where the payment method provider declined the transfer of funds between the payer and the merchant. * FUNDED - A Transaction where the funds have transferred between payer and merchant as expected. * REJECTED - A Transaction where the funds were expected to transfer between payer and merchant but the transfer was rejected during the funding process. This rarely happens but when it does it is usually addressed by Global Payments operations.'
       maxLength: 50
       example: INITIATED
     type_LINKS.transactions.type:
       type: string
+      enum:
+        - SALE
+        - REFUND
       description: 'Describes whether the transaction is a SALE, that moves funds from Payer to Merchant, or a REFUND where funds move from Merchant to Payer. * SALE - indicates the movement, or the attempt to move, funds from payer to a merchant. * REFUND - indicates the movement, or the attempt to move, funds from merchant to the payer.'
       example: SALE
     reference_LINKS.transactions.reference:
@@ -1113,7 +1777,7 @@ components:
       example: becf9f3e-4d33-459c-8ed2-0c4affc9555e
     id_LINKS.action.id:
       type: string
-      description: A unique identifier generated by Global Payments to identify an action.
+      description: A unique identifier generated by the platform to identify an action.
       minLength: 1
       maxLength: 50
       example: ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
@@ -1130,7 +1794,8 @@ components:
       example: LINK_CREATE
     time_created_LINKS.action.time_created:
       type: string
-      description: Global Payments time indicating when the object was created in ISO-8601 format.
+      description: Time indicating when the object was created in ISO-8601 format.
+      format: date-time
       minLength: 1
       maxLength: 50
       example: '2021-05-03T21:23:39.718Z'
@@ -1275,7 +1940,6 @@ components:
         - SCHEDULED_FUND
         - UPDATE_BUSINESS_INFORMATION
         - UPDATE_ADDRESS_PHONE
-        - UPDATE_PIN
         - UPDATE_EMAIL
         - PREPAID_CARD_INDEX
         - REQUEST_PREPAID_CARD
@@ -1290,36 +1954,45 @@ components:
         - CONSOLIDATED_FEES
         - LIMITS_RATES_FEES
         - TRANSACTION_REPORT
+        - GB_FEES_REPORT
       description: |
         Describes the function the link created can have:
-          * `DEPOSIT_REPORT`- is a merchant report that will display all transactions in a Global Payments automated sweep.  
-          * `UPDATE_PRIMARY_ACCOUNT` is a page that allows a merchant to update the primary payout bank information on an account. 
-          * `CONFIRM_VALIDATION_DEPOSITS` is a page that allows a merchant to validate the micro deposits that have been dposited to the primary payout payment method on file. 
-          * `SEND_VALIDATION_DEPOSITS` is a page that allows a merchant to trigger 2 micro deposits to the primary bank accoutn on file to validate the bank account. 
-          * `UPDATE_PAYOUT_CARD` is a page that allows a merchant to update the payout card on file. 
-          * `FUND_PAYOUT_CARD` is a page that allows amerchant to initiate a payout to the payout card on file. 
-          * `FUND_PRIMARY_PAYOUT` is a page that allows a merchant to initiate a payout to the primary payout payment method on file. 
-          * `FMA_TRANSFER is a page that allows a merchant to send funds to another merchant.  
-          * `CREDIT_FMA` is a page that allows a merchant to pull funds from a bank account into the funds management account.  
-          * `SCHEDULED_FUND` is a page that allows a merchant to schedule a funds payout to thier primary payout payment method on file. 
-          * `UPDATE_BUSINESS_INFORMATION` is a page that allows a merchant to update the business information associated on thier merchant account. 
-          * `UPDATE_ADDRESS_PHONE` is a page that allows a merchant to update the phone and addresses associated with a merchant account. 
-          * `UPDATE_PIN` is a page that allows a merchant to update the pin to access the IVR line for thier merchant account. 
-          * `UPDATE_EMAIL` is a page that allows a merchant to update the primary email address associated with a merchant account. 
-          * `PREPAID_CARD_INDEX` is a page that allows a merchant to view information about their prepaid debit card linked to thier merchant account balance. 
-          * `REQUEST_PREPAID_CARD` is a page that allows a merchant to agree to terms and conditions and request a prepaid debit card linked to the balance in a merchant account. 
-          * `ACTIVATE_PREPAID_CARD` is a page that allows a merchant to activate a prepaid debit card linked to the balance in thier merchant account.  
-          * `LOST_PREPAID_CARD` is a page that allows a merchant to mark the prepaid debit card linked to their merchant balance lost or stolen.  
-          * `UPDATE_PREPAID_CARD_PIN` is a page that allows a merchant to update the 4 digit pin associated with the prepaid debit card to access funds in the merchant account. 
-          * `REISSUE_PREPAID_CARD` is a page that allows a merchant to request an updated prepaid debit card to access the funds in the merchant account. 
-          * `UPDATE_PAYMENT_METHOD` is a page that allows a merchant to edit/update the account activation fee payment method on file. 
-          * `DOCUMENT_UPLOAD` is a page that will allow a merchant upload documents related to merchant identity validation, underwriting and risk review.  
-          * `CHARGEBACK_REPORT` is a page that will display all active disputed transactions and allow document uploads to respond to the listed disputes for a merchant. 
-          * `ADVANCED_TRANSACTION_SEARCH` is a page that allows a user to set criteria and generate a report. 
-          * `CONSOLIDATED_FEES` is a page that will show the consolidated fees for a merchant within ane stablished timeframe. 
-          * `LIMITS_RATES_FEES` is a page that displays the processing limits and processing fees on a merchant account. 
-          * `TRANSACTION_REPORT` is a page that allows a user to view all transactions within an established timeframe. 
+        DEPOSIT_REPORT is a merchant report that will display all transactions in a Global Payments automated sweep.
+        UPDATE_PRIMARY_ACCOUNT is a page that allows a merchant to update the primary payout bank information on an account.
+        CONFIRM_VALIDATION_DEPOSITS is a page that allows a merchant to validate the micro deposits that have been deposited to the primary payout payment method on file.
+        SEND_VALIDATION_DEPOSITS is a page that allows a merchant to trigger 2 micro deposits to the primary bank account on file to validate the bank account.
+        UPDATE_PAYOUT_CARD is a page that allows a merchant to update the payout card on file.
+        FUND_PAYOUT_CARD is a page that allows amerchant to initiate a payout to the payout card on file.
+        FUND_PRIMARY_PAYOUT is a page that allows a merchant to initiate a payout to the primary payout payment method on file.
+        FMA_TRANSFER is a page that allows a merchant to send funds to another merchant.
+        CREDIT_FMA is a page that allows a merchant to pull funds from a bank account into the funds management account.
+        SCHEDULED_FUND is a page that allows a merchant to schedule a funds payout to their primary payout payment method on file.
+        UPDATE_BUSINESS_INFORMATION is a page that allows a merchant to update the business information associated on their merchant account.
+        UPDATE_ADDRESS_PHONE is a page that allows a merchant to update the phone and addresses associated with a merchant account.
+        UPDATE_EMAIL is a page that allows a merchant to update the primary email address associated with a merchant account.
+        PREPAID_CARD_INDEX is a page that allows a merchant to view information about their prepaid debit card linked to their merchant account balance.
+        REQUEST_PREPAID_CARD is a page that allows a merchant to agree to terms and conditions and request a prepaid debit card linked to the balance in a merchant account.
+        ACTIVATE_PREPAID_CARD is a page that allows a merchant to activate a prepaid debit card linked to the balance in their merchant account.
+        LOST_PREPAID_CARD is a page that allows a merchant to mark the prepaid debit card linked to their merchant balance lost or stolen.
+        UPDATE_PREPAID_CARD_PIN is a page that allows a merchant to update the 4 digit pin associated with the prepaid debit card to access funds in the merchant account.
+        REISSUE_PREPAID_CARD is a page that allows a merchant to request an updated prepaid debit card to access the funds in the merchant account.
+        UPDATE_PAYMENT_METHOD is a page that allows a merchant to edit/update the account activation fee payment method on file.
+        DOCUMENT_UPLOAD is a page that will allow a merchant upload documents related to merchant identity validation, underwriting and risk review.
+        CHARGEBACK_REPORT is a page that will display all active disputed transactions and allow document uploads to respond to the listed disputes for a merchant.
+        ADVANCED_TRANSACTION_SEARCH is a page that allows a user to set criteria and generate a report.
+        CONSOLIDATED_FEES is a page that will show the consolidated fees for a merchant within an established timeframe.
+        LIMITS_RATES_FEES is a page that displays the processing limits and processing fees on a merchant account.
+        TRANSACTION_REPORT is a page that allows a user to view all transactions within an established timeframe.
+        GB_FEES_REPORT is a page that allows a merchant to review fees they will be charged, as is required by PSR (Payment Systems Regulator).
       example: REQUEST_PREPAID_CARD
+    app_email_LINKS.app_email:
+      type: string
+      description: Indicates the email where app credentials should be sent. Used with EXCHANGE_APP_CREDENTIALS.
+      example: someone@email.com
+    app_ids_LINKS.app_ids:
+      type: string
+      description: Indicates the apps you want the credentials for. Credentials will be sent to the requested app_email.
+      example: yAIeZMkreGxgyGt7Azvum6iLHZAmlqcM
     referrer_url_LINKS.referrer_url:
       type: string
       description: The url of the page requesting the page.
@@ -1332,8 +2005,560 @@ components:
       type: string
       description: The IP address of the device requesting the page.
       example: 255.255.255.0
+    iframe_dimensions_domain_LINKS.display_configuration.iframe_dimensions_domain:
+      type: string
+      description: 'This field must contain the domain of the application hosting the iFrame or WebView. This will tell the HPP to post back the height and width any time it changes, for example if an input warning is displayed.'
+    iframe_response_domain_LINKS.display_configuration.iframe_response_domain:
+      type: string
+      description: This field must contain the domain of the application hosting the iFrame or WebView. This will tell the HPP to post back the transaction response to the parent frame or window. The response is posted back as a name/value pair JSON string with the values Base64 encoded. (string)
+    cardholder_name_LINKS.display_configuration.cardholder_name:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      description: This field is used to hide or display the cardholder's full name on the HPP form.
+      default: 'YES'
+    cvv_LINKS.display_configuration.cvv:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      description: This field is used to ask whether or not the cardholder's CVV on the HPP form. By default this is a YES value
+      default: 'YES'
+    timeout_seconds_LINKS.display_configuration.timeout_seconds:
+      type: string
+      description: This field is used to determine how long a HPP session can stay open. By default a session can stay open for 24 hours. The value will be in seconds.
+      minLength: 60
+      maxLength: 43200
+      default: 'NO'
+      example: '60'
+    narrative_LINKS.transactions.narrative:
+      type: string
+      description: Contains the value a merchant wishes to appear on the payer's payment method statement for this transaction.
+      example: CP
+    expiration_date_LINKS.expiration_date:
+      type: string
+      description: Indicates the date and time after which the link can no longer be used or paid. This field is not available for Hosted Payment Page (HPP) links. Please note that the timezone is in UTC+0
+      example: '2025-12-20T23:59:59Z'
+    message_type_LINKS.message_type:
+      type: string
+      enum:
+        - EMAIL
+        - SMS
+        - EMAIL_AND_SMS
+      description: Indicates the delivery method of the link notification
+      example: EMAIL
     b64_content_LINKS.images.b64_content:
       type: string
       description: Base64 encoded image.
+    status_LINKS.payer.status:
+      type: string
+      enum:
+        - NEW
+        - ACTIVE
+      description: |
+        Indicates whether the payer is new or existing (active).
+        `NEW ` - Payer is newly created. Customer can store the card on the HPP, which is associated with the Payer ID.
+        `ACTIVE `- Payer was created previously. Any payment methods stored with this payer are displayed on the HPP.
+      minLength: 1
+      maxLength: 50
+      example: ACTIVE
+    id_LINKS.payer.id:
+      type: string
+      description: A unique identifier generated by the platform to identify a payer
+      minLength: 1
+      maxLength: 50
+      example: PYR_a488356f29ac4e4c9a89977652a3215e
+    name_LINKS.payer.name:
+      type: string
+      description: Name of the payer
+      minLength: 1
+      maxLength: 50
+    first_name_LINKS.payer.first_name:
+      type: string
+      description: The first name of the Payer
+      minLength: 1
+      maxLength: 50
+      example: John
+    last_name_LINKS.payer.last_name:
+      type: string
+      description: The last name of the Payer
+      minLength: 1
+      maxLength: 50
+      example: James
+    language_LINKS.payer.language:
+      type: string
+      description: Language used by the payer
+      minLength: 1
+      maxLength: 50
+      example: en
+    email_LINKS.payer.email:
+      type: string
+      description: The email of the payer
+      minLength: 1
+      maxLength: 50
+    email_subject_LINKS.payer.email_subject:
+      type: string
+      description: The subject of the email notification.
+    email_content_LINKS.payer.email_content:
+      type: string
+      description: The content of the email notification
+    country_code_LINKS.payer.mobile_phone.country_code:
+      type: string
+      description: |
+        The country code that is used when dialling the phone number from another country.
+        For example for USA or Canada it would be +1 for England it would be +44 for Germany it would be +49
+      minLength: 1
+      maxLength: 50
+    subscriber_number_LINKS.payer.mobile_phone.subscriber_number:
+      type: string
+      description: Mobile phone number of the payer.
+      minLength: 1
+      maxLength: 50
+    subscriber_content_LINKS.payer.mobile_phone.subscriber_content:
+      type: string
+      description: The content for the SMS notification.
+    line_1_LINKS.payer.billing_address.line_1:
+      type: string
+      description: First line of the address.
+      minLength: 1
+      maxLength: 50
+      example: 123 Merchant Street
+    line_2_LINKS.payer.billing_address.line_2:
+      type: string
+      description: Second line of the billing address.
+      minLength: 1
+      maxLength: 50
+      example: Suite 2
+    line_3_LINKS.payer.billing_address.line_3:
+      type: string
+      description: Third line of the billing address.
+      minLength: 1
+      maxLength: 50
+      example: Foyer
+    city_LINKS.payer.billing_address.city:
+      type: string
+      description: City associated with the billing address.
+      minLength: 1
+      maxLength: 50
+      example: Beverly Hills
+    postal_code_LINKS.payer.billing_address.postal_code:
+      type: string
+      description: Postal code of the billing address.
+      minLength: 1
+      maxLength: 50
+      example: '90210'
+    country_LINKS.payer.billing_address.country:
+      type: string
+      description: This is the country of the address represented as in ISO-3166-1(alpha-2 code) format.
+      minLength: 2
+      maxLength: 2
+      example: US
+    address_match_indicator_LINKS.payer.address_match_indicator:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      description: Indicates whether the shipping address matches the billing address.
+      minLength: 1
+      maxLength: 50
+      example: 'YES'
+    amount_LINKS.order.amount:
+      type: string
+      description: The amount to transfer between Payer and Merchant for a SALE or a REFUND. It is always represented in the lowest denomination of the related currency. and with no decimal point.
+      minLength: 1
+      maxLength: 50
+      example: '1999'
+    currency_LINKS.order.currency:
+      type: string
+      description: The currency of the amount in ISO-4217(alpha-3).
+      minLength: 3
+      maxLength: 3
+      example: USD
+    reference_LINKS.order.reference:
+      type: string
+      description: Merchant defined field to reference the order
+      minLength: 1
+      maxLength: 50
+      example: becf9f3e-4d33-459c-8ed2-0c4affc95
+    channel_LINKS.order.transaction_configuration.channel:
+      type: string
+      enum:
+        - CP
+        - CNP
+      description: |
+        Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario.
+        `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk.
+        `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+      minLength: 1
+      maxLength: 50
+      example: CNP
+    country_LINKS.order.transaction_configuration.country:
+      type: string
+      description: 'This is the country the merchant is domiciled in. For example, if the merchant is based in Canada it must be set to CA.if the merchant is based in England it must be set to GB.if the merchant is based in USA it must be set to US.The country in ISO-3166-1(alpha-2 code) format.'
+      minLength: 2
+      maxLength: 2
+      example: US
+    capture_mode_LINKS.order.transaction_configuration.capture_mode:
+      type: string
+      enum:
+        - AUTO
+        - LATER
+        - MULTIPLE
+      description: |
+        Indicates whether the transaction is to be captured automatically, later or later using more than 1 partial capture.
+        `AUTO -`If a transaction is authorized, funds will exchange between the payer and merchant automatically and as soon as possible.
+        `LATER` - If a transaction is authorized, funds will not exchange between the payer and merchant automatically and will require a subsequent separate action to capture that transaction and start the funding process. Only one successful capture is permitted.
+        `MULTIPLE` - If a transaction is authorized, funds will not exchange between the payer and merchant automatically. One or more subsequent separate capture actions are required to capture that transaction in parts and start the funding process for the part captured. One or many successful capture are permitted once the total amount captured is within a range of the original authorized amount.
+      minLength: 1
+      maxLength: 50
+      example: AUTO
+    currency_conversion_mode_LINKS.order.transaction_configuration.currency_conversion_mode:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      description: This field determines whether DCC is activated or not
+      minLength: 1
+      maxLength: 50
+      example: 'YES'
+    allowed_payment_methods_LINKS.order.transaction_configuration.allowed_payment_methods:
+      type: array
+      description: 'Indicates which payment method(s) to offer the customer, or route customers to a specific one.'
+      items:
+        type: string
+        enum:
+          - CARD
+          - BLIK
+          - BANK_PAYMENT
+      example:
+        - CARD
+    card_type_LINKS.order.transaction_configuration.surcharge.card_type:
+      type: string
+      enum:
+        - DEBIT
+        - CREDIT
+        - COMMERCIAL
+      description: 'This indicates whether the surcharge is for a DEBIT, CREDIT or COMMERCIAL card type by the merchant'
+    amount_LINKS.order.transaction_configuration.surcharge.amount:
+      type: string
+      description: The amount that reflects the additional charge the merchant applied to the transaction for using a specific payment method.
+      minLength: 1
+      maxLength: 50
+      example: Chicago
+    preference_LINKS.order.payment_method_configuration.authentication.preference:
+      type: string
+      enum:
+        - NO_PREFERENCE
+        - NO_CHALLENGE_REQUESTED
+        - CHALLENGE_PREFERRED
+        - CHALLENGE_MANDATED
+        - NO_CHALLENGE_REQUESTED_TRANSACTION_RISK_ANALYSIS_PERFORMED
+        - NO_CHALLENGE_REQUESTED_DATA_SHARE_ONLY
+        - NO_CHALLENGE_REQUESTED_SCA_ALREADY_PERFORMED
+        - NO_CHALLENGE_REQUESTED_WHITELIST
+        - CHALLENGE_REQUESTED_PROMPT_FOR_WHITELIST
+      description: Indicates whether a challenge is requested for this transaction. The Issuer may override whatever preference is specified in this field. Allowed values please refer to authentication specification
+      minLength: 1
+      maxLength: 50
+      example: NO_PREFERENCE
+    exempt_status_LINKS.order.payment_method_configuration.authentication.exempt_status:
+      type: string
+      enum:
+        - LOW_VALUE
+      description: |
+        Indicates if any exemptions apply to this transaction in the case of HOSTED_PAYMENT_PAGE type transactions.
+        * `LOW_VALUE` - Transactions up to 30 EUR (or converted equivalent) can be exempted from SCA (Strong Customer Authentication), dependent on the following criteria:
+        Up to a maximum of five (5) consecutive transactions. Or, up to a cumulative limit of 100 EUR (or converted equivalent)*
+      minLength: 1
+      maxLength: 50
+      example: LOW_VALUE
+    billing_address_required_LINKS.order.payment_method_configuration.authentication.billing_address_required:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      description: This flag is set by the merchant to indicate if the billing address for 3DS authentication of a transaction can be skipped.
+      minLength: 1
+      maxLength: 50
+      example: 'NO'
+    shipping_address_enabled_LINKS.order.payment_method_configuration.apm.shipping_address_enabled:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      description: This field determines whether the passing of PayPal shipping address details will be activated or not
+      minLength: 1
+      maxLength: 50
+      example: 'NO'
+    address_override_LINKS.order.payment_method_configuration.apm.address_override:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      description: Determines whether the shipping address can be changed by the customer on the PayPal review page
+      minLength: 1
+      maxLength: 50
+      example: 'NO'
+    storage_mode_LINKS.order.payment_method_configuration.storage_mode:
+      type: string
+      enum:
+        - ALWAYS
+        - ON_SUCCESS
+        - PROMPT
+      description: |
+        Indicates whether to store the card as part of a transaction.
+        `ALWAYS` - The card information is always stored irrespective of whether the payment method authorization was successful or not
+        `ON_SUCCESS` - The card information is only stored if the payment method authorization was successful
+        `PROMPT` - Prompt the payer to store their card
+      example: PROMPT
+    entry_mode_LINKS.order.payment_method_configuration.entry_mode:
+      type: string
+      enum:
+        - ECOM
+        - MOTO
+      description: |
+        Indicates how the payment method information was obtained by the Merchant for this transaction.
+
+        MOTO - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail.
+        ECOM - A CNP channel entry mode where the payment method was obtained via a browser
+    provider_LINKS.order.payment_method_configuration.digital_wallets.provider:
+      type: array
+      description: 'This field is used to enable/disable Google Pay, Apple Pay, Click to Pay button on HPP.'
+      items:
+        type: string
+        enum:
+          - GOOGLE_PAY
+          - APPLE_PAY
+          - CLICK_TO_PAY
+    model_LINKS.order.payment_method_configuration.stored_credential.model:
+      type: string
+      enum:
+        - UNSCHEDULED
+        - RECURRING
+        - INSTALLMENT
+      description: |
+        Indicates the transaction processing model being executed when using stored credentials for merchant initiated transactions.
+        * `UNSCHEDULED` - the transaction is ad hoc or unscheduled. For example a payer visiting a merchant to make purchase using the payment method stored with the merchant.
+        * `RECURRING` - The transaction is a repeat transaction initiated by the merchant and taken using the payment method stored with the merchant, as part of an agreed schedule of transactions.
+        * `INSTALLMENT` - The transaction is a repeat transaction initiated by the merchant and taken using the payment method stored with the merchant, as part of an agreed schedule of transactions and where the amount is known and agreed in advanced. For example the payment in full of a good in fixed installments over a defined period of time.
+    initiator_LINKS.order.payment_method_configuration.stored_credential.initiator:
+      type: string
+      enum:
+        - PAYER
+        - MERCHANT
+      description: |
+        Indicates whether the Merchant or the Payer initiated the creation of a transaction.
+        * `PAYER` - The transaction was initiated by the customer who is paying the merchant.
+        * `MERCHANT` - The transaction was initiated by the merchant, who is getting paid by the payer.
+    sequence_LINKS.order.payment_method_configuration.stored_credential.sequence:
+      type: string
+      enum:
+        - FIRST
+        - SUBSEQUENT
+      description: 'Indicates the order of this transaction in the sequence of a planned, repeating transaction processing model.'
+    line_1_LINKS.order.shipping_address.line_1:
+      type: string
+      description: First line of the address
+      minLength: 1
+      maxLength: 50
+      example: Flat 123
+    line_2_LINKS.order.shipping_address.line_2:
+      type: string
+      description: Second line of the address
+      minLength: 1
+      maxLength: 50
+      example: House 456
+    line_3_LINKS.order.shipping_address.line_3:
+      type: string
+      description: Third line of the address
+      minLength: 1
+      maxLength: 50
+      example: Btower
+    city_LINKS.order.shipping_address.city:
+      type: string
+      description: The city associated with the address
+      minLength: 1
+      maxLength: 50
+      example: Chicago
+    postal_code_LINKS.order.shipping_address.postal_code:
+      type: string
+      description: The postal code of the address.
+      minLength: 1
+      maxLength: 50
+      example: '50001'
+    state_LINKS.order.shipping_address.state:
+      type: string
+      description: 'The state or region of the address. ISO 3166-2 minus the country code itself. For example, US Illinois = IL, or in the case of GB counties Wiltshire = WI or Aberdeenshire = ABD'
+      minLength: 1
+      maxLength: 50
+      example: IL
+    country_code_LINKS.order.shipping_phone.country_code:
+      type: string
+      description: |
+        The country code that is used when dialling the phone number from another country.
+        For example for USA or Canada it would be +1 for England it would be +44 for Germany it would be +49
+      minLength: 1
+      maxLength: 50
+      example: '1'
+    subscriber_number_LINKS.order.shipping_phone.subscriber_number:
+      type: string
+      description: The phone number.
+      minLength: 1
+      maxLength: 50
+      example: '23456789'
+    funding_mode_LINKS.installment.funding_mode:
+      type: string
+      enum:
+        - MERCHANT_FUNDED
+        - CONSUMER_FUNDED
+        - HYBRID_FUNDED
+        - BILATERAL
+        - ANY
+      description: |
+        Indicates the funding mode of the Installment plan. Availablity of each funding mode is based on your live configuration
+        * MERCHANT_FUNDED - This will return merchant funded plans only
+        * CONSUMER_FUNDED - This will return consumer funded plans only
+        * HYBRID_FUNDED - This will return both merchant and consumer funded plans
+        * BILATERAL - This will return BILATERAL plans only
+        * ANY - This will return all available plans
+      minLength: 1
+      maxLength: 50
+      example: MERCHANT_FUNDED
+    max_time_unit_number_LINKS.installment.terms.max_time_unit_number:
+      type: number
+      description: This is used to set the maximum number of months for an available installment plan
+      minimum: 1
+      maximum: 3
+      example: 24
+    max_amount_LINKS.installment.terms.max_amount:
+      type: string
+      description: |
+        This is used to set the max amount of each installment in an available plan. It determines how plans are returned.
+        if amount > max_amout then Installment plans are returned in order of longest duration
+        if amount < max_amount then Installment plans are returned in order of shortest duration
+      example: '200'
+    time_created_LINKS.time_created:
+      type: string
+      description: GP API specific created time indicating when the instance of the resource was created.
+      format: date-time
+      example: '2023-03-10T13:14:48.386Z'
+    channel_LINKS.channel:
+      type: string
+      description: Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario. * CP - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk. * CNP - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone.
+      example: CP
+    account_id_ACTIONS.account_id:
+      type: string
+      description: A unique identifier for the merchant account set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      example: TRA_86920f927028745yt34d077d88beb29b
+    id_LINKS.payment_method.id:
+      type: string
+      description: This is the ID of the Payment Method used in the transaction this callback is referring to
+      example: PMT_30d0e8b2-1a00-4fa6-8397-bccc967a6172
+    result_LINKS.payment_method.result:
+      type: string
+      description: The result code associated with the payment method used to process this transaction. It is returned from another system used to process the payment method.
+      minLength: 1
+      maxLength: 50
+    message_LINKS.payment_method.message:
+      type: string
+      description: The result message that better explains the result code.
+      example: '[ test system ] AUTHORISED'
+    entry_mode_LINKS.payment_method.entry_mode:
+      type: string
+      enum:
+        - MOTO
+        - ECOM
+        - IN_APP
+        - CHIP
+        - SWIPE
+        - MANUAL
+        - PHONE
+        - MAIL
+        - CONTACTLESS_CHIP
+        - CONTACTLESS_SWIPE
+        - PRESENT
+        - UNKNOWN
+      description: |
+        Indicates how the payment method information was obtained by the Merchant for this transaction.
+        * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail.
+        * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser.
+        * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only.
+        * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip.
+        * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information.
+        * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device.
+        * `CONTACTLESS_CHIP` - A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a card on or near a device to exchange card information.
+        * `CONTACTLESS_SWIPE` - A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information
+        * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone.
+        * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
+        * `PRESENT`- The entry mode cannot be determined but it is a Customer Present transaction.
+        * `UNKNOWN` - The entry mode for this transaction cannot be determined.
+      minLength: 1
+      maxLength: 50
+      example: ECOM
+    value_result_LINKS.payment_method.authentication.three_ds.value_result:
+      type: string
+      description: The result of the three_ds value validation by the brands or issuing bank.
+      minLength: 1
+      maxLength: 50
+    id_LINKS.link_data.id:
+      type: string
+      description: A unique identifier generated by Global Payments to identify the link.
+      example: LNK_7II5TvOfzAeo46LOqUeUyBQFnhW5R0
+    url_LINKS.link_data.url:
+      type: string
+      description: The URL that the customer was redirected to in order to make their payment
+      example: 'https://apis.sandbox.globalpay.com/ucp/postback/MjAyMTAzMjJfeU85RVhx'
+    usage_mode_LINKS.link_data.usage_mode:
+      type: string
+      description: Indicates whether the link was used once or multiple times
+      example: SINGLE
+    usage_limit_LINKS.link_data.usage_limit:
+      type: string
+      description: The number of the times that the link could be used or paid.
+      example: '5'
+    reference_LINKS.link_data.reference:
+      type: string
+      description: Merchant defined field to reference the transaction.
+      minLength: 1
+      maxLength: 50
+      example: ABC123
+    id_ACTIONS.id:
+      type: string
+      description: ID of the action that was executed that initialed the activity this notification is providing an update on.
+      example: ACT_124234234234234234
+    type_ACTIONS.action.type:
+      type: string
+      enum:
+        - TRANSFER
+        - etc.
+      description: |
+        Indicates the specific action taken.
+        * `ACTION_LIST` - Get a list of actions
+        * `ACTION_SINGLE` - Get a single action
+      example: TRANSFER
+    time_created_ACTIONS.action.time_created:
+      type: string
+      description: Time indicating when the object was created in ISO-8601 format.
+      format: date-time
+      example: '2021-05-03T21:23:39.718Z'
+    result_code_ACTIONS.action.result_code:
+      type: string
+      enum:
+        - SUCCESS
+        - DECLINED
+        - PENDING
+      description: The result of the action executed.
+      example: SUCCESS
+    app_id_ACTIONS.action.app_id:
+      type: string
+      description: The id of the app that was used to create the token.
+      example: uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
+    app_name_ACTIONS.action.app_name:
+      type: string
+      description: The name of the app the user gave to the application.
+      example: my_lovely_app
 security:
   - bearerAuth: []
