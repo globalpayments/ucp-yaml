@@ -1,4 +1,4 @@
-openapi: 3.0.2
+openapi: 3.0.3
 info:
   version: 2021 03 22
   title: Verifications
@@ -7,7 +7,7 @@ info:
     name: API Integrations
     url: 'https://developer.globalpay.com/?gp-api=true'
     email: api.integrations@globalpay.com
-  x-gp-yaml-file-version: 1
+  x-gp-yaml-file-version: 1.2
 servers:
   - url: 'https://apis.sandbox.globalpay.com/ucp'
     description: Sandbox Environment
@@ -47,7 +47,90 @@ paths:
                     card:
                       number: '4263970000005262'
                       expiry_month: '05'
-                      expiry_year: '25'
+                      expiry_year: '30'
+              Perform a Balance Inquiry - Prepaid Card:
+                value:
+                  account_name: Transaction_Processing
+                  type: SALE
+                  channel: CP
+                  amount: '156'
+                  currency: CAD
+                  country: CA
+                  capture_mode: AUTO
+                  reference: testreference
+                  payment_method:
+                    name: Jane Doe
+                    entry_mode: MANUAL
+                    card:
+                      funding: PREPAID
+                      number: '4003000123456781'
+                      expiry_month: '12'
+                      expiry_year: '30'
+              Verify a Card with Encrypted card details:
+                value:
+                  channel: CNP
+                  country: CA
+                  currency: CAD
+                  reference: myuniquereference
+                  account_name: transaction_processing
+                  payment_method:
+                    first_name: John
+                    last_name: Doe
+                    entry_mode: ECOM
+                    card:
+                      number: DGYTNKBU67JHACYA==
+                      cvv: '123'
+                      expiry_month: '12'
+                      expiry_year: '26'
+                      cvv_indicator: PRESENT
+                      avs_address: string
+                      avs_postal_code: string
+                      decryption_required: 'YES'
+                    encryption:
+                      version: '05'
+                      method: KSN
+                      info: RVNRGvbAEkHI=
+                      type: ASCII
+              Perform ACH verification to validate bank account details:
+                value:
+                  merchant_id: MER_7a20bd695b6c4ca8b5cedb8300b40e66
+                  account_id: TRA_ae0784fab6f246c0b676f66f7c9c434a
+                  channel: CNP
+                  currency: USD
+                  country: US
+                  capture_mode: AUTO
+                  reference: TRANS-20180114123459878
+                  lane_id: '2272338'
+                  payment_method:
+                    first_name: Jane
+                    last_name: Doe
+                    entry_mode: ECOM
+                    narrative: '123'
+                    bank_transfer:
+                      account_number: '123456678'
+                      account_type: SAVING
+                      bank:
+                        code: '083908420'
+                        name: First Union
+                  payer:
+                    name: ANGELA SMITH
+                    reference: '123'
+                    date_of_birth: '1967-08-13'
+                    landline_phone: '235555'
+                    mobile_phone: '222222'
+                    home_phone:
+                      country_code: '44'
+                      subscriber_number: '1234512346'
+                    work_phone:
+                      country_code: '44'
+                      subscriber_number: '1234512346'
+                    billing_address:
+                      line_1: line_1
+                      line_2: line_2
+                      city: test
+                      state: AZ
+                      postal_code: '22114'
+                      country: USA
       responses:
         '200':
           description: OK
@@ -55,6 +138,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/create_response'
+              examples:
+                Perform a Balance Inquiry - Prepaid Card:
+                  value:
+                    id: VER_NBTL2Kihd8Z878oaF764RQECrizXMK
+                    time_created: '2026-03-03T20:22:32.503Z'
+                    type: VERIFICATION
+                    status: VERIFIED
+                    channel: CP
+                    country: CA
+                    merchant_id: MER_c5d37eaf0e3841e083c232b2318af55c
+                    merchant_name: Sandbox_Merchant_4
+                    account_id: TRA_27c901760029495f813afbb0dab197ef
+                    account_name: transaction_processing
+                    reference: '99439631'
+                    payment_method:
+                      result: '00'
+                      message: APPROVAL
+                      entry_mode: MANUAL
+                      card:
+                        funding: PREPAID
+                        brand: VISA
+                        masked_number_last4: XXXXXXXXXXXX6781
+                        authcode: VI0000
+                        brand_reference: '006062400006552'
+                        available_balance: '-123456789011'
+                    batch_id: ''
+                    action:
+                      id: ACT_NBTL2Kihd8Z878oaF764RQECrizXMK
+                      type: VERIFY
+                      time_created: '2026-03-03T20:22:32.503Z'
+                      result_code: SUCCESS
+                      app_id: T6og1tbECpHFeO104qUM383oq5bOJ12r
+                      app_name: Postman_Collection_Test
+                Perform ACH verification to validate bank account details:
+                  value:
+                    id: VER_2GjnPZynN2bciMlcApl0GSkme7U5xj
+                    time_created: '2026-05-27T10:53:55.134Z'
+                    type: VERIFICATION
+                    status: VERIFIED
+                    channel: CNP
+                    country: US
+                    merchant_id: MER_7a20bd695b6c4ca8b5cedb8300b40e66
+                    merchant_name: internet2
+                    account_id: TRA_ae0784fab6f246c0b676f66f7c9c434a
+                    account_name: Mindbody_Processing
+                    reference: TRANS-20180114123459878
+                    payment_method:
+                      result: A0000
+                      message: Success
+                      bank_transfer:
+                        account_number: XXXXX6678
+                        account_type: SAVING
+                        bank:
+                          name: First Union
+                    action:
+                      id: ACT_2GjnPZynN2bciMlcApl0GSkme7U5xj
+                      type: VERIFY
+                      time_created: '2026-05-27T10:53:55.134Z'
+                      result_code: SUCCESS
+                      app_id: VuT4qLPs98hwVMnGAPkWz3KDIuAumlwz
+                      app_name: ecom_transit_app
         '400':
           $ref: '#/components/responses/RequestInvalid_400'
         '401':
@@ -182,6 +326,8 @@ components:
       properties:
         account_name:
           $ref: '#/components/schemas/account_name_VERIFICATIONS.account_name'
+        account_id:
+          $ref: '#/components/schemas/account_id_VERIFICATIONS.account_id'
         channel:
           $ref: '#/components/schemas/channel_VERIFICATIONS.channel'
         currency:
@@ -190,6 +336,24 @@ components:
           $ref: '#/components/schemas/reference_VERIFICATIONS.reference'
         country:
           $ref: '#/components/schemas/country_VERIFICATIONS.country'
+        merchant_identifier:
+          $ref: '#/components/schemas/merchant_identifier_VERIFICATIONS.merchant_identifier'
+        mode:
+          $ref: '#/components/schemas/mode_VERIFICATIONS.mode'
+        language:
+          $ref: '#/components/schemas/language_VERIFICATIONS.language'
+        capture_mode:
+          $ref: '#/components/schemas/capture_mode_VERIFICATIONS.capture_mode'
+        amount:
+          $ref: '#/components/schemas/amount_VERIFICATIONS.amount'
+        user_reference:
+          $ref: '#/components/schemas/user_reference_VERIFICATIONS.user_reference'
+        authorization_mode:
+          $ref: '#/components/schemas/authorization_mode_VERIFICATIONS.authorization_mode'
+        merchant_category_code:
+          $ref: '#/components/schemas/merchant_category_code_VERIFICATIONS.merchant_category_code'
+        account_name_inquiry_mode:
+          $ref: '#/components/schemas/account_name_inquiry_mode_VERIFICATIONS.account_name_inquiry_mode'
         payment_method:
           type: object
           properties:
@@ -205,6 +369,10 @@ components:
               $ref: '#/components/schemas/entry_mode_VERIFICATIONS.payment_method.entry_mode'
             fingerprint_mode:
               $ref: '#/components/schemas/fingerprint_mode_VERIFICATIONS.payment_method.fingerprint_mode'
+            storage_mode:
+              $ref: '#/components/schemas/storage_mode_VERIFICATIONS.payment_method.storage_mode'
+            account_id:
+              $ref: '#/components/schemas/account_id_VERIFICATIONS.payment_method.account_id'
             encryption:
               type: object
               properties:
@@ -214,6 +382,8 @@ components:
                   $ref: '#/components/schemas/version_VERIFICATIONS.payment_method.encryption.version'
                 info:
                   $ref: '#/components/schemas/info_VERIFICATIONS.payment_method.encryption.info'
+                type:
+                  $ref: '#/components/schemas/type_VERIFICATIONS.payment_method.encryption.type'
             authentication:
               type: object
               properties:
@@ -237,6 +407,8 @@ components:
             card:
               type: object
               properties:
+                funding:
+                  $ref: '#/components/schemas/funding_VERIFICATIONS.payment_method.card.funding'
                 number:
                   $ref: '#/components/schemas/number_VERIFICATIONS.payment_method.card.number'
                 expiry_month:
@@ -245,6 +417,8 @@ components:
                   $ref: '#/components/schemas/expiry_year_VERIFICATIONS.payment_method.card.expiry_year'
                 track:
                   $ref: '#/components/schemas/track_VERIFICATIONS.payment_method.card.track'
+                pin_block:
+                  $ref: '#/components/schemas/pin_block_VERIFICATIONS.payment_method.card.pin_block'
                 cvv:
                   $ref: '#/components/schemas/cvv_VERIFICATIONS.payment_method.card.cvv'
                 cvv_indicator:
@@ -253,6 +427,190 @@ components:
                   $ref: '#/components/schemas/avs_address_VERIFICATIONS.payment_method.card.avs_address'
                 avs_postal_code:
                   $ref: '#/components/schemas/avs_postal_code_VERIFICATIONS.payment_method.card.avs_postal_code'
+                decryption_required:
+                  $ref: '#/components/schemas/decryption_required_VERIFICATIONS.payment_method.card.decryption_required'
+                payment_account_reference_mode:
+                  $ref: '#/components/schemas/payment_account_reference_mode_VERIFICATIONS.payment_method.card.payment_account_reference_mode'
+                issuer:
+                  $ref: '#/components/schemas/issuer_VERIFICATIONS.payment_method.card.issuer'
+                currency:
+                  $ref: '#/components/schemas/currency_VERIFICATIONS.payment_method.card.currency'
+                country:
+                  $ref: '#/components/schemas/country_VERIFICATIONS.payment_method.card.country'
+                eci:
+                  $ref: '#/components/schemas/eci_VERIFICATIONS.payment_method.card.eci'
+                network_token_expiry_month:
+                  $ref: '#/components/schemas/network_token_expiry_month_VERIFICATIONS.payment_method.card.network_token_expiry_month'
+                network_token_expiry_year:
+                  $ref: '#/components/schemas/network_token_expiry_year_VERIFICATIONS.payment_method.card.network_token_expiry_year'
+                track_number:
+                  $ref: '#/components/schemas/track_number_VERIFICATIONS.payment_method.card.track_number'
+                masked_network_token_last4:
+                  $ref: '#/components/schemas/masked_network_token_last4_VERIFICATIONS.payment_method.card.masked_network_token_last4'
+                transaction_link_reference:
+                  $ref: '#/components/schemas/transaction_link_reference_VERIFICATIONS.payment_method.card.transaction_link_reference'
+                requestor_reference:
+                  $ref: '#/components/schemas/requestor_reference_VERIFICATIONS.payment_method.card.requestor_reference'
+                payment_account_reference:
+                  $ref: '#/components/schemas/payment_account_reference_VERIFICATIONS.payment_method.card.payment_account_reference'
+            bank_transfer:
+              type: object
+              properties:
+                account_number:
+                  $ref: '#/components/schemas/account_number_VERIFICATIONS.payment_method.bank_transfer.account_number'
+                account_type:
+                  $ref: '#/components/schemas/account_type_VERIFICATIONS.payment_method.bank_transfer.account_type'
+                check_reference:
+                  $ref: '#/components/schemas/check_reference_VERIFICATIONS.payment_method.bank_transfer.check_reference'
+                verification_level:
+                  $ref: '#/components/schemas/verification_level_VERIFICATIONS.payment_method.bank_transfer.verification_level'
+                bank:
+                  type: object
+                  properties:
+                    code:
+                      $ref: '#/components/schemas/code_VERIFICATIONS.payment_method.bank_transfer.bank.code'
+                    name:
+                      $ref: '#/components/schemas/name_VERIFICATIONS.payment_method.bank_transfer.bank.name'
+                    international_code:
+                      $ref: '#/components/schemas/international_code_MERCHANTS.payment_methods.bank_transfer.bank.international_code'
+            digital_wallet:
+              type: object
+              properties:
+                avs_action:
+                  $ref: '#/components/schemas/avs_action_VERIFICATIONS.payment_method.digital_wallet.avs_action'
+                tag_response:
+                  $ref: '#/components/schemas/tag_response_VERIFICATIONS.payment_method.digital_wallet.tag_response'
+                funding:
+                  $ref: '#/components/schemas/funding_VERIFICATIONS.payment_method.digital_wallet.funding'
+                avs_postal_code_result:
+                  $ref: '#/components/schemas/avs_postal_code_result_VERIFICATIONS.payment_method.digital_wallet.avs_postal_code_result'
+                payment_account_reference:
+                  $ref: '#/components/schemas/payment_account_reference_VERIFICATIONS.payment_method.card.payment_account_reference'
+                avs_address_result:
+                  $ref: '#/components/schemas/avs_address_result_VERIFICATIONS.payment_method.digital_wallet.avs_address_result'
+                cvv_result:
+                  $ref: '#/components/schemas/cvv_result_VERIFICATIONS.payment_method.digital_wallet.cvv_result'
+        payer:
+          type: object
+          properties:
+            first_name:
+              $ref: '#/components/schemas/first_name_VERIFICATIONS.payer.first_name'
+            last_name:
+              $ref: '#/components/schemas/last_name_VERIFICATIONS.payer.last_name'
+            name:
+              $ref: '#/components/schemas/name_VERIFICATIONS.payer.name'
+            reference:
+              $ref: '#/components/schemas/reference_VERIFICATIONS.payer.reference'
+            email:
+              $ref: '#/components/schemas/email_VERIFICATIONS.payer.email'
+            'landline_phone ':
+              $ref: '#/components/schemas/landline_phone%20_VERIFICATIONS.payer.landline_phone%20'
+            mobile_phone:
+              $ref: '#/components/schemas/mobile_phone_VERIFICATIONS.payer.mobile_phone'
+            home_phone:
+              type: object
+              properties:
+                country_code:
+                  $ref: '#/components/schemas/country_code_VERIFICATIONS.payer.home_phone.country_code'
+                subscriber_number:
+                  $ref: '#/components/schemas/subscriber_number_VERIFICATIONS.payer.home_phone.subscriber_number'
+            work_phone:
+              type: object
+              properties:
+                country_code:
+                  $ref: '#/components/schemas/country_code_VERIFICATIONS.payer.home_phone.country_code'
+                subscriber_number:
+                  $ref: '#/components/schemas/subscriber_number_VERIFICATIONS.payer.home_phone.subscriber_number'
+            date_of_birth:
+              $ref: '#/components/schemas/date_of_birth_VERIFICATIONS.payer.date_of_birth'
+            billing_address:
+              type: object
+              properties:
+                line_1:
+                  $ref: '#/components/schemas/line_1_VERIFICATIONS.payer.billing_address.line_1'
+                line_2:
+                  $ref: '#/components/schemas/line_2_VERIFICATIONS.payer.billing_address.line_2'
+                line_3:
+                  $ref: '#/components/schemas/line_3_VERIFICATIONS.payer.billing_address.line_3'
+                city:
+                  $ref: '#/components/schemas/city_VERIFICATIONS.payer.billing_address.city'
+                state:
+                  $ref: '#/components/schemas/state_VERIFICATIONS.payer.billing_address.state'
+                postal_code:
+                  $ref: '#/components/schemas/postal_code_VERIFICATIONS.payer.billing_address.postal_code'
+                country:
+                  $ref: '#/components/schemas/country_code_VERIFICATIONS.payer.home_phone.country_code'
+        device:
+          type: object
+          properties:
+            type:
+              $ref: '#/components/schemas/type_VERIFICATIONS.device.type'
+            reference:
+              $ref: '#/components/schemas/reference_VERIFICATIONS.device.reference'
+            lane_reference:
+              $ref: '#/components/schemas/lane_reference_VERIFICATIONS.device.lane_reference'
+            payer_verifications:
+              $ref: '#/components/schemas/payer_verifications_VERIFICATIONS.device.payer_verifications'
+            session_reference:
+              $ref: '#/components/schemas/session_reference_VERIFICATIONS.device.session_reference'
+            capabilities:
+              type: object
+              properties:
+                entry_modes:
+                  $ref: '#/components/schemas/entry_modes_VERIFICATIONS.device.capabilities.entry_modes'
+                payer_verifications:
+                  $ref: '#/components/schemas/payer_verifications_VERIFICATIONS.device.capabilities.payer_verifications'
+                mobile:
+                  $ref: '#/components/schemas/mobile_VERIFICATIONS.device.capabilities.mobile'
+                enabled_response:
+                  $ref: '#/components/schemas/enabled_response_VERIFICATIONS.device.capabilities.enabled_response'
+                authorization_modes:
+                  $ref: '#/components/schemas/authorization_modes_VERIFICATIONS.device.capabilities.authorization_modes'
+                attendance_modes:
+                  $ref: '#/components/schemas/attendance_modes_VERIFICATIONS.device.capabilities.attendance_modes'
+                fraud:
+                  $ref: '#/components/schemas/fraud_VERIFICATIONS.device.capabilities.fraud'
+                display_line_count:
+                  $ref: '#/components/schemas/display_line_count_VERIFICATIONS.device.capabilities.display_line_count'
+                location:
+                  $ref: '#/components/schemas/location_VERIFICATIONS.device.capabilities.location'
+                output:
+                  $ref: '#/components/schemas/output_VERIFICATIONS.device.capabilities.output'
+                card_capture:
+                  $ref: '#/components/schemas/card_capture_VERIFICATIONS.device.capabilities.card_capture'
+                max_pin_count:
+                  $ref: '#/components/schemas/max_pin_count_VERIFICATIONS.device.capabilities.max_pin_count'
+                card_update:
+                  $ref: '#/components/schemas/card_update_VERIFICATIONS.device.capabilities.card_update'
+        initiator:
+          $ref: '#/components/schemas/initiator_VERIFICATIONS.initiator'
+        additional_merchant_details:
+          type: object
+          properties:
+            address:
+              type: object
+              properties:
+                line_1:
+                  $ref: '#/components/schemas/line_1_VERIFICATIONS.additional_merchant_details.address.line_1'
+            business_phone:
+              $ref: '#/components/schemas/business_phone_VERIFICATIONS.additional_merchant_details.business_phone'
+            inquiry_phone:
+              $ref: '#/components/schemas/inquiry_phone_VERIFICATIONS.additional_merchant_details.inquiry_phone'
+            url:
+              $ref: '#/components/schemas/url_VERIFICATIONS.additional_merchant_details.url'
+        account_name_inquiry:
+          type: object
+          properties:
+            first_name_result:
+              $ref: '#/components/schemas/first_name_result_VERIFICATIONS.account_name_inquiry.first_name_result'
+            middle_name_result:
+              $ref: '#/components/schemas/middle_name_result_VERIFICATIONS.account_name_inquiry.middle_name_result'
+            last_name_result:
+              $ref: '#/components/schemas/last_name_result_VERIFICATIONS.account_name_inquiry.last_name_result'
+            full_name_result:
+              $ref: '#/components/schemas/full_name_result_VERIFICATIONS.account_name_inquiry.full_name_result'
+            result:
+              $ref: '#/components/schemas/result_VERIFICATIONS.account_name_inquiry.result'
       required:
         - account_name
         - channel
@@ -265,6 +623,12 @@ components:
       minLength: 1
       maxLength: 50
       example: transaction_processing
+    account_id_VERIFICATIONS.account_id:
+      type: string
+      description: A unique identifier for the merchant account set by Global Payments.
+      minLength: 1
+      maxLength: 50
+      example: TRA_86920f927028745yt34d077d88beb29b
     channel_VERIFICATIONS.channel:
       type: string
       enum:
@@ -272,13 +636,21 @@ components:
         - CNP
       description: |
         Describes whether the transaction was processed in a face to face(CP) scenario or a Customer Not Present (CNP) scenario.
-
-         * `CP`  - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk.
-         * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
+        * `CP` - A Customer Present transaction is when the payer and the merchant are in direct face to face contact when exchanging payment method information to fulfill a transaction. e.g. in a store and paying at the counter that is attended by a clerk
+        * `CNP` - A Customer NOT Present transaction is when the payer and the merchant are not together when exchanging payment method information to fulfill a transaction. e.g. a transaction executed from a merchant's website or over the phone
       example: CP
     currency_VERIFICATIONS.currency:
       type: string
-      description: The currency of the amount in ISO-4217(alpha-3)
+      enum:
+        - USD
+        - EUR
+        - GBP
+        - CAD
+        - CHF
+        - HKD
+        - SGD
+        - MOP etc.
+      description: The currency of the amount in ISO-4217(alpha-3).
       minLength: 3
       maxLength: 3
       example: USD
@@ -292,9 +664,60 @@ components:
       type: string
       description: The country in ISO-3166-1(alpha-2 code) format.
       example: US
+    merchant_identifier_VERIFICATIONS.merchant_identifier:
+      type: string
+      description: 'The merchant''s reporting identifier, which the merchant uses to track balance inquiry requests in reporting.'
+      example: MER_REPORT_001
+    mode_VERIFICATIONS.mode:
+      type: string
+      enum:
+        - BALANCE_INQUIRY
+      description: Indicates the type of verification to perform. Set to BALANCE_INQUIRY to retrieve the balance of a prepaid card instead of performing a standard account verification.
+      example: BALANCE_INQUIRY
+    language_VERIFICATIONS.language:
+      type: string
+      description: Indicates the language the transaction was executed in. In the format ISO-639-1 (alpha-2) or ISO-639-1 (alpha-2)_ISO-3166(alpha-2)
+      example: en_CA
+    capture_mode_VERIFICATIONS.capture_mode:
+      type: string
+      enum:
+        - AUTO
+        - LATER
+      description: |-
+        "Indicates whether the transaction is to be captured automatically, later or later using more than 1 partial capture.
+        * `AUTO` - If a transaction is authorized, funds will exchange between the payer and merchant automatically and as soon as possible.
+        * `LATER` - If a transaction is authorized, funds will not exchange between the payer and merchant automatically and will require a subsequent separate action to capture that transaction and start the funding process. Only one successful capture is permitted.
+      example: AUTO
+    amount_VERIFICATIONS.amount:
+      type: number
+      description: The amount to transfer between Payer and Merchant for a SALE or a REFUND. It is always represented in the lowest denomination of the related currency. and with no decimal point.
+      example: 10000
+    user_reference_VERIFICATIONS.user_reference:
+      type: string
+      description: The merchant's user reference for the transaction. This represents the person who processed the transaction on the merchant's behalf like a clerk or cashier reference.
+    authorization_mode_VERIFICATIONS.authorization_mode:
+      type: string
+      enum:
+        - PARTIAL
+        - DEFERRED
+      description: |
+        "Indicates if the transaction can be authorized using another non-standard model where the amount is not fully authorized at the time the transaction is created.
+        * `PARTIAL` - Indicates if the transaction can be or was authorized for an amount less than the requested amount. This is available for CP channel. The outstanding balance, not yet authorized, can be processed again using a different card.
+        * `DEFERRED` - Indicates if the transaction can be created offline and authorized later when the systems are back online"
+      example: PARTIAL
+    merchant_category_code_VERIFICATIONS.merchant_category_code:
+      type: string
+      description: A four-digit number used to classify the merchant into an industry or market segment.
+    account_name_inquiry_mode_VERIFICATIONS.account_name_inquiry_mode:
+      type: string
+      enum:
+        - REQUESTED
+        - NOT_REQUESTED
+      description: Indicates whether an account name inquiry (also known as confirmation of payee) is performed as part of this verification
+      example: REQUESTED
     id_VERIFICATIONS.payment_method.id:
       type: string
-      description: Unique Global Payments generated id used to reference a stored payment method on the Global Payments system. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
+      description: Unique platform generated id used to reference a stored payment method on the platform. Often referred to as the payment method token. This value can be used instead of payment method details such as a card number and expiry date.
       minLength: 1
       maxLength: 50
       example: PMT_31087d9c-e68c-4389-9f13-39378e166ea5
@@ -327,19 +750,19 @@ components:
         - PHONE
         - MAIL
       description: |
-        Indicates how the payment method information was obtained by the Merchant for this transaction. 
-                                 * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail. 
-                                 * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser. 
-                                 * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only. 
-                                 * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip. 
-                                 * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information. 
-                                 * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device. 
-                                 * `CONTACTLESS_CHIP` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a card on or near a device to exchange card information. 
-                                 * `CONTACTLESS_SWIPE` -  A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information 
-                                 * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone. 
-                                 * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
-                                 * `PRESENT`- The entry mode cannot be determined but it is a Customer Present transaction.
-                                 * `UNKNOWN` - The entry mode for this transaction cannot be determined.
+        Indicates how the payment method information was obtained by the Merchant for this transaction.
+        * `MOTO` - A CNP channel entry mode where the payment method information was obtained over the phone or via postal mail.
+        * `ECOM` - A CNP channel entry mode where the payment method was obtained via a browser.
+        * `IN_APP` - A CNP channel entry mode where the payment method was obtained via an application and applies to digital wallets only.
+        * `CHIP` - A CP channel entry mode where the payment method information was obtained from a chip. E.g. card is inserted into a device to read the chip.
+        * `SWIPE` - A CP channel entry mode where the payment method information was obtained from swiping a magnetic strip. E.g. card's magnetic strip is swiped through a device to read the card information.
+        * `MANUAL` - A CP channel entry mode where the payment method information was obtained by manually keying the payment method information into the device.
+        * `CONTACTLESS_CHIP` - A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device. E.g. tap a card on or near a device to exchange card information.
+        * `CONTACTLESS_SWIPE` - A CP channel entry mode where the payment method information was obtained by bringing the payment method to close proximity of a device and also swiping the card. E.g. tap a card on or near a device and swipe it through device to exchange card information
+        * `PHONE` - A CNP channel entry mode where the payment method was obtained over the phone.
+        * `MAIL` - A CNP channel entry mode where the payment method was obtained via postal mail.
+        * `PRESENT`- The entry mode cannot be determined but it is a Customer Present transaction.
+        * `UNKNOWN` - The entry mode for this transaction cannot be determined.
       example: MOTO
     fingerprint_mode_VERIFICATIONS.payment_method.fingerprint_mode:
       type: string
@@ -348,29 +771,66 @@ components:
         - ON_SUCCESS
       description: |
         Indicates whether to execute the fingerprint signature functionality.
-        * `ALWAYS` - Always check and create the fingerprint value regardless of the result of the card authorization.
-        * `ON_SUCCESS` - Always check and create the fingerprint value when the card authorization is successful.
+        *`ALWAYS` - Always check and create the fingerprint value regardless of the result of the card authorization.
+        *`ON_SUCCESS` - Always check and create the fingerprint value when the card authorization is successful.
       minLength: 1
       maxLength: 50
+    storage_mode_VERIFICATIONS.payment_method.storage_mode:
+      type: string
+      enum:
+        - ALWAYS
+        - ON_SUCCESS
+      description: |
+        Indicates whether to store the card as part of a transaction.
+        * `ALWAYS` - The card information is always stored irrespective of whether the payment method authorization was successful or not.
+        * `ON_SUCCESS` - The card information is only stored if the payment method authorization was successful.
+      minLength: 1
+      maxLength: 50
+      example: ALWAYS
+    account_id_VERIFICATIONS.payment_method.account_id:
+      type: string
+      description: A unique identifier for the merchant account set by Global Payments.
+      example: TRA_86920f927028745yt34d077d88beb29b
     method_VERIFICATIONS.payment_method.encryption.method:
       type: string
       enum:
         - KTB
         - KSN
-      description: The encryption method used when sending encrypted card data to Global Payments.
+        - RSA_2048_OAEP_SHA_512
+      description: |
+        Indicates the encryption method used when sending encrypted card data.
+        *`KTB` - Indicates Key Transmission Block is being used
+        *`KSN` - Indicates Key Serial Number is being used
+        *`RSA_2048_OAEP_SHA_512` - Indicates RSA algorithm is being used with OAEP SHA 512 padding.
       minLength: 1
       maxLength: 50
       example: KTB
     version_VERIFICATIONS.payment_method.encryption.version:
       type: string
-      description: The version of encryption being used.
+      description: The version of encryption being used. It is in the form of a two digit value. For example 05 or 06.
       minLength: 1
       maxLength: 50
+      example: '06'
     info_VERIFICATIONS.payment_method.encryption.info:
       type: string
-      description: The encryption info used when sending encrypted card data to Global Payments.
+      description: |
+        The encryption key id info used when sending encrypted data.
+        If encryption.method is
+        *`KTB` then it is the Key Transmission Block key id value,
+        *`KSN` then it is the Key Serial Number key id value,
+        *`RSA` then it is the RSA key id value base64 encoded.
       minLength: 1
       maxLength: 2000
+    type_VERIFICATIONS.payment_method.encryption.type:
+      type: string
+      enum:
+        - BINARY
+        - ASCII
+      description: |
+        Indicates the encryption encoding format used to encrypt the data.
+        *`BINARY` - Indicates data is binary encoded.
+        *`ASCII` - Indicates data is encoded as ASCII.
+      example: ASCII
     id_VERIFICATIONS.payment_method.authentication.id:
       type: string
       description: A unique identifier that is used to identify and reference an instance of this resource. It is generated by Global Payments to identify the authentication details (3DS data) used with this transaction.
@@ -384,9 +844,9 @@ components:
       maxLength: 50
     eci_VERIFICATIONS.payment_method.authentication.three_ds.eci:
       type: string
-      description: An indication of the degree of the authentication process and importantly the liability shift away from the merchant obtained for this transaction. It is determined during the 3D Secure process.
+      description: An indication of the degree of the authentication and liability shift obtained for this transaction. It is returned after the 3D Secure process has completed.
       minLength: 1
-      maxLength: 50
+      maxLength: 5
     value_VERIFICATIONS.payment_method.authentication.three_ds.value:
       type: string
       description: The authentication value created as part of the 3D Secure process.
@@ -414,12 +874,30 @@ components:
       minLength: 1
       maxLength: 50
       example: LOW_VALUE
+    funding_VERIFICATIONS.payment_method.card.funding:
+      type: string
+      enum:
+        - DEBIT
+        - CREDIT
+        - CASH_BENEFITS
+        - FOOD_STAMP
+        - PREPAID
+      description: |
+        Indicates how the card is funded:
+        * `DEBIT` - indicates the card is a debit card where the funds may be present in an account to fulfill the transaction amount.
+        * `CREDIT` - indicates the card is a credit card where the funds may be available on credit to the payer to fulfill the transaction amount.
+        * `FOOD_STAMP` - indicates the card is an, Electronic Benefits Transfer, for food stamps.
+        * `CASH_BENEFITS` - indicates the card is an, Electronic Benefits Transfer, for cash benefits.
+        * `PREPAID` - indicates the card is a prepaid card where the funds are loaded to the card account to fulfill the transaction amount. Unlike a debit card, a prepaid is not linked to a bank account.
+      minLength: 1
+      maxLength: 50
+      example: CREDIT
     number_VERIFICATIONS.payment_method.card.number:
       type: string
       description: The card account number used to authorize the transaction. Also known as PAN.
       minLength: 1
       maxLength: 50
-      example: 4263970000005262'
+      example: '4263970000005262'
     expiry_month_VERIFICATIONS.payment_method.card.expiry_month:
       type: string
       description: The 2 digit expiry date month of the card.
@@ -436,10 +914,16 @@ components:
       type: string
       description: Data from magnetic stripe of a card
       minLength: 1
-      maxLength: 500
+      maxLength: 1000
+    pin_block_VERIFICATIONS.payment_method.card.pin_block:
+      type: string
+      description: 'Contains the pin block info, relating to the pin code the Payer entered.'
+      minLength: 1
+      maxLength: 50
     cvv_VERIFICATIONS.payment_method.card.cvv:
       type: string
       description: The numeric value printed on the physical card.
+      minLength: 3
       maxLength: 4
       example: '852'
     cvv_indicator_VERIFICATIONS.payment_method.card.cvv_indicator:
@@ -450,10 +934,9 @@ components:
         - PRESENT
       description: |
         Card Verification Value Indicator sent by the Merchant indicating the CVV availability.
-
-           * `ILLEGIBLE` - indicates the cvv is present but cannot be read.
-           * `NOT_PRESENT` - indicates the cvv is not present on the card.
-           * `PRESENT` - indicates the cvv is present.
+        *`ILLEGIBLE` - indicates the cvv is present but cannot be read.
+        *`NOT_PRESENT` - indicates the cvv is not present on the card.
+        *`PRESENT` - indicates the cvv is present.
       maxLength: 50
       example: PRESENT
     avs_address_VERIFICATIONS.payment_method.card.avs_address:
@@ -464,7 +947,520 @@ components:
     avs_postal_code_VERIFICATIONS.payment_method.card.avs_postal_code:
       type: string
       description: Postal code of the address associated with the card.
+      maxLength: 50
       example: TGX562
+    decryption_required_VERIFICATIONS.payment_method.card.decryption_required:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      description: Indicates whether Global Payments must decrypt the merchant’s encrypted data to process the transaction.
+      example: 'YES'
+    payment_account_reference_mode_VERIFICATIONS.payment_method.card.payment_account_reference_mode:
+      type: string
+      enum:
+        - REQUESTED
+        - NOT_REQUESTED
+      description: 'Indicates whether Payment Account Reference (PAR) should be returned with the authorization, when available'
+      example: REQUESTED
+    issuer_VERIFICATIONS.payment_method.card.issuer:
+      type: string
+      description: The name of the issuing bank that issued the card.
+      example: JP MORGAN CHASE BANK
+    currency_VERIFICATIONS.payment_method.card.currency:
+      type: string
+      description: The currency associated with the country of issuing bank.
+      minLength: 3
+      maxLength: 3
+      example: USD
+    country_VERIFICATIONS.payment_method.card.country:
+      type: string
+      description: This is the country the card is issued in. It represents the country the card's bank is based.The country in ISO-3166-1(alpha-2 code) format.
+      example: US
+    eci_VERIFICATIONS.payment_method.card.eci:
+      type: string
+      description: This is the cryptogram eci that is needed to process a CIT Network Tokenization request with 3DSecure
+      maxLength: 5
+      example: '5'
+    network_token_expiry_month_VERIFICATIONS.payment_method.card.network_token_expiry_month:
+      type: string
+      description: The 2 digit expiry date month of the network token.
+      example: '12'
+    network_token_expiry_year_VERIFICATIONS.payment_method.card.network_token_expiry_year:
+      type: string
+      description: The 2 digit expiry date year of the network token.
+      example: '27'
+    track_number_VERIFICATIONS.payment_method.card.track_number:
+      type: string
+      description: The number that identifies the track data type. This field is required if the track data is encrypted.
+      example: '2'
+    masked_network_token_last4_VERIFICATIONS.payment_method.card.masked_network_token_last4:
+      type: string
+      description: Masked network token but last 4 digits of the network token are visible.
+      example: XXXXXXXXXXXX1234
+    transaction_link_reference_VERIFICATIONS.payment_method.card.transaction_link_reference:
+      type: string
+      description: A reference that links this verification to a related transaction.
+      example: TLK_000012345
+    requestor_reference_VERIFICATIONS.payment_method.card.requestor_reference:
+      type: string
+      description: 'The identifier assigned to the token requestor, which is the entity requesting the token. It is passed to the processor with the request.'
+      example: '40010000001'
+    payment_account_reference_VERIFICATIONS.payment_method.card.payment_account_reference:
+      type: string
+      description: This is the Payment Account Reference (PAR) that is returned by the Issuer when requested and available.
+      example: PAR_1234567890123456789012345
+    account_number_VERIFICATIONS.payment_method.bank_transfer.account_number:
+      type: string
+      description: The number or reference for the payer's bank account.
+      example: '23452423'
+    account_type_VERIFICATIONS.payment_method.bank_transfer.account_type:
+      type: string
+      enum:
+        - CHECKING
+        - SAVING
+      description: The type of bank account associated with the payer's bank account.
+      example: CHECKING
+    check_reference_VERIFICATIONS.payment_method.bank_transfer.check_reference:
+      type: string
+      description: The number or reference for the check.
+      example: '879987767'
+    verification_level_VERIFICATIONS.payment_method.bank_transfer.verification_level:
+      type: string
+      enum:
+        - LEVEL_1
+        - LEVEL_2
+        - LEVEL_3
+      description: Determines the level at which the ACH account is verified by the host system.
+      example: LEVEL_1
+    code_VERIFICATIONS.payment_method.bank_transfer.bank.code:
+      type: string
+      description: The local identifier code for the bank.
+    name_VERIFICATIONS.payment_method.bank_transfer.bank.name:
+      type: string
+      description: The name of the bank.
+    international_code_MERCHANTS.payment_methods.bank_transfer.bank.international_code:
+      $ref: '#/components/schemas/middle_name_result_VERIFICATIONS.account_name_inquiry.middle_name_result'
+    middle_name_result_VERIFICATIONS.account_name_inquiry.middle_name_result:
+      type: string
+      enum:
+        - MATCHED
+        - PARTIAL_MATCH
+        - NOT_MATCHED
+      description: The result of comparing the middle name provided in the request with the middle name on file for the account.
+      example: MATCHED
+    avs_action_VERIFICATIONS.payment_method.digital_wallet.avs_action:
+      type: string
+      description: The recommended action to be taken by the merchant based on the AVS response.
+      example: ACCEPT
+    tag_response_VERIFICATIONS.payment_method.digital_wallet.tag_response:
+      type: string
+      description: The card EMV tag response data from the card issuer for a contactless or chip card transaction.
+    funding_VERIFICATIONS.payment_method.digital_wallet.funding:
+      type: string
+      enum:
+        - DEBIT
+        - CREDIT
+        - CASH_BENEFITS
+        - FOOD_STAMP
+        - PREPAID
+      description: 'Indicates how the card is funded * `DEBIT'' - indicates the card is a debit card where the funds may be present in an account to fulfill the transaction amount. * `CREDIT'' - indicates the card is a credit card where the funds may be available on credit to the payer to fulfill the transaction amount.`CASH_BENEFITS'' - indicates the card is an, Electronic Benefits Transfer, for cash benefits. * `FOOD_STAMP'' - indicates the card is an, Electronic Benefits Transfer, for food stamps. * `PREPAID'' - indicates the card is a prepaid card where the funds are loaded to the card account to fulfill the transaction amount. Unlike a debit card, a prepaid is not linked to a bank account.'
+      example: CREDIT
+    avs_postal_code_result_VERIFICATIONS.payment_method.digital_wallet.avs_postal_code_result:
+      type: string
+      enum:
+        - MATCHED
+        - NOT_MATCHED
+        - NOT_CHECKED
+      description: The result of the AVS postal code check.
+      example: MATCHED
+    avs_address_result_VERIFICATIONS.payment_method.digital_wallet.avs_address_result:
+      type: string
+      enum:
+        - MATCHED
+      description: The result of the AVS address check.
+      example: MATCHED
+    cvv_result_VERIFICATIONS.payment_method.digital_wallet.cvv_result:
+      type: string
+      enum:
+        - MATCHED
+        - NOT_MATCHED
+        - NOT_CHECKED
+      description: The result of the CVV check.
+      example: MATCHED
+    first_name_VERIFICATIONS.payer.first_name:
+      type: string
+      description: The first name of the Payer
+      minLength: 1
+      maxLength: 50
+      example: John
+    last_name_VERIFICATIONS.payer.last_name:
+      type: string
+      description: The last name of the Payer
+      minLength: 1
+      maxLength: 50
+      example: James
+    name_VERIFICATIONS.payer.name:
+      type: string
+      description: The full name of the payer.
+      minLength: 1
+      maxLength: 50
+      example: John Doe
+    reference_VERIFICATIONS.payer.reference:
+      type: string
+      description: An integrator's reference to the payer.
+      minLength: 1
+      maxLength: 50
+      example: 45yt34d077d88beb29b
+    email_VERIFICATIONS.payer.email:
+      type: string
+      description: The email address of the payer.
+      minLength: 1
+      maxLength: 50
+      example: abc@globalpayments.com
+    'landline_phone _VERIFICATIONS.payer.landline_phone ':
+      type: string
+      description: The landline phone number.
+      example: 1234567890
+    mobile_phone_VERIFICATIONS.payer.mobile_phone:
+      type: string
+      description: The mobile phone number.
+      example: '1234567890'
+    country_code_VERIFICATIONS.payer.home_phone.country_code:
+      type: string
+      description: The country in ISO-3166-1(alpha-2 code) format.
+      minLength: 1
+      maxLength: 255
+      example: US
+    subscriber_number_VERIFICATIONS.payer.home_phone.subscriber_number:
+      type: string
+      description: The phone number.
+      minLength: 1
+      maxLength: 50
+    date_of_birth_VERIFICATIONS.payer.date_of_birth:
+      type: string
+      description: The date of birth of the payer
+    line_1_VERIFICATIONS.payer.billing_address.line_1:
+      type: string
+      description: First line of the address.
+      minLength: 1
+      maxLength: 255
+      example: 123 Merchant Street
+    line_2_VERIFICATIONS.payer.billing_address.line_2:
+      type: string
+      description: Second line of the address.
+      maxLength: 255
+      example: Suite 2
+    line_3_VERIFICATIONS.payer.billing_address.line_3:
+      type: string
+      description: Third line of the address.
+      maxLength: 255
+      example: foyer
+    city_VERIFICATIONS.payer.billing_address.city:
+      type: string
+      description: The city associated with the address.
+      minLength: 1
+      maxLength: 255
+      example: Beverly Hills
+    state_VERIFICATIONS.payer.billing_address.state:
+      type: string
+      description: 'The state or region of the address. ISO 3166-2 minus the country code itself. For example, US Illinois = IL, or in the case of GB counties Wiltshire = WI or Aberdeenshire = ABD'
+      minLength: 1
+      maxLength: 255
+      example: CA
+    postal_code_VERIFICATIONS.payer.billing_address.postal_code:
+      type: string
+      description: The postal code of the address.
+      minLength: 1
+      maxLength: 255
+      example: '90210'
+    type_VERIFICATIONS.device.type:
+      type: string
+      enum:
+        - MOBILE_POS
+        - MOBILE_POS_PLUS_HARDWARE
+        - MOBILE_POS_PLUS_DONGLE
+        - DONGLE_PIN
+        - MOBILE_POS_PIN
+        - OFF_THE_SHELF
+      description: |
+        "Indicates the type of physical device used to process the transaction.
+        * `MOBILE_POS` - Mobile device with no add-on hardware.
+        * `MOBILE_POS_PLUS_HARDWARE` - Mobile device with add-on hardware.
+        * `MOBILE_POS_PLUS_DONGLE` - Dedicated mPOS Terminal with PCI compliant dongle.
+        * `DONGLE_PIN` - Dongle with software-based application that supports PIN entry on glass.
+        * `MOBILE_POS_PIN` - Off the shelf mobile device with software-based application that supports PIN entry on glass.
+        * 'OFF_THE_SHELF' - Off the shelf mobile device"
+      example: MOBILE_POS
+    reference_VERIFICATIONS.device.reference:
+      type: string
+      description: The integrator submitted reference or identifier for the device.
+      example: DEVICE-001
+    lane_reference_VERIFICATIONS.device.lane_reference:
+      type: string
+      description: A unique value that identifies the lane of the transaction origin point.
+      maxLength: 8
+      example: '5'
+    payer_verifications_VERIFICATIONS.device.payer_verifications:
+      type: string
+      enum:
+        - NOT_VERIFIED
+        - PINPAD
+        - ELECTRONIC_SIGNATURE_ANALYSIS
+        - MANUAL_SIGNATURE_ANALYSIS
+        - MANUAL_OTHER
+        - UNKNOWN
+        - SYSTEMATIC_OTHER
+        - OFFLINE_PIN
+      description: Indicates the method used to verify the payer.
+      example: PINPAD
+    session_reference_VERIFICATIONS.device.session_reference:
+      type: string
+      description: A unique identifier generated by the provider for initiationg device profiling.
+      maxLength: 255
+      example: SESSION-ABC-123
+    entry_modes_VERIFICATIONS.device.capabilities.entry_modes:
+      type: array
+      description: Describes the entry mode capabilities a device has.
+      items:
+        type: string
+        enum:
+          - CHIP
+          - CONTACTLESS
+          - MANUAL
+          - SWIPE
+          - CONTACTLESS_SWIPE
+          - OPTICAL_CHARACTER_READER
+          - UNKNOWN
+      example:
+        - CHIP
+    payer_verifications_VERIFICATIONS.device.capabilities.payer_verifications:
+      type: array
+      description: Describes the capabilities a device has to verify a payer.
+      items:
+        type: string
+        enum:
+          - NONE
+          - PINPAD
+          - SIGNATURE_ANALYSIS
+          - NO_SINGATURE_ANALYSIS
+          - PAYER_DEVICE
+          - CONTACTLESS_SIGNATURE
+          - OTHER
+          - UNKNOWN
+      example:
+        - PINPAD
+    mobile_VERIFICATIONS.device.capabilities.mobile:
+      type: array
+      description: Describes the mobile features a device has.
+      items:
+        type: string
+        enum:
+          - INTEGRATED_CARD_READER
+          - SEPARATE_CARD_READER
+          - OFF_THE_SHELF
+          - SOFTWARE_BASED_PIN_ENTRY
+      example:
+        - INTEGRATED_CARD_READER
+    enabled_response_VERIFICATIONS.device.capabilities.enabled_response:
+      type: array
+      description: Describes the data the device can process when it receives a response for a card authorization.
+      items:
+        type: string
+        enum:
+          - AVS
+          - CVV
+          - BRAND_REFERENCE
+          - MASKED_NUMBER_LAST4
+      example:
+        - AVS
+    authorization_modes_VERIFICATIONS.device.capabilities.authorization_modes:
+      type: array
+      description: Describes whether the device can process partial authorizations.
+      items:
+        type: string
+        enum:
+          - PARTIAL
+          - ALTERNATIVE
+      example:
+        - PARTIAL
+    attendance_modes_VERIFICATIONS.device.capabilities.attendance_modes:
+      type: array
+      description: Indicates whether the device is attended or not.
+      items:
+        type: string
+        enum:
+          - ATTENDED
+          - UNATTENDED
+      example:
+        - ATTENDED
+    fraud_VERIFICATIONS.device.capabilities.fraud:
+      type: array
+      description: Describes the instruction a device can indicate to the clerk in the case of fraud.
+      items:
+        type: string
+        enum:
+          - PICK_UP_CARD
+      example:
+        - PICK_UP_CARD
+    display_line_count_VERIFICATIONS.device.capabilities.display_line_count:
+      type: number
+      description: The number of lines that can be used to display information on the device.
+      minimum: 1
+      maximum: 50
+    location_VERIFICATIONS.device.capabilities.location:
+      type: array
+      description: |
+        Describes the location where the device is being used.
+        * `ON_MERCHANT_PREMISIS` - The transaction took place on the merchant's premesis. This value should be used for EMV contact transactions and must be provided in conjuction with an attendance_mode.
+        * `OFF_MERCHANT_PREMISIS` - The transaction took place away from the merchant's premesis. This value should be used for EMV contact transactions and must be provided in conjuction with an attendance_mode.
+        * `ON_PAYER_PREMISIS` - The transaction took place on the payer's premesis. This value can be used for EMV contact or EMV contactless transactions and must be provided in conjuction with an attendance_mode.
+        * `OFF_PAYER_PREMISIS` - The transaction took place away from the payer's premesis. This value can be used for EMV contact or EMV contactless transactions and must be provided in conjuction with an attendance_mode.
+        * `ON_MERCHANT_PREMISES_MPOS` - The transaction took place on the merchant's premesis, using the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location.
+        * `OFF_MERCHANT_PREMISES_MPOS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location.
+        * `ON_MERCHANT_PREMISES_PAYER_POS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location.
+        * `OFF_MERCHANT_PREMISES_PAYER_POS` - The transaction took place away from the merchant's premesis, and used the merchant's mobile POS solution. Attendance_mode should not be sent when providing this location.
+        * `UNKNOWN` - The transaction took place at an unknown location.
+      items:
+        type: string
+        enum:
+          - ON_MERCHANT_PREMISES
+          - OFF_MERCHANT_PREMISES
+          - UNKNOWN
+          - ON_PAYER_PREMISES
+          - OFF_PAYER_PREMISES
+          - OFF_MERCHANT_PREMISES_MPOS
+          - ON_MERCHANT_PREMISES_MPOS
+          - OFF_MERCHANT_PREMISES_PAYER_POS
+      example:
+        - ON_MERCHANT_PREMISIS
+    output_VERIFICATIONS.device.capabilities.output:
+      type: string
+      enum:
+        - NONE
+        - PRINT
+        - DISPLAY
+        - PRINT_AND_DISPLAY
+        - UNKNOWN
+      description: |
+        Indicates the output capabilities of the device.
+        * `NONE` - The device has no output capability.
+        * `PRINT` - The device has the ability to print.
+        * `DISPLAY` - The device has display capability.
+        * `PRINT_AND_DISPLAY` - The device has print and display capability.
+        * `UNKNOWN` - The device's output capability is unknown.
+      minLength: 1
+      maxLength: 50
+      example: PRINT
+    card_capture_VERIFICATIONS.device.capabilities.card_capture:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      description: Indicates if the device is capable of pulling the card into the device while the transaction is taking place
+      minLength: 1
+      maxLength: 50
+      example: 'NO'
+    max_pin_count_VERIFICATIONS.device.capabilities.max_pin_count:
+      type: string
+      enum:
+        - UNKNOWN
+        - NOT_SUPPORTED
+        - '4'
+        - '5'
+        - '6'
+        - '7'
+        - '8'
+        - '9'
+        - '10'
+        - '11'
+        - '12'
+      description: Indicates the maximum accepted length for PIN number.
+      minLength: 1
+      maxLength: 50
+      example: NOT_SUPPORTED
+    card_update_VERIFICATIONS.device.capabilities.card_update:
+      type: string
+      enum:
+        - 'YES'
+        - 'NO'
+      description: This field indicates the ability of the device and software to update or change the card information
+      minLength: 1
+      maxLength: 50
+      example: 'NO'
+    initiator_VERIFICATIONS.initiator:
+      type: string
+      enum:
+        - PAYER
+        - MERCHANT
+      description: |
+        Indicates whether the Merchant or the Payer initiated the creation of a transaction.
+        * `PAYER` - The transaction was initiated by the customer who is paying the merchant.
+        * `MERCHANT` - The transaction was initiated by the merchant, who is getting paid by the payer.
+      minLength: 1
+      maxLength: 50
+      example: PAYER
+    line_1_VERIFICATIONS.additional_merchant_details.address.line_1:
+      type: string
+      description: 'Merchant''s street address, including street number, street name, and location identifiers (e.g., building or unit number).'
+      minLength: 1
+      maxLength: 25
+      example: '123 Rose St, ABC Towers'
+    business_phone_VERIFICATIONS.additional_merchant_details.business_phone:
+      type: string
+      description: The phone number of the Merchant.
+      minLength: 1
+      maxLength: 16
+      example: '9876548710'
+    inquiry_phone_VERIFICATIONS.additional_merchant_details.inquiry_phone:
+      type: string
+      description: The customer care number of the Merchant.
+      minLength: 1
+      maxLength: 16
+      example: '1800888888'
+    url_VERIFICATIONS.additional_merchant_details.url:
+      type: string
+      description: The url address of the Merchant.
+      minLength: 1
+      maxLength: 30
+      example: www.xyz.com
+    first_name_result_VERIFICATIONS.account_name_inquiry.first_name_result:
+      type: string
+      enum:
+        - MATCHED
+        - PARTIAL_MATCH
+        - NOT_MATCHED
+      description: The result of comparing the first name provided in the request with the first name on file for the account.
+      example: MATCHED
+    last_name_result_VERIFICATIONS.account_name_inquiry.last_name_result:
+      type: string
+      enum:
+        - MATCHED
+        - PARTIAL_MATCH
+        - NOT_MATCHED
+      description: The result of comparing the last name provided in the request with the middle name on file for the account.
+      example: MATCHED
+    full_name_result_VERIFICATIONS.account_name_inquiry.full_name_result:
+      type: string
+      enum:
+        - MATCHED
+        - PARTIAL_MATCH
+        - NOT_MATCHED
+      description: The result of comparing the full name provided in the request with the name on file for the account.
+      example: MATCHED
+    result_VERIFICATIONS.account_name_inquiry.result:
+      type: string
+      enum:
+        - MATCHED
+        - PARTIAL_MATCH
+        - NOT_MATCHED
+        - NOT_CHECKED
+        - NOT_SUPPORTED
+        - SUCCESSFUL
+        - FAILED
+        - UNKNOWN
+      description: The overall outcome of the account name inquiry.
+      example: MATCHED
     create_response:
       type: object
       properties:
@@ -508,6 +1504,8 @@ components:
             card:
               type: object
               properties:
+                funding:
+                  $ref: '#/components/schemas/funding_VERIFICATIONS.payment_method.card.funding'
                 masked_number_last4:
                   $ref: '#/components/schemas/masked_number_last4_VERIFICATIONS.payment_method.card.masked_number_last4'
                 brand:
@@ -515,13 +1513,33 @@ components:
                 brand_reference:
                   $ref: '#/components/schemas/brand_reference_VERIFICATIONS.payment_method.card.brand_reference'
                 cvv_result:
-                  $ref: '#/components/schemas/cvv_result_VERIFICATIONS.payment_method.card.cvv_result'
+                  $ref: '#/components/schemas/cvv_result_VERIFICATIONS.payment_method.digital_wallet.cvv_result'
                 avs_address_result:
                   $ref: '#/components/schemas/avs_address_result_VERIFICATIONS.payment_method.card.avs_address_result'
                 avs_postal_code_result:
-                  $ref: '#/components/schemas/avs_postal_code_result_VERIFICATIONS.payment_method.card.avs_postal_code_result'
+                  $ref: '#/components/schemas/avs_postal_code_result_VERIFICATIONS.payment_method.digital_wallet.avs_postal_code_result'
+                authcode:
+                  $ref: '#/components/schemas/authcode_VERIFICATIONS.payment_method.card.authcode'
                 avs_action:
                   $ref: '#/components/schemas/avs_action_VERIFICATIONS.payment_method.card.avs_action'
+                available_balance:
+                  $ref: '#/components/schemas/available_balance_VERIFICATIONS.payment_method.card.available_balance'
+                tag_response:
+                  $ref: '#/components/schemas/tag_response_VERIFICATIONS.payment_method.card.tag_response'
+            bank_transfer:
+              type: object
+              properties:
+                account_number:
+                  $ref: '#/components/schemas/account_number_VERIFICATIONS.payment_method.bank_transfer.account_number'
+                account_type:
+                  $ref: '#/components/schemas/account_type_VERIFICATIONS.payment_method.bank_transfer.account_type'
+                bank:
+                  type: object
+                  properties:
+                    name:
+                      $ref: '#/components/schemas/name_VERIFICATIONS.payment_method.bank_transfer.bank.name'
+        batch_id:
+          $ref: '#/components/schemas/batch_id_VERIFICATIONS.batch_id'
         action:
           type: object
           properties:
@@ -530,7 +1548,7 @@ components:
             type:
               $ref: '#/components/schemas/type_VERIFICATIONS.action.type'
             time_created:
-              $ref: '#/components/schemas/time_created_VERIFICATIONS.action.time_created'
+              $ref: '#/components/schemas/time_created_VERIFICATIONS.time_created'
             result_code:
               $ref: '#/components/schemas/result_code_VERIFICATIONS.action.result_code'
             app_id:
@@ -545,7 +1563,7 @@ components:
       example: VER_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
     time_created_VERIFICATIONS.time_created:
       type: string
-      description: Global Payments time indicating when the object was created in ISO-8601 format.
+      description: Time indicating when the object was created in ISO-8601 format.
       format: date-time
       example: '2021-05-03T21:23:39.718Z'
     status_VERIFICATIONS.status:
@@ -567,12 +1585,6 @@ components:
       minLength: 1
       maxLength: 50
       example: Sandbox_merchant_2
-    account_id_VERIFICATIONS.account_id:
-      type: string
-      description: A unique identifier for the merchant account set by Global Payments.
-      minLength: 1
-      maxLength: 50
-      example: TRA_86920f927028745yt34d077d88beb29b
     result_VERIFICATIONS.payment_method.result:
       type: string
       description: Result code from the payment method provider
@@ -586,9 +1598,8 @@ components:
         - NEW
       description: |
         If enabled, this field indicates whether the payment method has been seen before or is new.
-
-         *`EXISTS` - Indicates that the payment method was seen on the platform before by this merchant.
-         *`NEW `- Indicates that the payment method was not seen on the platform before by this merchant.
+        *`EXISTS` - Indicates that the payment method was seen on the platform before by this merchant.
+        *`NEW `- Indicates that the payment method was not seen on the platform before by this merchant.
     fingerprint_VERIFICATIONS.payment_method.fingerprint:
       type: string
       description: 'If enabled, this field contains the unique fingerprint signature for that payment method for that merchant. If the payment method is seen again this same value is generated. For cards the primary account number is checked only. The expiry date or the CVV is not used for this check.'
@@ -614,14 +1625,7 @@ components:
       type: string
       description: The unique reference created by the brands/schemes to uniquely identify the transaction.
       maxLength: 50
-    cvv_result_VERIFICATIONS.payment_method.card.cvv_result:
-      type: string
-      enum:
-        - MATCHED
-        - NOT_MATCHED
-        - NOT_CHECKED
-      description: The result of the CVV check.
-      example: MATCHED
+      example: '000000321000010'
     avs_address_result_VERIFICATIONS.payment_method.card.avs_address_result:
       type: string
       enum:
@@ -630,14 +1634,11 @@ components:
         - NOT_CHECKED
       description: The result of the AVS address check.
       example: MATCHED
-    avs_postal_code_result_VERIFICATIONS.payment_method.card.avs_postal_code_result:
+    authcode_VERIFICATIONS.payment_method.card.authcode:
       type: string
-      enum:
-        - MATCHED
-        - NOT_MATCHED
-        - NOT_CHECKED
-      description: The result of the AVS postal code check.
-      example: MATCHED
+      description: Code generated by the card provider when the card is successfully authorized.
+      minLength: 1
+      maxLength: 50
     avs_action_VERIFICATIONS.payment_method.card.avs_action:
       type: string
       enum:
@@ -647,9 +1648,22 @@ components:
       description: The recommended AVS action to be taken by the agent processing the card transaction.
       maxLength: 50
       example: PROMPT
+    available_balance_VERIFICATIONS.payment_method.card.available_balance:
+      type: string
+      description: The available currency amount on the payment method that can be used for a purchase
+      example: '10000'
+    tag_response_VERIFICATIONS.payment_method.card.tag_response:
+      type: string
+      description: The card EMV tag response data from the card issuer for a contactless or chip card transaction.
+      minLength: 1
+      maxLength: 500
+    batch_id_VERIFICATIONS.batch_id:
+      type: string
+      description: A Global Payments created reference that uniquely identifies the batch.
+      example: BAT_234234234
     id_VERIFICATIONS.action.id:
       type: string
-      description: A unique identifier generated by Global Payments to identify an action.
+      description: A unique identifier generated by the platform to identify an action.
       example: ACT_uzFr7t4VOqxdLDI44hHmXIjHtOOE8d
     type_VERIFICATIONS.action.type:
       type: string
@@ -657,10 +1671,6 @@ components:
         - VERIFY
       description: Indicates the specific action taken.
       example: VERIFY
-    time_created_VERIFICATIONS.action.time_created:
-      type: string
-      description: Global Payments time indicating when the object was created in ISO-8601 format.
-      example: '2021-05-03T21:23:39.718Z'
     result_code_VERIFICATIONS.action.result_code:
       type: string
       enum:
