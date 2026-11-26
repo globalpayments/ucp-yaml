@@ -1,3 +1,17 @@
+# 2026-11-26
+## UPDATED
+### Verifications
+- Incremented Verifications YAML file version to 1.2.
+- Added new request fields: account_id, merchant_identifier, mode, language, capture_mode, amount, user_reference, authorization_mode, merchant_category_code, account_name_inquiry_mode.
+- Added new request objects: payer, device, initiator, additional_merchant_details, account_name_inquiry.
+- Added new payment_method fields: storage_mode, account_id, encryption.type.
+- Added new payment_method.card fields: funding, pin_block, decryption_required, payment_account_reference_mode, issuer, currency, country, eci, network_token_expiry_month, network_token_expiry_year, track_number, masked_network_token_last4, transaction_link_reference, requestor_reference, payment_account_reference.
+- Added new payment_method.bank_transfer fields: verification_level, bank.international_code.
+- Added new payment_method.digital_wallet fields: avs_action, tag_response, funding, avs_postal_code_result, payment_account_reference, avs_address_result, cvv_result.
+- Added new response examples: Perform a Balance Inquiry - Prepaid Card, Perform ACH verification to validate bank account details.
+- Updated descriptions/formatting for entry_mode, fingerprint_mode, encryption.method, encryption.version, encryption.info, authentication.three_ds.eci, and cvv_indicator.
+- Updated cvv minLength and card.number example quoting.
+
 # 2026-09-09
 ## UPDATED
 ### Links
